@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# evals/run.sh — check the demo's eval cases (see DEMO.md).
+# At kickoff, copy this to evals/run.sh, chmod +x, and adapt the cases.
+# verify.sh runs it automatically once it exists and is executable.
+#
+# Keep evals as plain shell + curl/CLI calls so they work whatever the stack is.
+
+set -uo pipefail
+cd "$(dirname "$0")/.."
+[[ -f .hackathon/env ]] && source .hackathon/env
+BASE=${SMOKE_URL:-http://localhost:3000}
+
+pass=0; fail=0
+check() {  # check <name> <expected-substring> <command...>
+  local name=$1 expected=$2; shift 2
+  local out; out=$("$@" 2>&1)
+  if [[ "$out" == *"$expected"* ]]; then pass=$((pass+1)); echo "  ✔ $name"
+  else fail=$((fail+1)); echo "  ✘ $name — expected '$expected', got: ${out:0:200}"; fi
+}
+
+# ── Cases (one per row in DEMO.md) ──────────────────────────────────────
+check "home loads"        "<html"        curl -fsS "$BASE/"
+# check "summarise works" "\"summary\""  curl -fsS -X POST "$BASE/api/summarise" -d '{"text":"..."}'
+
+echo "evals: $pass passed, $fail failed"
+[[ $fail -eq 0 ]]
