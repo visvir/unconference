@@ -3,6 +3,7 @@ import WeekStrip from "@/components/WeekStrip";
 import RomChart from "@/components/RomChart";
 import ActivityWidget from "@/components/ActivityWidget";
 import ShareProgress from "@/components/ShareProgress";
+import TodayPlan from "@/components/TodayPlan";
 import { patient } from "@/lib/patient";
 
 export default function Home() {
@@ -59,17 +60,7 @@ export default function Home() {
 
       <section className="card mt-4">
         <h2 className="eyebrow text-mute">Today&apos;s planned workout</h2>
-        <ul className="mt-2 divide-y divide-black/5">
-          {todayPlan.map((e) => (
-            <li key={e.id} className="flex items-center justify-between gap-3 py-3 text-sm">
-              <span className="font-semibold text-ink">
-                {e.name}
-                {e.kind === "loading" && <span className="chip chip-ink ml-2 align-middle">load</span>}
-              </span>
-              <span className="shrink-0 text-mute">{e.dose}</span>
-            </li>
-          ))}
-        </ul>
+        <TodayPlan planned={todayPlan} />
       </section>
       <DemoLink href="/notes" className="btn btn-quiet mt-3">
         📋 Add my physio&apos;s advice
