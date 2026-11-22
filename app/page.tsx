@@ -34,20 +34,12 @@ export default function Home() {
         </div>
         <p className="text-xs text-stone-500">{last.extensionDeg === 0 ? "Fully straight" : `Lacking ${last.extensionDeg}° of full straightening`} · pain yesterday {last.pain}/10</p>
         <RomChart sessions={sessions} />
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <DemoLink
-            href="/rom"
-            className="rounded-xl border border-stone-300 bg-white px-3 py-3 text-center text-sm font-medium text-stone-800 active:bg-stone-100"
-          >
-            📐 Measure from a photo
-          </DemoLink>
-          <DemoLink
-            href="/progress"
-            className="rounded-xl border border-stone-300 bg-white px-3 py-3 text-center text-sm font-medium text-stone-800 active:bg-stone-100"
-          >
-            🗺 My recovery journey
-          </DemoLink>
-        </div>
+        <DemoLink
+          href="/progress"
+          className="mt-3 block rounded-xl border border-stone-300 bg-white px-3 py-3 text-center text-sm font-medium text-stone-800 active:bg-stone-100"
+        >
+          🗺 My recovery journey
+        </DemoLink>
       </section>
 
       {last.note && (
@@ -69,11 +61,12 @@ export default function Home() {
       </section>
 
       <DemoLink
-        href="/audit"
+        href="/check"
         className="mt-6 block rounded-2xl bg-teal-700 px-4 py-4 text-center text-base font-semibold text-white shadow active:bg-teal-800"
       >
-        📹 Check my squat form before I train
+        📈 Check my progress
       </DemoLink>
+      <p className="mt-1 text-center text-xs text-stone-500">Squat form · knee bend</p>
       <DemoLink
         href="/checkin"
         className="mt-3 block rounded-2xl border-2 border-teal-700 bg-white px-4 py-4 text-center text-base font-semibold text-teal-800 active:bg-teal-50"

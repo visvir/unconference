@@ -84,7 +84,7 @@ export default function RomPage() {
 
   return (
     <main className="mx-auto w-full max-w-md flex-1 px-4 py-6">
-      <Link href={`/${q}`} className="inline-block py-2 text-sm text-teal-700">← Home</Link>
+      <Link href={`/check${q}`} className="inline-block py-2 text-sm text-teal-700">← Check my progress</Link>
       <h1 className="mt-2 text-2xl font-semibold text-stone-900">Knee bend from a photo</h1>
       <p className="mt-1 text-sm text-stone-600">
         Bend your <b>{leg}</b> knee as far as is comfortable. Take a photo <b>from the side</b>, at knee height, with hip, knee and ankle in frame.

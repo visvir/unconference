@@ -83,7 +83,7 @@ export default function AuditPage() {
 
   return (
     <main className="mx-auto w-full max-w-md flex-1 px-4 py-6">
-      <Link href={`/${q}`} className="inline-block py-2 text-sm text-teal-700">← Home</Link>
+      <Link href={`/check${q}`} className="inline-block py-2 text-sm text-teal-700">← Check my progress</Link>
       <h1 className="mt-2 text-2xl font-semibold text-stone-900">Squat form check</h1>
       <p className="mt-1 text-sm text-stone-600">
         Film one two-leg bodyweight squat <b>from the front</b>, whole body in frame, 3–5 seconds. We watch your <b>{leg}</b> (operated) knee.

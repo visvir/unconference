@@ -255,6 +255,9 @@ code=$(req "$TMP/rom-page.html" /rom)
 status "GET /rom → 200" 200 "$code" "$TMP/rom-page.html"
 check "rom page has its title" "Knee bend from a photo" cat "$TMP/rom-page.html"
 
+# Progress hub: the landing CTA goes here; it must link to both checks.
+check "check-my-progress hub links to squat form and knee bend" "/rom" bash -c "curl -fsS --max-time 10 '$BASE/check' | grep -o 'href=\"/audit[^\"]*\"\|href=\"/rom[^\"]*\"' | sort -u | tr '\n' ' '"
+check "home CTA is Check my progress" "Check my progress" curl -fsS --max-time 10 "$BASE/"
 # WhatsApp share redirect: goes to wa.me with the text; the number never appears in the repo or page.
 loc=$(curl -sS --max-time 10 -o /dev/null -w '%{http_code} %{redirect_url}' "$BASE/api/share/whatsapp?text=hello%20physio" 2>/dev/null || true)
 [[ "$loc" == 302\ https://wa.me/9*text=hello%20physio ]] && ok "whatsapp share → 302 to a wa.me chat with the text" || bad "whatsapp share → 302 to a wa.me chat with the text" "$loc"
