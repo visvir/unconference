@@ -73,6 +73,12 @@ export default function Home() {
       >
         📹 Check my squat form before I train
       </DemoLink>
+      <DemoLink
+        href="/checkin"
+        className="mt-3 block rounded-2xl border-2 border-teal-700 bg-white px-4 py-4 text-center text-base font-semibold text-teal-800 active:bg-teal-50"
+      >
+        📝 Daily check-in → today&apos;s plan
+      </DemoLink>
       <p className="mt-3 text-center text-xs text-stone-500">
         Observations to discuss with your physio or surgeon, not a diagnosis.
       </p>

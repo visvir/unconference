@@ -95,7 +95,10 @@ export default function CheckInPage() {
 
   return (
     <main className="mx-auto w-full max-w-md flex-1 px-4 py-6">
-      <Link href={`/audit${q}`} className="inline-block py-2 text-sm text-teal-700">← Form check</Link>
+      <div className="flex items-center justify-between">
+        <Link href={`/${q}`} className="inline-block py-2 text-sm text-teal-700">← Home</Link>
+        <Link href={`/audit${q}`} className="inline-block py-2 text-sm text-teal-700">📹 Squat form check</Link>
+      </div>
       <h1 className="mt-2 text-2xl font-semibold text-stone-900">How&apos;s the knee today?</h1>
       <p className="mt-1 text-sm text-stone-600">Type or say it the way you&apos;d tell your physio, in English or Hinglish.</p>
 

@@ -133,7 +133,10 @@ export default function RomPage() {
           {added ? (
             <div className="mt-4 rounded-xl bg-emerald-50 px-3 py-3 text-sm text-emerald-800">
               Added. It shows as Today on your chart.
-              <Link href={`/${q}`} className="mt-2 block font-semibold text-teal-700 underline">Back to Home →</Link>
+              <Link href={`/checkin${q}`} className="mt-3 block rounded-xl bg-teal-700 px-3 py-3 text-center font-semibold text-white">
+                Next: daily check-in → today&apos;s plan
+              </Link>
+              <Link href={`/${q}`} className="mt-2 block py-2 text-center font-semibold text-teal-700 underline">Back to Home</Link>
             </div>
           ) : (
             <button
