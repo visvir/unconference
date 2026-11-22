@@ -60,7 +60,7 @@ export async function POST(req: Request) {
       model: "claude-opus-5-5",
       max_tokens: 4000,
       system: auditSystemPrompt(leg),
-      output_config: { effort: "low", format: zodOutputFormat(auditSchema) },
+      output_config: { effort: "medium", format: zodOutputFormat(auditSchema) },
       messages: [{ role: "user", content }],
     });
     const out = msg.parsed_output;
