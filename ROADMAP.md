@@ -141,3 +141,12 @@ The `active-zone-minutes` data type id is my best inference. I haven't confirmed
 1. **Who is the buyer, the clinic or the patient?** It decides who owns the data and how onboarding works.
 2. **Must the raw video be kept for the physio?** It decides storage cost and how serious a breach would be.
 3. **Does the plan stay automatic, or become a physio-approved suggestion?** It decides the regulatory class and the staffing for escalations.
+
+### Tested on 22 Nov 2026 (founder's own Google account, local only)
+
+- Sign-in, consent and the read-only activity permission all worked; the widget showed "Google Health · Live".
+- Google's reply for steps and active minutes was empty (`{}`): the account has no activity data in Google's cloud.
+  The founder's steps live in Health Connect on the phone, which a website cannot read.
+- Next step: either sync a Fitbit or Pixel Watch account (cloud data, works with this code), or build a small
+  Android companion that reads Health Connect and sends daily totals to the backend.
+- The connection stays off on the live site: production has no Google credentials, so it shows labelled sample data.
