@@ -158,6 +158,12 @@ jcheck "explain demo deload: non-empty explanation, cached, no markdown" "$TMP/e
   if (e.length < 20) return "explanation empty/short: " + JSON.stringify(e);
   if (/[*#`]/.test(e)) return "contains markdown";
   return j.cached === true || "not served from cache (demo mode hit the model)";'
+# Demo cache must only answer the scripted example; anything typed by a judge goes live (one cheap Sonnet call).
+EXPLAIN_EN='{"demo":true,"decision":"deload","checkInText":"My knee is a bit swollen after the squats yesterday","reasons":["Load went up yesterday","Swelling is more than yesterday"],"kept":["Heel slides","Quad sets"],"removed":["Single-leg squats (surgical leg)"]}'
+code=$(REQ_TIMEOUT=25 req "$TMP/ex-en.json" /api/explain "$EXPLAIN_EN")
+status "explain demo + typed English → 200" 200 "$code"
+jcheck "explain demo + typed English: NOT the cached Hinglish note" "$TMP/ex-en.json" 'return j.cached !== true || "served the canned cache for non-example text";'
+
 
 # ── 4. Rules engine (deterministic safety logic) ────────────────────────
 echo "rules engine"

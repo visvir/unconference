@@ -27,8 +27,14 @@ export async function POST(req: Request) {
 
   if (b.demo) {
     try {
-      const cached = await readFile(path.join(process.cwd(), "data", "cache", `explain-${b.decision}.json`), "utf8");
-      return Response.json({ ...JSON.parse(cached), cached: true });
+      const cached = JSON.parse(
+        await readFile(path.join(process.cwd(), "data", "cache", `explain-${b.decision}.json`), "utf8"),
+      ) as { checkInText: string; explanation: string };
+      // Only the scripted example is cached; anything else typed in demo mode goes live.
+      const norm = (t: string) => t.trim().toLowerCase().replace(/\s+/g, " ");
+      if (norm(cached.checkInText) === norm(b.checkInText)) {
+        return Response.json({ explanation: cached.explanation, cached: true });
+      }
     } catch {
       /* fall through to live */
     }

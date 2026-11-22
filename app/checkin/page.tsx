@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { isDemo, loadAudit } from "@/lib/flow";
 import { patient } from "@/lib/patient";
 import { checkRedFlags, decidePlan } from "@/lib/rules";
@@ -18,6 +18,8 @@ export default function CheckInPage() {
   const [redFlag, setRedFlag] = useState<RedFlagResult | null>(null);
   const [plan, setPlan] = useState<DailyPlan | null>(null);
   const [explaining, setExplaining] = useState(false);
+  const [needSwelling, setNeedSwelling] = useState(false);
+  const reqId = useRef(0); // ignore late explanations after the user edits the check-in
 
   const yesterday = patient.sessions[patient.sessions.length - 1];
   const q = demo ? "?demo=1" : "";
@@ -27,17 +29,22 @@ export default function CheckInPage() {
   );
 
   async function submit() {
-    if (!text.trim() || !swelling) return;
-    // 1. Red flags first. Deterministic, and they stop the flow.
+    if (!text.trim()) return;
+    // 1. Red flags first. Deterministic, they stop the flow, and they don't wait for the swelling answer.
     const rf = checkRedFlags(text);
     if (rf.hit) {
       setRedFlag(rf);
+      return;
+    }
+    if (!swelling) {
+      setNeedSwelling(true);
       return;
     }
     // 2. Fixed rule decides the plan.
     const p = decidePlan(yesterday, { text, swelling }, audit, patient.todayPlan);
     setPlan(p);
     // 3. The model only explains it, in the patient's language.
+    const id = ++reqId.current;
     setExplaining(true);
     try {
       const res = await fetch("/api/explain", {
@@ -53,11 +60,11 @@ export default function CheckInPage() {
         }),
       });
       const json = res.ok ? await res.json() : {};
-      setPlan({ ...p, explanation: json.explanation || fallbackExplanation(p) });
+      if (id === reqId.current) setPlan({ ...p, explanation: json.explanation || fallbackExplanation(p) });
     } catch {
-      setPlan({ ...p, explanation: fallbackExplanation(p) });
+      if (id === reqId.current) setPlan({ ...p, explanation: fallbackExplanation(p) });
     } finally {
-      setExplaining(false);
+      if (id === reqId.current) setExplaining(false);
     }
   }
 
@@ -96,23 +103,33 @@ export default function CheckInPage() {
 
       <textarea
         value={text}
-        onChange={(e) => setText(e.target.value)}
+        onChange={(e) => {
+          setText(e.target.value);
+          setPlan(null); // editing the check-in re-opens the button
+          reqId.current++;
+        }}
         rows={3}
         placeholder={EXAMPLE}
         className="mt-4 w-full rounded-2xl border border-stone-300 bg-white p-3 text-base text-stone-900 outline-none focus:border-teal-700"
       />
       {!text && (
-        <button onClick={() => setText(EXAMPLE)} className="mt-1 text-xs text-teal-700 underline">
+        <button onClick={() => { setText(EXAMPLE); setPlan(null); }} className="mt-1 text-xs text-teal-700 underline">
           Use example
         </button>
       )}
 
-      <p className="mt-4 text-sm font-medium text-stone-800">Swelling compared to yesterday</p>
+      <p className={`mt-4 text-sm font-medium ${needSwelling ? "text-red-700" : "text-stone-800"}`}>
+        Swelling compared to yesterday{needSwelling ? " (please pick one)" : ""}
+      </p>
       <div className="mt-2 grid grid-cols-3 gap-2">
         {(["less", "same", "more"] as Swelling[]).map((s) => (
           <button
             key={s}
-            onClick={() => setSwelling(s)}
+            onClick={() => {
+              setSwelling(s);
+              setNeedSwelling(false);
+              setPlan(null);
+            }}
             className={`rounded-xl border px-3 py-3 text-sm font-medium capitalize ${
               swelling === s ? "border-teal-700 bg-teal-700 text-white" : "border-stone-300 bg-white text-stone-700"
             }`}
@@ -125,7 +142,7 @@ export default function CheckInPage() {
       {!plan && (
         <button
           onClick={submit}
-          disabled={!text.trim() || !swelling}
+          disabled={!text.trim()}
           className="mt-6 w-full rounded-2xl bg-teal-700 px-4 py-4 font-semibold text-white disabled:opacity-40"
         >
           Get today&apos;s plan

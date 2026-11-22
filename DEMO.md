@@ -10,11 +10,11 @@ camera into a physio watching your form, and turns a daily Hinglish check-in int
 ## One line
 
 For a patient months into unsupervised ACL rehab: film one squat and say how the knee feels, and get a
-form check, a safe plan for today, and a brief to send your surgeon.
+form check and a safe plan for today, explained in their own language.
 
 ## The one flow: happy path (3 min + ~1 min Q&A)
 
-Open **https://unconference-ruby.vercel.app/?demo=1** on the stage laptop (cached responses, no Wi-Fi risk).
+Open **https://unconference-ruby.vercel.app/?demo=1** on the stage laptop (cached model responses: no model-latency risk; the site itself still needs network).
 Backup: the same link without `?demo=1` (live Claude), then the screen recording.
 
 | Time | Screen / action | Say | If it breaks |
@@ -36,7 +36,7 @@ Backup: the same link without `?demo=1` (live Claude), then the screen recording
 | It works | Full loop on the public link, no login; `?demo=1` runs offline from cached responses |
 | Problem and user | Founder is 15 months post-ACL; unsupervised rehab is the norm in India |
 | Product sense and feasibility | AI observes and explains; deterministic rules decide; red flags always escalate |
-| Use of AI | Vision form audit over frames, Hinglish understanding, explanation in the patient's language |
+| Use of AI | Vision form audit over frames, explanation in the patient's own language (Hinglish or English) |
 | Demo | Script above, cached demo mode, backup recording |
 
 ## Eval cases
