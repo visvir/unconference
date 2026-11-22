@@ -1,0 +1,43 @@
+# ACL Co-pilot: cheat sheet
+
+## The 20-second pitch
+I tore my ACL 15 months ago. After surgery in India, most patients rehab alone for 9 to 12 months. ACL Co-pilot watches one squat on your phone, spots form problems, and turns a Hinglish check-in into a safe plan for today.
+
+## Three things to make sure they notice
+1. The AI watches the squat and points to the exact moment. Tap the chip, the video jumps there.
+2. It refuses to guess on a bad video. Wrong angle: it says how to film again.
+3. The AI never decides the plan. Fixed, tested rules and red flags do.
+
+## How it works, in four lines
+1. The browser takes 8 frames. Claude Opus 5.5 returns typed scores, 0 to 3, with a timestamp.
+2. A red-flag check in plain code runs first, before any AI.
+3. A fixed rule decides deload: load went up yesterday, and swelling is more or a score is 2 or higher.
+4. Claude Sonnet 5.5 writes a 2-sentence note in the patient's language.
+
+## What's mocked
+- Patient, history and today's plan are seeded. No login, no database.
+- Samples: two stock clips and my own squat. Their Claude responses are saved from real calls.
+- Surgeon and physio names are placeholders.
+- With ?demo=1, saved responses are replayed. Anything typed or uploaded goes to Claude live.
+
+## Hard questions and honest answers
+**How accurate is it from 8 frames?** Not validated yet. It is an observation to discuss with a physio, not a diagnosis.
+
+**Why not let the AI decide the plan?** It is safety-critical. A fixed rule can be tested and audited. The AI only observes and explains.
+
+**Isn't the demo cached?** Yes, ?demo=1 replays real saved Claude responses so there is no wait. Without it, the same link calls Claude live, about 8 seconds.
+
+**Why only "mild" on your own squat?** That is what Claude really returned. I kept it instead of re-running for a bigger number.
+
+**Red flags are just keywords?** Yes. It is keyword matching in English and Hinglish, and it errs on the side of caution. It even triggers on "no calf pain". Not clinically validated.
+
+**What about privacy?** Only 8 small frames leave the phone, sent to the Anthropic API. The app stores nothing.
+
+**Who pays?** A hypothesis, not tested. Surgeons and hospitals as a post-op follow-up tool, or a low-cost patient subscription.
+
+**What's next?** Pose landmarks for real knee angles, a physio in the loop, a weekly brief to the physio, and more exercises.
+
+## If something breaks on stage
+- Form check fails: tap Clean squat, or use the live link without ?demo=1.
+- Plan note is slow: the fallback sentence appears, and the plan never depends on the model.
+- Link or Wi-Fi dies: play the backup screen recording.
