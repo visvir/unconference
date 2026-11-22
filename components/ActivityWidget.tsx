@@ -1,4 +1,5 @@
 import { activity, activityInsight } from "@/lib/activity";
+import ActivityLive from "@/components/ActivityLive";
 
 const fmt = (n: number) => n.toLocaleString("en-IN");
 
@@ -56,6 +57,7 @@ export default function ActivityWidget() {
         {insight.text}
       </p>
       <p className="note mt-1.5">Your wearable tracks general activity. ACL Co-pilot focuses on the knee.</p>
+      <ActivityLive />
     </section>
   );
 }

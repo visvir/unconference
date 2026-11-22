@@ -44,6 +44,47 @@ Today the activity widget on Home is seeded sample data. A real connection needs
 
 Uncertain: the older Google Fit web API was being retired. Confirm the current API and endpoints in Google's documentation before building.
 
+### Google Health connection (built on branch google-health, off by default)
+
+**API chosen:** the **Google Health API** (v4), Google's successor to the Fitbit Web API and the Google Fit REST API.
+On 22 Nov 2026 the docs said: Google Fit REST takes no new sign-ups since May 2024 and is being deprecated in 2026.
+The legacy Fitbit Web API was switched off on 2 Nov 2026. Health Connect works only on the phone (Android), so a website can't use it.
+Docs: https://developers.google.com/health ·
+https://developers.google.com/health/data-types/steps ·
+https://developers.google.com/health/reference/rest/v4/users.dataTypes.dataPoints/dailyRollUp ·
+https://developers.google.com/health/codelabs/make-your-first-api-call-using-oauth2-playground
+
+**What was built:** `lib/health.ts` handles OAuth, the encrypted cookie, the API adapter and merging the real numbers into the sample data.
+The routes are `app/api/health/{connect,callback,data,status,disconnect}` and the strip is `components/ActivityLive.tsx`, shown inside the Activity card.
+When connected, the strip shows real steps for today and yesterday. The rest of the card stays sample data and says so.
+Tests are in `scripts/test-health.ts`.
+
+**Scope (read-only, one only):** `https://www.googleapis.com/auth/googlehealth.activity_and_fitness.readonly`
+
+**Endpoint:** `POST https://health.googleapis.com/v4/users/me/dataTypes/steps/dataPoints:dailyRollUp`
+with body `{"range":{"start":{"date":{y,m,d},"time":{}},"end":{...}},"windowSizeDays":1}`. It covers yesterday 00:00 to tomorrow 00:00 in the patient's local time, with the end excluded.
+Response: `{"rollupDataPoints":[{"civilStartTime":{"date":{...}},"steps":{"countSum":"9240"}}]}`.
+Active minutes come from a best-effort second call to `.../dataTypes/active-zone-minutes/dataPoints:dailyRollUp`, reading `activeZoneMinutes.sumIn*HeartZone`. If that call fails, active minutes are left out.
+
+**Founder's steps (local demo only):**
+1. In Google Cloud Console, create or pick a project. Under APIs & Services → Library, search for **"Google Health API"** and click Enable.
+2. Under Google Auth Platform → get started, set the consent screen to External, **Testing** mode, and add your own Google account as a **test user**.
+   Under Data Access → Add or remove scopes, add `.../auth/googlehealth.activity_and_fitness.readonly`.
+3. Under Clients → Create client, choose type **Web application** with the authorized redirect URI `http://localhost:3005/api/health/callback`.
+4. Put these lines in your own `.env` and keep them out of git (`.env` is already gitignored):
+   `GOOGLE_HEALTH_CLIENT_ID=...`, `GOOGLE_HEALTH_CLIENT_SECRET=...`, and `GOOGLE_HEALTH_COOKIE_KEY=` followed by a random string of 32 or more characters (for example the output of `openssl rand -base64 32`).
+5. Restart the dev server (`npm run dev -- -p 3005`), open http://localhost:3005 and tap **Connect Google Health** in the Activity card.
+
+**Privacy properties:**
+- With any of the three variables missing, the feature is off: every route except `status` returns 404, there's no button, and the widget is unchanged. Production doesn't have them.
+- The authorization-code flow sends a random `state` that's kept in a 10-minute httpOnly cookie and checked in constant time on the callback. `access_type=online` means there's no refresh token.
+- The access token is kept only in an AES-256-GCM encrypted cookie: httpOnly, SameSite=Lax, Secure except on localhost, valid for 1 h. Nothing is stored on the server.
+- Data is fetched server-side for the requesting browser only and returned with `Cache-Control: no-store`. It is never logged or written to disk. Errors carry no details.
+- Disconnect revokes the token at `oauth2.googleapis.com/revoke` and clears the cookie.
+
+**Unverified:** I never ran the OAuth round trip or a live API call because I had no credentials. The request and response shapes come from the reference docs, not from a real response.
+The `active-zone-minutes` data type id is my best inference. I haven't confirmed whether new projects need Google's review to use the Google Health API scopes outside Testing mode.
+
 ## 3. Security and privacy must-haves
 
 - **DPDP Act 2023:** explicit consent per purpose, purpose limitation, rights to access, correct and erase, breach notification, verifiable parental consent for under-18s (teenage athletes are a real ACL group). The rules are being phased in: confirm dates and duties with a lawyer.
