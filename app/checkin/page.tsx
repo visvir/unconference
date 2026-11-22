@@ -226,9 +226,9 @@ export default function CheckInPage() {
           <h3 className="eyebrow mt-5 text-mute">Today</h3>
           <ul className="mt-1 divide-y divide-paper">
             {plan.exercises.map((e) => (
-              <li key={e.id} className="flex justify-between py-2 text-sm">
-                <span className="text-ink">✓ {e.name}</span>
-                <span className="text-mute">{e.dose}</span>
+              <li key={e.id} className="flex items-start justify-between gap-3 py-2 text-sm">
+                <span className="min-w-0 text-ink">✓ {e.name}</span>
+                <span className="min-w-0 max-w-[55%] text-right text-mute">{e.dose}</span>
               </li>
             ))}
             {plan.removed.map((e) => (

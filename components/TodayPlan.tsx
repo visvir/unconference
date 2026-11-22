@@ -19,12 +19,12 @@ export default function TodayPlan({ planned }: { planned: Exercise[] }) {
       )}
       <ul className="mt-2 divide-y divide-black/5">
         {list.map((e) => (
-          <li key={e.id} className="flex items-center justify-between gap-3 py-3 text-sm">
-            <span className="font-semibold text-ink">
+          <li key={e.id} className="flex items-start justify-between gap-3 py-3 text-sm">
+            <span className="min-w-0 font-semibold text-ink">
               {e.name}
               {e.kind === "loading" && <span className="chip chip-ink ml-2 align-middle">load</span>}
             </span>
-            <span className="shrink-0 text-mute">{e.dose}</span>
+            <span className="min-w-0 max-w-[55%] text-right text-mute">{e.dose}</span>
           </li>
         ))}
       </ul>
