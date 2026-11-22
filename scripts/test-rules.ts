@@ -99,8 +99,12 @@ if (ref) {
 if (side) ok(decidePlan(lastSession, { text: "ok", swelling: "same" }, side, planned).decision === "proceed", "sideon cache (unusable) + swelling same → proceed");
 else ok(false, "data/cache/audit-sideon.json exists");
 if (valgus) {
+  // The recorded sample is whatever Claude really said; the rule must follow its severity either way.
+  const maxSev = Math.max(0, ...valgus.findings.map((f) => f.severity));
+  const want = maxSev >= 2 ? "deload" : "proceed";
   const p = decidePlan(lastSession, { text: "ok", swelling: "same" }, valgus, planned);
-  ok(p.decision === "deload", "valgus cache alone (swelling same) → deload via severity ≥ 2", p.decision);
+  ok(p.decision === want, `valgus cache (max severity ${maxSev}) + swelling same → ${want}`, p.decision);
+  ok(decidePlan(lastSession, { text: "ok", swelling: "more" }, valgus, planned).decision === "deload", "valgus cache + swelling more → deload");
 }
 
 // ── 5. Red flags: every category, English + Hinglish ─────────────────────

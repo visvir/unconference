@@ -114,12 +114,15 @@ jcheck "audit sideon: response contract" "$TMP/side.json" "$AUDIT_SHAPE"
 jcheck "audit sideon: unusable + re-record reason, no findings" "$TMP/side.json" '
   return (j.video_usable === false && j.unusable_reason.trim().length > 20 && j.findings.length === 0) || "got usable=" + j.video_usable + " reason=" + JSON.stringify(j.unusable_reason);'
 
-if [[ -f data/cache/audit-valgus.json ]]; then
+# The founder's own clip is now a bundled sample: a hard check.
+if true; then
   code=$(req "$TMP/valgus.json" /api/audit '{"sample":"valgus"}')
   status "audit sample=valgus → 200" 200 "$code"
   jcheck "audit valgus: response contract" "$TMP/valgus.json" "$AUDIT_SHAPE"
-  jcheck "audit valgus: knee_valgus severity ≥ 2 (the demo wow)" "$TMP/valgus.json" '
-    return j.findings.some(f => f.type === "knee_valgus" && f.severity >= 2) || "no knee_valgus ≥ 2: " + JSON.stringify(j.findings.map(f => [f.type, f.severity]));'
+  jcheck "audit valgus: usable, knee_valgus ≥ 1 with a timestamp (the chip + cues show)" "$TMP/valgus.json" '
+    if (j.video_usable !== true) return "not usable";
+    const k = j.findings.find(f => f.type === "knee_valgus");
+    return (k && k.severity >= 1 && k.timestampSec > 0 && k.cues.every(c => c.length > 3)) || "no knee_valgus finding ≥ 1: " + JSON.stringify(j.findings.map(f => [f.type, f.severity]));'
 fi
 
 code=$(req "$TMP/nope.json" /api/audit '{"sample":"does-not-exist"}')

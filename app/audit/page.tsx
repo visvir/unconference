@@ -111,12 +111,13 @@ export default function AuditPage() {
               <input type="file" accept="video/*" className="hidden" onChange={onFile} />
             </label>
           </div>
-          <div className="grid grid-cols-2 gap-2">
+          <p className="pt-1 text-xs font-medium uppercase tracking-wide text-stone-500">Or try a sample</p>
+          <div className="grid grid-cols-3 gap-2">
             {SAMPLES.map((s) => (
               <button
                 key={s.id}
                 onClick={() => analyse(s.src, s.id)}
-                className="rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm text-stone-700 active:bg-stone-100"
+                className="rounded-xl border border-stone-300 bg-white px-2 py-3 text-sm text-stone-700 active:bg-stone-100"
               >
                 {s.label}
               </button>
