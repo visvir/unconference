@@ -100,3 +100,12 @@ Uncertain: the older Google Fit web API was being retired. Confirm the current A
 1. **Who is the buyer, the clinic or the patient?** It decides who owns the data and how onboarding works.
 2. **Must the raw video be kept for the physio?** It decides storage cost and how serious a breach would be.
 3. **Does the plan stay automatic, or become a physio-approved suggestion?** It decides the regulatory class and the staffing for escalations.
+
+## Google Health connection: built and tried, not shipped
+
+A real, optional sign-in to the Google Health API is built on the branch `google-health` (off unless server
+credentials are set; nothing is stored; read-only activity permission). It was tried once on 22 Nov 2026 with
+the founder's own account, locally: the sign-in and permission worked, but Google returned no activity data,
+because the founder's steps live in Health Connect on the phone and not in Google's cloud. The live site
+therefore keeps the labelled sample data. Next step: a synced Fitbit or Pixel Watch account, or a small
+Android companion that reads Health Connect.

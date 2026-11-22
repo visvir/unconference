@@ -53,6 +53,7 @@ MediaPipe Tasks Vision (pose landmarks, in the browser), the Outfit font, ffmpeg
 
 ## What's mocked
 
+- **Activity widget:** sample data. A real Google Health sign-in exists on the `google-health` branch and was tried once locally (it connected, but the test account had no cloud data), so it is not on the live site.
 - The patient profile, ROM history and today's plan are **seeded** (`data/patient.json`); there's no login and no database.
 - Sample clips: three samples, two stock clips from Pexels (wrong angle, clean squat) and the founder's own knee-caves-in squat recorded at the venue; their Claude responses are saved from real calls.
 - Surgeon and physio names are placeholders.
