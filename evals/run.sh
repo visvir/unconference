@@ -120,8 +120,6 @@ if [[ -f data/cache/audit-valgus.json ]]; then
   jcheck "audit valgus: response contract" "$TMP/valgus.json" "$AUDIT_SHAPE"
   jcheck "audit valgus: knee_valgus severity ≥ 2 (the demo wow)" "$TMP/valgus.json" '
     return j.findings.some(f => f.type === "knee_valgus" && f.severity >= 2) || "no knee_valgus ≥ 2: " + JSON.stringify(j.findings.map(f => [f.type, f.severity]));'
-else
-  note "data/cache/audit-valgus.json missing — the demo's valgus 'wow' (severity 2 @ ~2.1 s) has no cached/offline response"
 fi
 
 code=$(req "$TMP/nope.json" /api/audit '{"sample":"does-not-exist"}')

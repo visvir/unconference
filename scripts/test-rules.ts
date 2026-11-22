@@ -7,7 +7,7 @@ import { checkRedFlags, decidePlan } from "../lib/rules.ts";
 import type { CheckIn, Exercise, Session, Swelling, SquatAudit } from "../lib/types.ts";
 
 let failed = 0;
-let warned = 0;
+const warned = 0;
 const ok = (cond: boolean, name: string, detail = "") => {
   console.log(`${cond ? "✔" : "✘"} ${name}${!cond && detail ? ` — ${detail}` : ""}`);
   if (!cond) failed++;
@@ -101,9 +101,6 @@ else ok(false, "data/cache/audit-sideon.json exists");
 if (valgus) {
   const p = decidePlan(lastSession, { text: "ok", swelling: "same" }, valgus, planned);
   ok(p.decision === "deload", "valgus cache alone (swelling same) → deload via severity ≥ 2", p.decision);
-} else {
-  console.log("⚠ WARN data/cache/audit-valgus.json missing: the demo's valgus 'wow' (severity 2 at ~2.1 s) has no cached response");
-  warned++;
 }
 
 // ── 5. Red flags: every category, English + Hinglish ─────────────────────

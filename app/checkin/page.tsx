@@ -93,7 +93,7 @@ export default function CheckInPage() {
 
   return (
     <main className="mx-auto w-full max-w-md flex-1 px-4 py-6">
-      <Link href={`/audit${q}`} className="text-sm text-teal-700">← Form check</Link>
+      <Link href={`/audit${q}`} className="inline-block py-2 text-sm text-teal-700">← Form check</Link>
       <h1 className="mt-2 text-2xl font-semibold text-stone-900">How&apos;s the knee today?</h1>
       <p className="mt-1 text-sm text-stone-600">Type it the way you&apos;d tell your physio, in English or Hinglish.</p>
 
@@ -115,7 +115,7 @@ export default function CheckInPage() {
         className="mt-4 w-full rounded-2xl border border-stone-300 bg-white p-3 text-base text-stone-900 outline-none focus:border-teal-700"
       />
       {!text && (
-        <button onClick={() => { setText(EXAMPLE); setPlan(null); }} className="mt-1 text-xs text-teal-700 underline">
+        <button onClick={() => { setText(EXAMPLE); setPlan(null); }} className="mt-1 py-2 text-xs text-teal-700 underline">
           Use example
         </button>
       )}

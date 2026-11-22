@@ -23,7 +23,8 @@ deterministic red-flag stop OR deterministic deload rule + Claude Sonnet 5.5 two
 
 ## Open items, in priority order
 
-1. **Valgus clip (only the founder can do this, ~5 min).** Film front-on, phone at hip height, 2–3 m away, whole
+1. **DECIDED 2:25 PM: no valgus clip; demo reshaped around wrong-angle rejection + clean squat (see DEMO.md).**
+   ~~Old plan, superseded: Valgus clip (only the founder can do this, ~5 min).~~ Film front-on, phone at hip height, 2–3 m away, whole
    body in frame. Do a slow single-leg squat on the RIGHT leg, let the knee drift inward, and **hold 2 s at the bottom**.
    Save it as `public/samples/valgus.mp4` (any size; the browser only sends 8 frames). Then:
    - `npx next dev -p 3005` (in the background) → `scripts/cache-audit.sh valgus` → check that `data/cache/audit-valgus.json` has knee_valgus ≥ 2.

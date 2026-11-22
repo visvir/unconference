@@ -82,7 +82,7 @@ export default function AuditPage() {
 
   return (
     <main className="mx-auto w-full max-w-md flex-1 px-4 py-6">
-      <Link href={`/${q}`} className="text-sm text-teal-700">← Home</Link>
+      <Link href={`/${q}`} className="inline-block py-2 text-sm text-teal-700">← Home</Link>
       <h1 className="mt-2 text-2xl font-semibold text-stone-900">Squat form check</h1>
       <p className="mt-1 text-sm text-stone-600">
         Film one single-leg squat on your <b>{leg}</b> leg, <b>from the front</b>, whole body in frame, 3–5 seconds.
@@ -139,6 +139,9 @@ export default function AuditPage() {
         <div className="mt-4 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
           <p className="font-semibold">Let&apos;s re-record</p>
           <p className="mt-1">{audit.unusable_reason ?? "We couldn't see your whole leg clearly."}</p>
+          <Link href={`/checkin${q}`} className="mt-3 block py-3 text-center text-sm text-teal-700 underline">
+            Skip the form check for now →
+          </Link>
         </div>
       )}
 
