@@ -14,6 +14,12 @@ export default function CheckProgress() {
       </p>
 
       <div className="mt-4 space-y-3">
+        <DemoLink href="/live" className={card}>
+          <p className="text-base font-bold text-ink">🎥 Live squat coach <span className="chip chip-volt ml-1 align-middle">Beta</span></p>
+          <p className="mt-1 text-sm text-mute">Squat in front of the camera and get a cue on every rep, as you move.</p>
+          <p className="mt-3"><span className="chip chip-volt">Start →</span></p>
+        </DemoLink>
+
         <DemoLink href="/audit" className={card}>
           <p className="text-base font-bold text-ink">📹 Squat form</p>
           <p className="mt-1 text-sm text-mute">Film one two-leg squat. Checks knee caving in, weight shift and hip tilt.</p>

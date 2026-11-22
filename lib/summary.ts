@@ -1,3 +1,4 @@
+import { activity, activityLine } from "./activity.ts";
 import type { FindingType, PatientData, Phase, SquatAudit } from "./types.ts";
 
 const NAMES: Record<FindingType, string> = {
@@ -39,6 +40,7 @@ export function progressSummary(p: PatientData, audit: SquatAudit | null): strin
     const hits = audit.findings.filter((f) => f.severity > 0).map((f) => `${NAMES[f.type]} ${f.severity}/3`);
     lines.push(`Form check today: ${hits.length ? hits.join(", ") : "no issues seen"}.`);
   }
+  lines.push(activityLine(activity));
   lines.push("Sent from ACL Co-pilot. Observations to discuss, not a diagnosis.");
   return lines.join("\n");
 }

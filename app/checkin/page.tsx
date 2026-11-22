@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useMemo, useRef, useState, useSyncExternalStore } from "react";
-import { isDemo, loadAudit } from "@/lib/flow";
+import { isDemo, loadAudit, loadNotes } from "@/lib/flow";
+import { applyNotes } from "@/lib/notes";
 import QuickPlan from "@/components/QuickPlan";
 import VoiceInput from "@/components/VoiceInput";
 import { patient } from "@/lib/patient";
@@ -15,6 +16,7 @@ const noop = () => () => {};
 export default function CheckInPage() {
   const demo = useSyncExternalStore(noop, isDemo, () => false);
   const audit = useSyncExternalStore(noop, loadAudit, () => null);
+  const notes = useSyncExternalStore(noop, loadNotes, () => null);
   const [text, setText] = useState("");
   const [swelling, setSwelling] = useState<Swelling | null>(null);
   const [redFlag, setRedFlag] = useState<RedFlagResult | null>(null);
@@ -26,6 +28,10 @@ export default function CheckInPage() {
 
   const yesterday = patient.sessions[patient.sessions.length - 1];
   const q = demo ? "?demo=1" : "";
+  const base = useMemo(
+    () => (notes ? applyNotes(patient.todayPlan, notes.instructions) : { exercises: patient.todayPlan, changes: [] }),
+    [notes],
+  );
   const maxSev = useMemo(
     () => (audit?.video_usable ? Math.max(0, ...audit.findings.map((f) => f.severity)) : null),
     [audit],
@@ -44,7 +50,7 @@ export default function CheckInPage() {
       return;
     }
     // 2. Fixed rule decides the plan.
-    const p = decidePlan(yesterday, { text, swelling }, audit, patient.todayPlan);
+    const p = decidePlan(yesterday, { text, swelling }, audit, base.exercises);
     setPlan(p);
     setTimeout(() => planRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
     // 3. The model only explains it, in the patient's language.
@@ -102,6 +108,13 @@ export default function CheckInPage() {
       <p className="eyebrow mt-2 text-mute">DAILY CHECK-IN</p>
       <h1 className="h-display mt-1 text-3xl">How&apos;s the knee today?</h1>
       <p className="mt-2 text-sm text-mute">Type or say it the way you&apos;d tell your physio, in English or Hinglish.</p>
+
+      {notes?.usable && (
+        <p className="mt-3 flex flex-wrap items-center gap-2">
+          <span className="chip chip-ink">Physio&apos;s advice applied ({base.changes.length} changes)</span>
+          <Link href={`/notes${q}`} className="link text-sm">Edit</Link>
+        </p>
+      )}
 
       {maxSev !== null && (
         <p className={`chip mt-3 ${["chip-good", "chip-mild", "chip-warn", "chip-bad"][Math.min(3, Math.max(0, maxSev))]}`}>
@@ -184,6 +197,20 @@ export default function CheckInPage() {
               <li key={r}>{r}</li>
             ))}
           </ul>
+
+          {base.changes.length > 0 && (
+            <>
+              <h3 className="eyebrow mt-5 text-mute">From your physio</h3>
+              <ul className="mt-1 divide-y divide-paper">
+                {base.changes.map((c, n) => (
+                  <li key={n} className="py-2 text-sm">
+                    <span className="text-ink">{c.text}</span>
+                    <p className="italic text-mute">&ldquo;{c.quote}&rdquo;</p>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
 
           <h3 className="eyebrow mt-5 text-mute">Today</h3>
           <ul className="mt-1 divide-y divide-paper">

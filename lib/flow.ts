@@ -1,6 +1,7 @@
 "use client";
 
 import { parseRom } from "./rom";
+import type { PhysioNotes } from "./notes";
 import type { SquatAudit } from "./types";
 
 // Hand-off between screens in one tab. No database, by design.
@@ -68,3 +69,32 @@ export function loadRom(): number | null {
 }
 
 export const ROM_SAMPLE = { id: "sample", label: "Sample photo", src: "/samples/rom-sample.jpg" };
+
+// Physio's note, already read and structured. Applied to the plan on the check-in screen.
+const NOTES_KEY = "acl-flow-notes";
+let currentNotes: PhysioNotes | null | undefined;
+
+export function saveNotes(n: PhysioNotes) {
+  currentNotes = n;
+  try {
+    sessionStorage.setItem(NOTES_KEY, JSON.stringify(n));
+  } catch {}
+}
+
+export function clearNotes() {
+  currentNotes = null;
+  try {
+    sessionStorage.removeItem(NOTES_KEY);
+  } catch {}
+}
+
+export function loadNotes(): PhysioNotes | null {
+  if (currentNotes !== undefined) return currentNotes;
+  try {
+    const s = sessionStorage.getItem(NOTES_KEY);
+    currentNotes = s ? (JSON.parse(s) as PhysioNotes) : null;
+  } catch {
+    currentNotes = null;
+  }
+  return currentNotes;
+}

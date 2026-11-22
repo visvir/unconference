@@ -16,3 +16,4 @@ required; https://www.pexels.com/license/). The third sample (`valgus.mp4`, furt
 - Claude's recorded response (`data/cache/audit-valgus.json`): knee valgus 2/3, weight shift 1/3, hip tilt 0/3.
 
 - rom-sample.jpg: a still frame from sideon.mp4 (same Pexels source and license).
+- physio-note.pdf / .txt: fictional sample note written for the demo.

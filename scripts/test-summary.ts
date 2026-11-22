@@ -23,11 +23,12 @@ const audit = (valgus: number, usable = true): SquatAudit => ({
 console.log("# summary");
 const s = progressSummary(p, null);
 for (const t of ["week 10", "123°", "up 19°", "4 of 6"]) ok(s.includes(t), `contains "${t}"`, s);
+ok(s.includes("sample data"), "contains sample data line", s);
 ok(!s.includes("Form check"), "null audit: no Form check line");
-ok(s.length <= 700, "length <= 700", String(s.length));
+ok(s.length <= 800, "length <= 800", String(s.length));
 const a = progressSummary(p, audit(2));
 ok(a.includes("Form check today: knee caving inward 2/3"), "usable audit lists knee caving inward 2/3", a);
-ok(a.length <= 700, "with audit length <= 700", String(a.length));
+ok(a.length <= 800, "with audit length <= 800", String(a.length));
 ok(progressSummary(p, audit(0)).includes("no issues seen"), "all zero: no issues seen");
 ok(!progressSummary(p, audit(2, false)).includes("Form check"), "unusable audit: no Form check line");
 

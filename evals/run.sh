@@ -258,6 +258,23 @@ check "rom page has its title" "Knee bend from a photo" cat "$TMP/rom-page.html"
 # Progress hub: the landing CTA goes here; it must link to both checks.
 check "check-my-progress hub links to squat form and knee bend" "/rom" bash -c "curl -fsS --max-time 10 '$BASE/check' | grep -o 'href=\"/audit[^\"]*\"\|href=\"/rom[^\"]*\"' | sort -u | tr '\n' ' '"
 check "home CTA is Check my progress" "Check my progress" curl -fsS --max-time 10 "$BASE/"
+# Mentor-feedback features: physio notes, live coach, activity widget.
+code=$(req "$TMP/notes.json" /api/notes '{"sample":"sample"}')
+status "notes sample → 200" 200 "$code" "$TMP/notes.json"
+jcheck "notes sample: cached, usable, instructions with quotes" "$TMP/notes.json" '
+  if (j.cached !== true || j.usable !== true) return "not cached/usable";
+  if (!Array.isArray(j.instructions) || j.instructions.length < 3) return "too few instructions";
+  const bad = j.instructions.find(i => !["add","remove","change","caution"].includes(i.action) || !i.quote);
+  return bad ? "bad instruction " + JSON.stringify(bad) : true;'
+code=$(req "$TMP/notes-bad.json" /api/notes '{"text":"hi"}')
+status "notes too-short text → 400" 400 "$code" "$TMP/notes-bad.json"
+check "notes page has its title" "Physio" curl -fsS --max-time 10 "$BASE/notes"
+code=$(req "$TMP/live.html" "/live?demo=1")
+status "GET /live → 200" 200 "$code" "$TMP/live.html"
+check "live page has its title" "Live squat coach" cat "$TMP/live.html"
+check "hub links to the live coach" "/live" curl -fsS --max-time 10 "$BASE/check"
+check "home shows the activity widget as sample data" "Sample data" curl -fsS --max-time 10 "$BASE/"
+check "home links to physio advice" "Add my physio" curl -fsS --max-time 10 "$BASE/"
 # WhatsApp share redirect: goes to wa.me with the text; the number never appears in the repo or page.
 loc=$(curl -sS --max-time 10 -o /dev/null -w '%{http_code} %{redirect_url}' "$BASE/api/share/whatsapp?text=hello%20physio" 2>/dev/null || true)
 [[ "$loc" == 302\ https://wa.me/9*text=hello%20physio ]] && ok "whatsapp share → 302 to a wa.me chat with the text" || bad "whatsapp share → 302 to a wa.me chat with the text" "$loc"

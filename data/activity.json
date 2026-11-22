@@ -1,0 +1,17 @@
+{
+  "source": "Google Health",
+  "sample": true,
+  "lastSync": "2026-11-22T07:40:00+05:30",
+  "today": { "steps": 3120, "activeMinutes": 18, "restingHr": 64, "sleepHours": 6.4 },
+  "yesterday": { "steps": 9240, "activeMinutes": 52, "restingHr": 66, "sleepHours": 7.1 },
+  "stepsGoal": 6000,
+  "week": [
+    { "day": "Mon", "steps": 5400 },
+    { "day": "Tue", "steps": 4100 },
+    { "day": "Wed", "steps": 6200 },
+    { "day": "Thu", "steps": 3800 },
+    { "day": "Fri", "steps": 5900 },
+    { "day": "Sat", "steps": 9240 },
+    { "day": "Sun", "steps": 3120 }
+  ]
+}

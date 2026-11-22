@@ -1,6 +1,7 @@
 import DemoLink from "@/components/DemoLink";
 import WeekStrip from "@/components/WeekStrip";
 import RomChart from "@/components/RomChart";
+import ActivityWidget from "@/components/ActivityWidget";
 import ShareProgress from "@/components/ShareProgress";
 import { patient } from "@/lib/patient";
 
@@ -70,6 +71,9 @@ export default function Home() {
           ))}
         </ul>
       </section>
+      <DemoLink href="/notes" className="btn btn-quiet mt-3">
+        📋 Add my physio&apos;s advice
+      </DemoLink>
 
       <DemoLink href="/check" className="btn btn-primary mt-6">
         📈 Check my progress
@@ -78,6 +82,7 @@ export default function Home() {
       <DemoLink href="/checkin" className="btn btn-secondary mt-3">
         📝 Daily check-in → today&apos;s plan
       </DemoLink>
+      <ActivityWidget />
       <ShareProgress patient={patient} compact />
       <p className="note mt-3 text-center">
         Observations to discuss with your physio or surgeon, not a diagnosis.
