@@ -42,3 +42,11 @@ export function progressSummary(p: PatientData, audit: SquatAudit | null): strin
   lines.push("Sent from ACL Co-pilot. Observations to discuss, not a diagnosis.");
   return lines.join("\n");
 }
+
+// WhatsApp deep link. On a phone it opens the WhatsApp app, on a laptop WhatsApp Web, with the chat and text ready.
+// A 10-digit number is treated as Indian (+91); with no number WhatsApp shows its contact picker.
+export function waLink(number: string, message: string): string {
+  let d = number.replace(/\D/g, "").replace(/^0+/, "");
+  if (d.length === 10) d = `91${d}`;
+  return `https://wa.me/${d}?text=${encodeURIComponent(message)}`;
+}

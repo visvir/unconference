@@ -1,6 +1,6 @@
 // Tests for the shareable progress summary and phase lookup. Run via `npm test`.
 import patientJson from "../data/patient.json" with { type: "json" };
-import { currentPhase, progressSummary } from "../lib/summary.ts";
+import { waLink, currentPhase, progressSummary } from "../lib/summary.ts";
 import type { PatientData, SquatAudit } from "../lib/types.ts";
 
 let failed = 0;
@@ -34,6 +34,13 @@ console.log("\n# currentPhase");
 ok(currentPhase(p)?.label === "Build strength", "week 10 -> Build strength", String(currentPhase(p)?.label));
 const w1 = { ...p, profile: { ...p.profile, weeksPostOp: 1 } };
 ok(currentPhase(w1)?.label === "Protect and settle", "week 1 -> Protect and settle");
+
+console.log("\n# waLink");
+ok(waLink("9876543210", "hi") === "https://wa.me/919876543210?text=hi", "10-digit Indian number gets 91", waLink("9876543210", "hi"));
+ok(waLink("+91 98765 43210", "hi") === "https://wa.me/919876543210?text=hi", "+91 with spaces is cleaned");
+ok(waLink("09876543210", "hi") === "https://wa.me/919876543210?text=hi", "leading 0 is dropped");
+ok(waLink("", "a b") === "https://wa.me/?text=a%20b", "no number -> contact picker, text encoded");
+ok(waLink("14155550123", "hi") === "https://wa.me/14155550123?text=hi", "other country codes are kept");
 
 if (failed) {
   console.log(`\n${failed} failed`);
