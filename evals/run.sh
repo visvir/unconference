@@ -177,7 +177,9 @@ while IFS= read -r l; do l=${l#⚠ }; note "rules: ${l#WARN }"; done < <(grep '^
 
 # transcribe without audio → 400 (no paid call)
 code=$(curl -sS --max-time 10 -o "$TMP/tr-noaudio.json" -w '%{http_code}' -X POST -H 'content-type: application/json' --data-binary '{}' "$BASE/api/transcribe" 2>/dev/null || true)
-status "transcribe without audio → 400" 400 "$code" "$TMP/tr-noaudio.json"
+# On the public site the owner lock answers first (403); locally, input validation answers (400). Neither makes a paid call.
+if [[ "$BASE" == https://* ]]; then status "transcribe for the public → 403 locked" 403 "$code" "$TMP/tr-noaudio.json"
+else status "transcribe without audio → 400" 400 "$code" "$TMP/tr-noaudio.json"; fi
 
 # ── 5. LIVE model evals (EVAL_LIVE=1; real Claude calls, cost money) ────
 if [[ "${EVAL_LIVE:-0}" == "1" ]]; then
