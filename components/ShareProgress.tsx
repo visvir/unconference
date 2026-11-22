@@ -47,56 +47,56 @@ export default function ShareProgress({ patient, compact = false }: { patient: P
   const gmail = gmailLink(email, subjectText, message);
   // A number typed on this device wins; otherwise the server redirects to a dummy demo number.
   const waHref = wa.replace(/\D/g, "").length >= 10 ? waLink(wa, message) : `/api/share/whatsapp?text=${q}`;
-  const field = "mt-1 block min-h-12 w-full rounded-xl border border-stone-300 bg-white px-3 text-base text-stone-900";
-  const btn = "flex min-h-12 flex-1 items-center justify-center rounded-xl px-4 py-3 text-center text-base font-semibold";
+  const field = "field mt-1";
+  const btn = "btn flex-1";
 
   // Landing-page version: just the two buttons. Contacts and the message preview live on My recovery.
   if (compact) {
     return (
-      <section className="mt-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+      <section className="card-dark mt-4">
         <div className="flex items-baseline justify-between">
-          <h2 className="text-sm font-semibold text-stone-800">Share my progress with my physio</h2>
-          <DemoLink href="/progress" className="py-1 text-xs text-teal-700 underline">Preview</DemoLink>
+          <h2 className="text-sm font-bold text-white">Share my progress with my physio</h2>
+          <DemoLink href="/progress" className="inline-flex min-h-11 items-center py-1 text-xs font-semibold text-volt underline">Preview</DemoLink>
         </div>
         <div className="mt-3 flex flex-col gap-2 min-[360px]:flex-row">
-          <a href={gmail} target="_blank" rel="noopener noreferrer" className={`${btn} bg-teal-700 text-white active:bg-teal-800`}>
+          <a href={gmail} target="_blank" rel="noopener noreferrer" className={`${btn} btn-accent`}>
             ✉️ Email
           </a>
-          <a href={waHref} target="_blank" rel="noopener noreferrer" className={`${btn} bg-emerald-600 text-white active:bg-emerald-700`}>
+          <a href={waHref} target="_blank" rel="noopener noreferrer" className={`${btn} btn-whatsapp`}>
             WhatsApp
           </a>
         </div>
-        <p className="mt-2 text-xs text-stone-500">Opens a ready draft. You press send.</p>
+        <p className="mt-2 text-xs text-white/60">Opens a ready draft. You press send.</p>
       </section>
     );
   }
 
   return (
-    <section id="share" className="mt-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
-      <h2 className="text-sm font-semibold text-stone-800">Share with my physio</h2>
-      <p className="mt-2 whitespace-pre-line rounded-xl bg-stone-50 p-3 text-sm text-stone-700">{message}</p>
-      <label className="mt-3 block text-xs font-medium text-stone-600">
+    <section id="share" className="card mt-4">
+      <h2 className="eyebrow text-mute">Share with my physio</h2>
+      <p className="mt-2 whitespace-pre-line rounded-2xl bg-paper p-4 text-sm text-ink">{message}</p>
+      <label className="mt-3 block text-xs font-semibold text-ink">
         Physio&apos;s email
         <input type="email" inputMode="email" autoComplete="off" value={email} onChange={(e) => write(EMAIL_KEY, e.target.value)} className={field} />
       </label>
-      <label className="mt-3 block text-xs font-medium text-stone-600">
+      <label className="mt-3 block text-xs font-semibold text-ink">
         Physio&apos;s WhatsApp number (optional: leave empty for the dummy demo number)
         <input type="tel" inputMode="tel" autoComplete="off" placeholder="+91…" value={wa} onChange={(e) => write(WA_KEY, e.target.value)} className={field} />
       </label>
-      <p className="mt-1 text-xs text-stone-500">Saved on this device only</p>
+      <p className="note mt-1">Saved on this device only</p>
       <div className="mt-3 flex flex-col gap-2 min-[360px]:flex-row">
-        <a href={gmail} target="_blank" rel="noopener noreferrer" className={`${btn} bg-teal-700 text-white active:bg-teal-800`}>
+        <a href={gmail} target="_blank" rel="noopener noreferrer" className={`${btn} btn-primary`}>
           ✉️ Email my physio
         </a>
-        <a href={waHref} target="_blank" rel="noopener noreferrer" className={`${btn} bg-emerald-600 text-white active:bg-emerald-700`}>
+        <a href={waHref} target="_blank" rel="noopener noreferrer" className={`${btn} btn-whatsapp`}>
           WhatsApp
         </a>
       </div>
-      <p className="mt-2 text-xs text-stone-500">
+      <p className="note mt-2">
         The email button opens a Gmail draft.{" "}
-        <a href={mailto} className="py-2 text-teal-700 underline">Use another mail app</a>
+        <a href={mailto} className="link inline-block py-2">Use another mail app</a>
       </p>
-      <p className="mt-1 text-xs text-stone-500">Nothing is sent by this app. You press send in Gmail or WhatsApp.</p>
+      <p className="note mt-1">Nothing is sent by this app. You press send in Gmail or WhatsApp.</p>
     </section>
   );
 }

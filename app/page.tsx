@@ -11,70 +11,75 @@ export default function Home() {
   const gain = last.flexionDeg - first.flexionDeg;
 
   return (
-    <main className="mx-auto w-full max-w-md flex-1 px-4 py-6">
-      <header className="mb-5">
-        <p className="text-xs font-medium uppercase tracking-wider text-teal-700">ACL co-pilot</p>
-        <h1 className="mt-1 text-2xl font-semibold text-stone-900">Hi {profile.name.split(" ")[0]} 👋</h1>
-        <p className="mt-1 text-sm text-stone-600">
+    <main className="mx-auto w-full max-w-md flex-1 px-4 py-4">
+      <header className="card-dark">
+        <p className="eyebrow text-volt">ACL co-pilot</p>
+        <h1 className="h-display mt-2 text-4xl text-white">Hi {profile.name.split(" ")[0]} 👋</h1>
+        <p className="mt-2 text-sm text-white/70">
           Week {profile.weeksPostOp} after ACL reconstruction · {profile.graft} graft · {profile.surgicalLeg} knee ·
           meniscus repair: {profile.meniscusRepair ? "yes" : "no"}
         </p>
+        <div className="mt-5 grid grid-cols-3 gap-2">
+          <div className="min-w-0 rounded-2xl bg-ink-soft p-3">
+            <p className="eyebrow text-white/60">Week</p>
+            <p className="stat-num mt-2 text-3xl">{profile.weeksPostOp}</p>
+          </div>
+          <div className="min-w-0 rounded-2xl bg-ink-soft p-3">
+            <p className="eyebrow text-white/60">Knee bend</p>
+            <p className="stat-num mt-2 text-3xl">{last.flexionDeg}°</p>
+            <p className="mt-1 text-[11px] font-semibold leading-tight text-volt">+{gain}° since {new Date(first.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", timeZone: "UTC" })}</p>
+          </div>
+          <div className="min-w-0 rounded-2xl bg-ink-soft p-3">
+            <p className="eyebrow text-white/60">Pain</p>
+            <p className="stat-num mt-2 text-3xl">{last.pain}/10</p>
+          </div>
+        </div>
+        <p className="mt-3 text-xs text-white/70">{last.extensionDeg === 0 ? "Fully straight" : `Lacking ${last.extensionDeg}° of full straightening`} · pain yesterday {last.pain}/10</p>
       </header>
 
-      {week && <WeekStrip week={week} />}
+      <div className="mt-4">{week && <WeekStrip week={week} />}</div>
 
-      <section className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+      <section className="card mt-4">
         <div className="flex items-baseline justify-between">
-          <h2 className="text-sm font-semibold text-stone-800">Knee bend (flexion)</h2>
-          <span className="text-xs text-stone-500">last 3 weeks</span>
+          <h2 className="eyebrow text-mute">Knee bend (flexion)</h2>
+          <span className="text-xs text-mute">last 3 weeks</span>
         </div>
-        <div className="mt-1 flex items-baseline gap-2">
-          <span className="text-3xl font-semibold text-stone-900">{last.flexionDeg}°</span>
-          <span className="text-sm font-medium text-teal-700">+{gain}° since {new Date(first.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", timeZone: "UTC" })}</span>
-        </div>
-        <p className="text-xs text-stone-500">{last.extensionDeg === 0 ? "Fully straight" : `Lacking ${last.extensionDeg}° of full straightening`} · pain yesterday {last.pain}/10</p>
         <RomChart sessions={sessions} />
-        <DemoLink
-          href="/progress"
-          className="mt-3 block rounded-xl border border-stone-300 bg-white px-3 py-3 text-center text-sm font-medium text-stone-800 active:bg-stone-100"
-        >
+        <DemoLink href="/progress" className="btn btn-quiet mt-3">
           🗺 My recovery journey
         </DemoLink>
       </section>
 
       {last.note && (
-        <p className="mt-4 rounded-xl bg-amber-50 px-3 py-2 text-sm text-amber-900">
-          <span className="font-medium">Yesterday:</span> {last.note}
+        <p className="mt-4 rounded-2xl bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          <span className="font-semibold">Yesterday:</span> {last.note}
         </p>
       )}
 
-      <section className="mt-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
-        <h2 className="text-sm font-semibold text-stone-800">Today&apos;s planned workout</h2>
-        <ul className="mt-2 divide-y divide-stone-100">
+      <section className="card mt-4">
+        <h2 className="eyebrow text-mute">Today&apos;s planned workout</h2>
+        <ul className="mt-2 divide-y divide-black/5">
           {todayPlan.map((e) => (
-            <li key={e.id} className="flex items-center justify-between py-2 text-sm">
-              <span className="text-stone-800">{e.name}</span>
-              <span className="text-stone-500">{e.dose}</span>
+            <li key={e.id} className="flex items-center justify-between gap-3 py-3 text-sm">
+              <span className="font-semibold text-ink">
+                {e.name}
+                {e.kind === "loading" && <span className="chip chip-ink ml-2 align-middle">load</span>}
+              </span>
+              <span className="shrink-0 text-mute">{e.dose}</span>
             </li>
           ))}
         </ul>
       </section>
 
-      <DemoLink
-        href="/check"
-        className="mt-6 block rounded-2xl bg-teal-700 px-4 py-4 text-center text-base font-semibold text-white shadow active:bg-teal-800"
-      >
+      <DemoLink href="/check" className="btn btn-primary mt-6">
         📈 Check my progress
       </DemoLink>
-      <p className="mt-1 text-center text-xs text-stone-500">Squat form · knee bend</p>
-      <DemoLink
-        href="/checkin"
-        className="mt-3 block rounded-2xl border-2 border-teal-700 bg-white px-4 py-4 text-center text-base font-semibold text-teal-800 active:bg-teal-50"
-      >
+      <p className="note mt-2 text-center">Squat form · knee bend</p>
+      <DemoLink href="/checkin" className="btn btn-secondary mt-3">
         📝 Daily check-in → today&apos;s plan
       </DemoLink>
       <ShareProgress patient={patient} compact />
-      <p className="mt-3 text-center text-xs text-stone-500">
+      <p className="note mt-3 text-center">
         Observations to discuss with your physio or surgeon, not a diagnosis.
       </p>
     </main>

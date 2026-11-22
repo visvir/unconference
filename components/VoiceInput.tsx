@@ -115,11 +115,11 @@ export default function VoiceInput({ onText, disabled }: Props) {
         type="button"
         onClick={phase === "recording" ? stop : start}
         disabled={disabled || phase === "transcribing"}
-        className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-stone-300 bg-white px-3 text-sm font-medium text-teal-700 disabled:opacity-50"
+        className={`btn btn-quiet ${phase === "recording" ? "!text-coral" : ""}`}
       >
         {phase === "recording" ? (
           <>
-            <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-red-600" />
+            <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-coral" />
             <span>■ Stop ({mm})</span>
           </>
         ) : phase === "transcribing" ? (

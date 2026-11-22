@@ -84,33 +84,34 @@ export default function RomPage() {
 
   return (
     <main className="mx-auto w-full max-w-md flex-1 px-4 py-6">
-      <Link href={`/check${q}`} className="inline-block py-2 text-sm text-teal-700">← Check my progress</Link>
-      <h1 className="mt-2 text-2xl font-semibold text-stone-900">Knee bend from a photo</h1>
-      <p className="mt-1 text-sm text-stone-600">
+      <Link href={`/check${q}`} className="backlink">← Check my progress</Link>
+      <p className="eyebrow mt-2 text-mute">RANGE OF MOTION</p>
+      <h1 className="h-display mt-1 text-3xl">Knee bend from a photo</h1>
+      <p className="mt-3 text-base">
         Bend your <b>{leg}</b> knee as far as is comfortable. Take a photo <b>from the side</b>, at knee height, with hip, knee and ankle in frame.
       </p>
 
       {src && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={src} alt="Your photo" className="mt-4 max-h-[45vh] w-full rounded-2xl bg-black object-contain" />
+        <img src={src} alt="Your photo" className="mt-4 max-h-[45vh] w-full rounded-3xl bg-black object-contain" />
       )}
 
       {!busy && (
         <div className="mt-4 space-y-2">
           <div className="grid grid-cols-2 gap-2">
-            <label className="block cursor-pointer rounded-2xl bg-teal-700 px-3 py-4 text-center font-semibold text-white active:bg-teal-800">
+            <label className="btn btn-primary">
               📷 Take photo
               <input type="file" accept="image/*" capture="environment" className="hidden" onChange={onFile} />
             </label>
-            <label className="block cursor-pointer rounded-2xl border-2 border-teal-700 bg-white px-3 py-4 text-center font-semibold text-teal-800 active:bg-teal-50">
+            <label className="btn btn-secondary">
               ⬆️ Upload photo
               <input type="file" accept="image/*" className="hidden" onChange={onFile} />
             </label>
           </div>
-          <p className="pt-1 text-xs font-medium uppercase tracking-wide text-stone-500">Or try a sample</p>
+          <p className="eyebrow pt-2 text-mute">Or try a sample</p>
           <button
             onClick={() => estimate(ROM_SAMPLE.src, ROM_SAMPLE.id)}
-            className="w-full rounded-xl border border-stone-300 bg-white px-2 py-3 text-sm text-stone-700 active:bg-stone-100"
+            className="btn btn-quiet w-full"
           >
             {ROM_SAMPLE.label}
           </button>
@@ -118,37 +119,37 @@ export default function RomPage() {
       )}
 
       {busy && (
-        <div className="mt-6 rounded-2xl border border-stone-200 bg-white p-4 text-center text-sm text-stone-600">
-          <div className="mx-auto mb-3 h-6 w-6 animate-spin rounded-full border-2 border-teal-700 border-t-transparent" />
+        <div className="card-dark mt-6 text-center text-sm text-white">
+          <div className="mx-auto mb-3 h-6 w-6 animate-spin rounded-full border-2 border-volt border-t-transparent" />
           Estimating the angle…
         </div>
       )}
 
-      {phase === "error" && <p className="mt-4 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-800">{error}</p>}
+      {phase === "error" && <p className="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-800">{error}</p>}
 
       <div ref={resultRef} />
       {phase === "done" && rom && !rom.photo_usable && (
-        <div className="mt-4 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+        <div className="mt-4 rounded-3xl bg-amber-50 p-5 text-sm text-amber-900">
           <p className="font-semibold">Let&apos;s retake</p>
           <p className="mt-1">{rom.unusable_reason || "We couldn't see your hip, knee and ankle clearly."}</p>
         </div>
       )}
 
       {phase === "done" && rom?.photo_usable && (
-        <section className="mt-5 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
-          <p className="text-4xl font-semibold text-stone-900">About {rom.flexionDeg}°</p>
-          <p className="mt-1 text-sm text-stone-600">
+        <section className="card mt-5">
+          <p className="stat-num text-6xl">About {rom.flexionDeg}°</p>
+          <p className="mt-3 text-sm text-mute">
             Estimate from one photo, about ±10°. Confidence: {rom.confidence}.
           </p>
-          <p className="mt-2 text-sm text-stone-800">{rom.observation}</p>
-          {last !== undefined && <p className="mt-2 text-sm text-stone-600">Last recorded: {last}°</p>}
+          <p className="mt-3 text-sm">{rom.observation}</p>
+          {last !== undefined && <p className="mt-2 text-sm text-mute">Last recorded: {last}°</p>}
           {added ? (
-            <div className="mt-4 rounded-xl bg-emerald-50 px-3 py-3 text-sm text-emerald-800">
+            <div className="card-volt mt-4 text-sm font-semibold">
               Added. It shows as Today on your chart.
-              <Link href={`/checkin${q}`} className="mt-3 block rounded-xl bg-teal-700 px-3 py-3 text-center font-semibold text-white">
+              <Link href={`/checkin${q}`} className="btn btn-primary mt-3">
                 Next: daily check-in → today&apos;s plan
               </Link>
-              <Link href={`/${q}`} className="mt-2 block py-2 text-center font-semibold text-teal-700 underline">Back to Home</Link>
+              <Link href={`/${q}`} className="link mt-2 block py-2 text-center">Back to Home</Link>
             </div>
           ) : (
             <button
@@ -156,7 +157,7 @@ export default function RomPage() {
                 saveRom(rom.flexionDeg);
                 setAdded(true);
               }}
-              className="mt-4 w-full rounded-2xl bg-teal-700 px-4 py-4 text-center font-semibold text-white active:bg-teal-800"
+              className="btn btn-primary mt-4 w-full"
             >
               Add to my chart
             </button>
@@ -172,13 +173,13 @@ export default function RomPage() {
             setAdded(false);
             setPhase("pick");
           }}
-          className="mt-3 w-full rounded-xl border border-stone-300 bg-white px-2 py-3 text-sm text-stone-700 active:bg-stone-100"
+          className="btn btn-secondary mt-3 w-full"
         >
           Retake
         </button>
       )}
 
-      <p className="mt-4 text-center text-xs text-stone-500">An estimate to discuss with your physio, not a measurement.</p>
+      <p className="note mt-4 text-center">An estimate to discuss with your physio, not a measurement.</p>
     </main>
   );
 }

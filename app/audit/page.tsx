@@ -11,10 +11,10 @@ import type { SquatAudit } from "@/lib/types";
 type Phase = "pick" | "analysing" | "done" | "error";
 
 const SEV = [
-  { label: "Looks good", cls: "bg-emerald-100 text-emerald-800" },
-  { label: "Mild", cls: "bg-lime-100 text-lime-800" },
-  { label: "Moderate", cls: "bg-amber-100 text-amber-900" },
-  { label: "Marked", cls: "bg-red-100 text-red-800" },
+  { label: "Looks good", cls: "chip-good" },
+  { label: "Mild", cls: "chip-mild" },
+  { label: "Moderate", cls: "chip-warn" },
+  { label: "Marked", cls: "chip-bad" },
 ];
 
 export default function AuditPage() {
@@ -83,9 +83,10 @@ export default function AuditPage() {
 
   return (
     <main className="mx-auto w-full max-w-md flex-1 px-4 py-6">
-      <Link href={`/check${q}`} className="inline-block py-2 text-sm text-teal-700">← Check my progress</Link>
-      <h1 className="mt-2 text-2xl font-semibold text-stone-900">Squat form check</h1>
-      <p className="mt-1 text-sm text-stone-600">
+      <Link href={`/check${q}`} className="backlink">← Check my progress</Link>
+      <p className="eyebrow mt-2 text-mute">FORM CHECK</p>
+      <h1 className="h-display mt-1 text-3xl">Squat form check</h1>
+      <p className="mt-3 text-base">
         Film one two-leg bodyweight squat <b>from the front</b>, whole body in frame, 3–5 seconds. We watch your <b>{leg}</b> (operated) knee.
       </p>
 
@@ -96,29 +97,29 @@ export default function AuditPage() {
           controls
           playsInline
           muted
-          className="mt-4 max-h-[45vh] w-full rounded-2xl bg-black object-contain"
+          className="mt-4 max-h-[45vh] w-full rounded-3xl bg-black object-contain"
         />
       )}
 
       {(phase === "pick" || phase === "error" || phase === "done") && (
         <div className="mt-4 space-y-2">
           <div className="grid grid-cols-2 gap-2">
-            <label className="block cursor-pointer rounded-2xl bg-teal-700 px-3 py-4 text-center font-semibold text-white active:bg-teal-800">
+            <label className="btn btn-primary">
               📹 {phase === "done" ? "Record again" : "Record squat"}
               <input type="file" accept="video/*" capture="environment" className="hidden" onChange={onFile} />
             </label>
-            <label className="block cursor-pointer rounded-2xl border-2 border-teal-700 bg-white px-3 py-4 text-center font-semibold text-teal-800 active:bg-teal-50">
+            <label className="btn btn-secondary">
               ⬆️ Upload video
               <input type="file" accept="video/*" className="hidden" onChange={onFile} />
             </label>
           </div>
-          <p className="pt-1 text-xs font-medium uppercase tracking-wide text-stone-500">Or try a sample</p>
+          <p className="eyebrow pt-2 text-mute">Or try a sample</p>
           <div className="grid grid-cols-3 gap-2">
             {SAMPLES.map((s) => (
               <button
                 key={s.id}
                 onClick={() => analyse(s.src, s.id)}
-                className="rounded-xl border border-stone-300 bg-white px-2 py-3 text-sm text-stone-700 active:bg-stone-100"
+                className="btn btn-quiet !px-1"
               >
                 {s.label}
               </button>
@@ -128,20 +129,20 @@ export default function AuditPage() {
       )}
 
       {phase === "analysing" && (
-        <div className="mt-6 rounded-2xl border border-stone-200 bg-white p-4 text-center text-sm text-stone-600">
-          <div className="mx-auto mb-3 h-6 w-6 animate-spin rounded-full border-2 border-teal-700 border-t-transparent" />
+        <div className="card-dark mt-6 text-center text-sm text-white">
+          <div className="mx-auto mb-3 h-6 w-6 animate-spin rounded-full border-2 border-volt border-t-transparent" />
           Watching your squat frame by frame…
         </div>
       )}
 
-      {phase === "error" && <p className="mt-4 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-800">{error}</p>}
+      {phase === "error" && <p className="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-800">{error}</p>}
 
       <div ref={resultRef} />
       {phase === "done" && audit && !audit.video_usable && (
-        <div className="mt-4 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+        <div className="mt-4 rounded-3xl bg-amber-50 p-5 text-sm text-amber-900">
           <p className="font-semibold">Let&apos;s re-record</p>
           <p className="mt-1">{audit.unusable_reason || "We couldn't see your whole leg clearly."}</p>
-          <Link href={`/checkin${q}`} className="mt-3 block py-3 text-center text-sm text-teal-700 underline">
+          <Link href={`/checkin${q}`} className="link mt-3 block py-3 text-center text-sm">
             Skip the form check for now →
           </Link>
         </div>
@@ -149,26 +150,26 @@ export default function AuditPage() {
 
       {phase === "done" && audit?.video_usable && (
         <section className="mt-5">
-          <p className="text-sm text-stone-700">{audit.summary}</p>
-          <ul className="mt-3 space-y-3">
+          <p className="text-base">{audit.summary}</p>
+          <ul className="mt-4 space-y-4">
             {sorted.map((f) => (
-              <li key={f.type} className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+              <li key={f.type} className="card">
                 <div className="flex items-center justify-between gap-2">
-                  <h3 className="text-sm font-semibold text-stone-900">{FINDING_LABELS[f.type]}</h3>
-                  <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${SEV[f.severity].cls}`}>
+                  <h3 className="font-bold">{FINDING_LABELS[f.type]}</h3>
+                  <span className={`chip shrink-0 ${SEV[f.severity].cls}`}>
                     {SEV[f.severity].label} · {f.severity}/3
                   </span>
                 </div>
-                <p className="mt-1 text-sm text-stone-600">{f.observation}</p>
+                <p className="mt-2 text-sm text-mute">{f.observation}</p>
                 {f.severity > 0 && (
                   <>
                     <button
                       onClick={() => seek(f.timestampSec)}
-                      className="mt-2 rounded-full bg-stone-900 px-3 py-1 text-xs font-medium text-white active:bg-stone-700"
+                      className="chip chip-ink mt-3 min-h-10 px-4 active:scale-95"
                     >
                       ▶ See it at {f.timestampSec.toFixed(1)}s
                     </button>
-                    <ul className="mt-2 list-disc space-y-0.5 pl-5 text-sm text-stone-800">
+                    <ul className="mt-3 list-disc space-y-1 pl-5 text-sm marker:text-volt-deep">
                       {f.cues.map((c) => (
                         <li key={c}>{c}</li>
                       ))}
@@ -180,11 +181,11 @@ export default function AuditPage() {
           </ul>
           <Link
             href={`/checkin${q}`}
-            className="mt-5 block rounded-2xl bg-teal-700 px-4 py-4 text-center font-semibold text-white active:bg-teal-800"
+            className="btn btn-primary mt-6 w-full"
           >
             Next: how does the knee feel today? →
           </Link>
-          <p className="mt-3 text-center text-xs text-stone-500">
+          <p className="note mt-4 text-center">
             Observations to discuss with your physio or surgeon. Not a diagnosis. AI movement analysis can be wrong.
           </p>
         </section>

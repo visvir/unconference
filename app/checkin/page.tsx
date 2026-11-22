@@ -76,17 +76,17 @@ export default function CheckInPage() {
     return (
       <main className="fixed inset-0 z-50 flex flex-col justify-center bg-red-700 px-6 text-white">
         <p className="text-5xl">⚠️</p>
-        <h1 className="mt-4 text-3xl font-bold">Contact your surgeon today</h1>
+        <h1 className="h-display mt-4 text-4xl">Contact your surgeon today</h1>
         <p className="mt-4 text-lg">
           Stop exercising today. What you described ({redFlag.matched.join(", ")}) can be a sign of a problem that needs a doctor quickly.
         </p>
-        <p className="mt-4 rounded-xl bg-white/15 p-3 text-base">
+        <p className="mt-4 rounded-3xl bg-white/15 p-4 text-base">
           If you have chest pain or trouble breathing, go to the nearest emergency department or call <b>108</b> now.
         </p>
         <p className="mt-6 text-sm text-red-100">
           {patient.profile.surgeon.name} · {patient.profile.surgeon.hospital}
         </p>
-        <button onClick={() => setRedFlag(null)} className="mt-8 self-start text-sm text-red-100 underline">
+        <button onClick={() => setRedFlag(null)} className="mt-8 inline-flex min-h-11 items-center self-start py-2 text-sm font-semibold text-white underline underline-offset-4">
           I typed this by mistake, go back
         </button>
       </main>
@@ -96,14 +96,15 @@ export default function CheckInPage() {
   return (
     <main className="mx-auto w-full max-w-md flex-1 px-4 py-6">
       <div className="flex items-center justify-between">
-        <Link href={`/${q}`} className="inline-block py-2 text-sm text-teal-700">← Home</Link>
-        <Link href={`/audit${q}`} className="inline-block py-2 text-sm text-teal-700">📹 Squat form check</Link>
+        <Link href={`/${q}`} className="backlink">← Home</Link>
+        <Link href={`/audit${q}`} className="backlink">📹 Squat form check</Link>
       </div>
-      <h1 className="mt-2 text-2xl font-semibold text-stone-900">How&apos;s the knee today?</h1>
-      <p className="mt-1 text-sm text-stone-600">Type or say it the way you&apos;d tell your physio, in English or Hinglish.</p>
+      <p className="eyebrow mt-2 text-mute">DAILY CHECK-IN</p>
+      <h1 className="h-display mt-1 text-3xl">How&apos;s the knee today?</h1>
+      <p className="mt-2 text-sm text-mute">Type or say it the way you&apos;d tell your physio, in English or Hinglish.</p>
 
       {maxSev !== null && (
-        <p className="mt-3 rounded-xl bg-stone-100 px-3 py-2 text-xs text-stone-700">
+        <p className={`chip mt-3 ${["chip-good", "chip-mild", "chip-warn", "chip-bad"][Math.min(3, Math.max(0, maxSev))]}`}>
           {["Form check: looked good","Form check: mild issue seen (1/3)","Form check: moderate issue seen (2/3)","Form check: marked issue seen (3/3)"][Math.min(3, Math.max(0, maxSev))]}
         </p>
       )}
@@ -117,9 +118,9 @@ export default function CheckInPage() {
         }}
         rows={3}
         placeholder={EXAMPLE}
-        className="mt-4 w-full rounded-2xl border border-stone-300 bg-white p-3 text-base text-stone-900 outline-none focus:border-teal-700"
+        className="field mt-4"
       />
-      <div className="mt-2 flex flex-wrap items-center gap-3">
+      <div className="mt-3 flex flex-wrap items-center gap-3">
         <VoiceInput
           onText={(t) => {
             // The transcript lands in the box so the patient can read and fix it before submitting.
@@ -129,13 +130,13 @@ export default function CheckInPage() {
           }}
         />
         {!text && (
-          <button onClick={() => { setText(EXAMPLE); setPlan(null); reqId.current++; }} className="py-2 text-xs text-teal-700 underline">
+          <button onClick={() => { setText(EXAMPLE); setPlan(null); reqId.current++; }} className="link inline-flex min-h-11 items-center px-1 py-3 text-sm">
             Use example
           </button>
         )}
       </div>
 
-      <p className={`mt-4 text-sm font-medium ${needSwelling ? "text-red-700" : "text-stone-800"}`}>
+      <p className={`mt-5 text-sm font-semibold ${needSwelling ? "text-red-700" : "text-ink"}`}>
         Swelling compared to yesterday{needSwelling ? " (please pick one)" : ""}
       </p>
       <div className="mt-2 grid grid-cols-3 gap-2">
@@ -148,9 +149,7 @@ export default function CheckInPage() {
               setPlan(null);
               reqId.current++;
             }}
-            className={`rounded-xl border px-3 py-3 text-sm font-medium capitalize ${
-              swelling === s ? "border-teal-700 bg-teal-700 text-white" : "border-stone-300 bg-white text-stone-700"
-            }`}
+            className={`btn capitalize ${swelling === s ? "btn-primary" : "btn-quiet"}`}
           >
             {s}
           </button>
@@ -161,43 +160,41 @@ export default function CheckInPage() {
         <button
           onClick={submit}
           disabled={!text.trim()}
-          className="mt-6 w-full rounded-2xl bg-teal-700 px-4 py-4 font-semibold text-white disabled:opacity-40"
+          className="btn btn-primary mt-6 w-full"
         >
           Get today&apos;s plan
         </button>
       )}
 
       {plan && (
-        <section ref={planRef} className="mt-6 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+        <section ref={planRef} className="card mt-6">
           <p
-            className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${
-              plan.decision === "deload" ? "bg-amber-100 text-amber-900" : "bg-emerald-100 text-emerald-800"
-            }`}
+            className={`chip ${plan.decision === "deload" ? "chip-warn" : "chip-good"}`}
           >
             {plan.decision === "deload" ? "Lighter day today" : "Go ahead with your plan"}
           </p>
 
-          <div className="mt-3 min-h-[3rem] text-base leading-relaxed text-stone-900">
-            {explaining ? <span className="text-sm text-stone-500">Writing your note…</span> : plan.explanation}
+          <div className="mt-3 min-h-[3rem] text-base leading-relaxed text-ink">
+            {explaining ? <span className="text-sm text-mute">Writing your note…</span> : plan.explanation}
           </div>
 
-          <h3 className="mt-4 text-xs font-semibold uppercase tracking-wide text-stone-500">Why (fixed safety rule)</h3>
-          <ul className="mt-1 list-disc pl-5 text-sm text-stone-700">
+          <h3 className="eyebrow mt-5 text-mute">Why (fixed safety rule)</h3>
+          <ul className="mt-2 list-disc pl-5 text-sm text-ink">
             {plan.reasons.map((r) => (
               <li key={r}>{r}</li>
             ))}
           </ul>
 
-          <h3 className="mt-4 text-xs font-semibold uppercase tracking-wide text-stone-500">Today</h3>
-          <ul className="mt-1 divide-y divide-stone-100">
+          <h3 className="eyebrow mt-5 text-mute">Today</h3>
+          <ul className="mt-1 divide-y divide-paper">
             {plan.exercises.map((e) => (
               <li key={e.id} className="flex justify-between py-2 text-sm">
-                <span className="text-stone-900">✓ {e.name}</span>
-                <span className="text-stone-500">{e.dose}</span>
+                <span className="text-ink">✓ {e.name}</span>
+                <span className="text-mute">{e.dose}</span>
               </li>
             ))}
             {plan.removed.map((e) => (
-              <li key={e.id} className="flex justify-between py-2 text-sm text-stone-400 line-through">
+              <li key={e.id} className="flex justify-between py-2 text-sm text-mute line-through">
                 <span>{e.name}</span>
                 <span>{e.dose}</span>
               </li>
@@ -206,7 +203,7 @@ export default function CheckInPage() {
           <div className="mt-4">
             <QuickPlan key={plan.decision} exercises={plan.exercises} />
           </div>
-          <p className="mt-4 text-xs text-stone-500">
+          <p className="note mt-4">
             Observations to discuss with your physio or surgeon. Not a diagnosis or a prescription.
           </p>
         </section>

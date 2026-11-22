@@ -1,11 +1,59 @@
 @import "tailwindcss";
 
+/* Design tokens: "ink + volt on paper". Bold, athletic, warm. See DESIGN.md. */
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-display);
+
+  --color-ink: #0f1115;
+  --color-ink-soft: #1b1f27;
+  --color-ink-line: #2a2f3a;
+  --color-paper: #f5f3ee;
+  --color-volt: #c8f53c;
+  --color-volt-deep: #9fd100;
+  --color-coral: #ff5a36;
+  --color-mute: #6b6f7a;
 }
 
 body {
-  background: #fafaf9;
-  color: #1c1917;
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+@layer components {
+  /* Type */
+  .h-display { font-family: var(--font-display), var(--font-geist-sans), sans-serif; font-weight: 800; letter-spacing: -0.025em; line-height: 1.05; }
+  .eyebrow { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+  .stat-num { font-family: var(--font-display), var(--font-geist-sans), sans-serif; font-weight: 800; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+
+  /* Surfaces */
+  .card { border-radius: 1.5rem; background: #fff; padding: 1.25rem; box-shadow: 0 1px 2px rgb(15 17 21 / 0.04), 0 10px 28px rgb(15 17 21 / 0.07); }
+  .card-dark { border-radius: 1.5rem; background: var(--color-ink); color: #fff; padding: 1.25rem; }
+  .card-volt { border-radius: 1.5rem; background: var(--color-volt); color: var(--color-ink); padding: 1.25rem; }
+  .card-ghost { border-radius: 1.5rem; border: 1.5px dashed rgb(15 17 21 / 0.18); padding: 1.25rem; }
+
+  /* Buttons: pills, min 48px tall */
+  .btn { display: flex; min-height: 3.25rem; align-items: center; justify-content: center; gap: 0.5rem; border-radius: 9999px; padding: 0.875rem 1.25rem; text-align: center; font-weight: 700; font-size: 1rem; transition: transform 0.12s ease, background-color 0.12s ease; cursor: pointer; }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--color-ink); color: #fff; }
+  .btn-accent { background: var(--color-volt); color: var(--color-ink); }
+  .btn-secondary { background: transparent; color: var(--color-ink); box-shadow: inset 0 0 0 2px var(--color-ink); }
+  .btn-quiet { background: #fff; color: var(--color-ink); box-shadow: inset 0 0 0 1.5px rgb(15 17 21 / 0.14); font-weight: 600; font-size: 0.875rem; min-height: 2.75rem; }
+  .btn-whatsapp { background: #1fa855; color: #fff; }
+  .btn[disabled], .btn:disabled { opacity: 0.4; cursor: default; }
+
+  /* Small parts */
+  .chip { display: inline-flex; align-items: center; border-radius: 9999px; padding: 0.25rem 0.625rem; font-size: 0.75rem; font-weight: 700; }
+  .chip-good { background: #dff7d3; color: #17520a; }
+  .chip-mild { background: #f1f7c4; color: #4a5200; }
+  .chip-warn { background: #ffe7c2; color: #7a3e00; }
+  .chip-bad { background: #ffd9d0; color: #8a1c05; }
+  .chip-ink { background: var(--color-ink); color: #fff; }
+  .chip-volt { background: var(--color-volt); color: var(--color-ink); }
+  .link { color: var(--color-ink); font-weight: 600; text-decoration: underline; text-decoration-color: var(--color-volt-deep); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+  .backlink { display: inline-block; padding: 0.5rem 0; font-size: 0.875rem; font-weight: 600; color: var(--color-mute); }
+  .field { display: block; width: 100%; min-height: 3rem; border-radius: 1rem; background: #fff; padding: 0.75rem 0.875rem; font-size: 1rem; color: var(--color-ink); box-shadow: inset 0 0 0 1.5px rgb(15 17 21 / 0.14); outline: none; }
+  .field:focus { box-shadow: inset 0 0 0 2px var(--color-ink); }
+  .note { font-size: 0.75rem; color: var(--color-mute); }
 }
