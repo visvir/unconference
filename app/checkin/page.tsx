@@ -52,8 +52,10 @@ export default function CheckInPage() {
           demo,
         }),
       });
-      const json = await res.json();
-      setPlan({ ...p, explanation: json.explanation });
+      const json = res.ok ? await res.json() : {};
+      setPlan({ ...p, explanation: json.explanation || fallbackExplanation(p) });
+    } catch {
+      setPlan({ ...p, explanation: fallbackExplanation(p) });
     } finally {
       setExplaining(false);
     }
@@ -173,4 +175,11 @@ export default function CheckInPage() {
       )}
     </main>
   );
+}
+
+// Deterministic fallback if the model is slow or down. The plan itself never depends on the model.
+function fallbackExplanation(p: DailyPlan) {
+  return p.decision === "deload"
+    ? "Today is a lighter day because of the reasons below. Do the exercises listed and mention it to your physio."
+    : "Go ahead with today's plan as written. Mention any new pain or swelling to your physio.";
 }

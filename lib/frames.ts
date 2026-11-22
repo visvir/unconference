@@ -13,9 +13,12 @@ export async function extractFrames(src: string, count = 8, width = 480): Promis
     const ok = () => { clearTimeout(timer); resolve(); };
     video.onloadeddata = ok;
     video.oncanplay = ok;
-    video.onerror = () => { clearTimeout(timer); reject(new Error("Could not read this video. Try an MP4 under 15 MB.")); };
+    video.onerror = () => { clearTimeout(timer); reject(new Error("Could not read this video format. Try recording again, or upload an MP4.")); };
     video.load();
+    // iOS Safari may not buffer a video until it plays; muted inline play is allowed without a gesture.
+    video.play().then(() => video.pause()).catch(() => {});
   });
+  video.pause();
 
   const duration = video.duration;
   if (!isFinite(duration) || duration <= 0) throw new Error("Could not read the video length.");
@@ -30,7 +33,7 @@ export async function extractFrames(src: string, count = 8, width = 480): Promis
   for (let i = 0; i < count; i++) {
     const t = Math.min(duration - 0.05, (duration * (i + 0.5)) / count);
     await new Promise<void>((resolve) => {
-      const timer = setTimeout(resolve, 3000); // a stuck seek shouldn't hang the flow
+      const timer = setTimeout(resolve, 4000); // 4K HEVC seeks are slow on phones; never hang the flow
       video.onseeked = () => { clearTimeout(timer); resolve(); };
       video.currentTime = t;
     });

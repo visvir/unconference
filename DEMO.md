@@ -12,15 +12,22 @@ camera into a physio watching your form, and turns a daily Hinglish check-in int
 For a patient months into unsupervised ACL rehab: film one squat and say how the knee feels, and get a
 form check, a safe plan for today, and a brief to send your surgeon.
 
-## The one flow (3 min + ~1 min Q&A)
+## The one flow: happy path (3 min + ~1 min Q&A)
 
-1. (0:00) Arjun, 10 weeks after a hamstring-graft ACL reconstruction. Home: flexion 104°→123°; yesterday he progressed to single-leg squats.
-2. (0:30) He uploads a 4-second single-leg squat. Claude (vision, ~8 frames) flags knee valgus at 2.1 s, severity 2, with 2 coaching cues. Tap the chip and the video seeks to that moment.
-3. (1:15) Check-in: "Kal squats badhaye the, aaj knee thoda swollen aur stairs pe khichav", swelling: more.
-4. (1:45) The red-flag check passes. The **deterministic rule** fires: load up yesterday + swelling more → deload. Single-leg squats and bike dropped; heel slides, quad sets, SLR, ice + elevation kept. Claude explains why in Hinglish.
-5. (2:15) Surgeon Brief → PNG → WhatsApp.
-6. (2:40) Red flag: "calf mein dard aur sujan hai" → full screen "Contact your surgeon today".
-Mocked: the patient profile and history are seeded; no login; the surgeon's WhatsApp number is a demo number.
+Open **https://unconference-ruby.vercel.app/?demo=1** on the stage laptop (cached responses, no Wi-Fi risk).
+Backup: the same link without `?demo=1` (live Claude), then the screen recording.
+
+| Time | Screen / action | Say | If it breaks |
+|---|---|---|---|
+| 0:00 | (link open on Home) | "15 months ago I tore my ACL. After surgery you see a physio maybe once a week; the other 6 days you're alone, guessing. In India that's most patients, for 9–12 months." | — |
+| 0:25 | **Home**: Arjun, week 10, hamstring graft, flexion 104°→123°, "Yesterday: added single-leg squats" | "Meet Arjun. His knee is improving, and yesterday he progressed to single-leg squats, which is exactly when people overdo it." | Refresh; Home is static, it can't fail. |
+| 0:45 | Tap **Check my squat form** → **Sample: knee caving in** *(needs `valgus.mp4`)* | "Before training, he films one squat. The browser takes 8 frames from the video, and Claude looks at them the way a physio would." | Tap **Sample: good form**: "here it's clean, 0 out of 3, it doesn't invent problems." |
+| 1:05 | Findings: **knee caving in 2/3** → tap **▶ See it at 2.1s** → the video jumps to that moment; 2 coaching cues | "Moderate knee valgus, right here. And two cues he can use on the next rep." | Tap **Sample: wrong angle**: "and if the leg isn't visible, it asks for a re-record instead of guessing." |
+| 1:35 | **Next** → check-in → **Use example** (Hinglish) → swelling **More** → **Get today's plan** | "Then he tells it how the knee feels, the way he'd text his physio, in Hinglish." | Type the text by hand. |
+| 1:55 | **Lighter day today**: Hinglish note, "Why (fixed safety rule)", squats + bike crossed out | "This is the key design choice. **The AI doesn't decide the plan.** A fixed, tested rule does: load went up yesterday plus more swelling means deload. Claude only explains it, in his language." | If the note is slow, the fallback sentence appears; the plan itself never depends on the model. |
+| 2:25 | **← back**, type **"calf mein dard aur sujan hai"** → **Get today's plan** | "And safety always comes first. Calf pain and swelling after knee surgery can mean a clot…" | — |
+| 2:35 | **Red screen**: Contact your surgeon today, 108 | "…so it stops everything and tells him to call his surgeon today. That check runs before any AI." | — |
+| 2:45 | — | "Mocked: the patient and history are seeded and there's no login; demo mode uses saved responses from real Claude calls. Next: knee angles from pose landmarks, and a weekly brief to the physio." | — |
 
 ## Judging checklist
 
@@ -66,4 +73,4 @@ Claude vision returning sensible, timestamped findings from ~8 frames of a phone
 
 ## Cut list
 
-Auth, a database, multi-patient support, MediaPipe knee angles (stretch), voice check-in (Sarvam).
+Auth, a database, multi-patient support, Surgeon Brief PNG/WhatsApp share (cut for scope), MediaPipe knee angles (stretch), voice check-in (Sarvam).

@@ -130,6 +130,19 @@ code=$(req "$TMP/e0.json" /api/audit '{"frames":[]}')
 status "audit 0 frames → 400" 400 "$code"
 code=$(req "$TMP/e1.json" /api/audit '{}')
 status "audit no frames field → 400" 400 "$code"
+# Hardening (architect review): malformed input must be a 400, never a 500 or a paid model call.
+code=$(req "$TMP/h1.json" /api/audit '{"frames":[{"data":"abc"}]}')
+status "audit frame missing t → 400" 400 "$code" "$TMP/h1.json"
+code=$(req "$TMP/h2.json" /api/audit '{"frames":[{"t":"1","data":123}]}')
+status "audit frame wrong types → 400" 400 "$code" "$TMP/h2.json"
+big=$(head -c 1200000 /dev/zero | tr '\0' 'A')
+printf '{"frames":[{"t":1,"data":"%s"}]}' "$big" > "$TMP/h3-body.json"
+code=$(req "$TMP/h3.json" /api/audit "@$TMP/h3-body.json")
+status "audit oversized frame (>1 MB) → 400" 400 "$code" "$TMP/h3.json"
+code=$(req "$TMP/h4.json" /api/explain '{"decision":"maybe"}')
+status "explain invalid body → 400" 400 "$code" "$TMP/h4.json"
+code=$(req "$TMP/h5.json" /api/explain 'not json')
+status "explain non-JSON → 400" 400 "$code" "$TMP/h5.json"
 F13=$(node -e 'console.log(JSON.stringify({frames: Array.from({length: 13}, (_, i) => ({t: i * 0.3, data: "AAAA"})), leg: "right"}))')
 code=$(req "$TMP/e13.json" /api/audit "$F13")
 status "audit 13 frames → 400 (no model call)" 400 "$code"

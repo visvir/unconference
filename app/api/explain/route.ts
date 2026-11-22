@@ -1,20 +1,29 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { z } from "zod";
 
 export const maxDuration = 30;
 
-type Body = {
-  checkInText: string;
-  decision: "deload" | "proceed";
-  reasons: string[];
-  kept: string[];
-  removed: string[];
-  demo?: boolean;
-};
+const bodySchema = z.object({
+  checkInText: z.string().min(1).max(600),
+  decision: z.enum(["deload", "proceed"]),
+  reasons: z.array(z.string().max(200)).max(10),
+  kept: z.array(z.string().max(100)).max(20),
+  removed: z.array(z.string().max(100)).max(20),
+  demo: z.boolean().optional(),
+});
 
 export async function POST(req: Request) {
-  const b = (await req.json()) as Body;
+  let raw: unknown;
+  try {
+    raw = await req.json();
+  } catch {
+    return Response.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+  const parsed = bodySchema.safeParse(raw);
+  if (!parsed.success) return Response.json({ error: "Invalid request" }, { status: 400 });
+  const b = parsed.data;
 
   if (b.demo) {
     try {
@@ -26,10 +35,11 @@ export async function POST(req: Request) {
   }
 
   try {
-    const client = new Anthropic();
+    const client = new Anthropic({ timeout: 20_000, maxRetries: 0 });
     const msg = await client.messages.create({
       model: "claude-sonnet-5-5",
-      max_tokens: 300,
+      max_tokens: 1000,
+      output_config: { effort: "low" },
       system:
         "You are a warm, concise ACL-rehab physiotherapist texting a patient. The plan decision has ALREADY been made by fixed safety rules; never change it, add exercises, or give medical diagnoses. " +
         "Write exactly 2 short sentences explaining today's plan and why, in the SAME language and register the patient used (Hinglish in Roman script if they wrote Hinglish, English if English). " +

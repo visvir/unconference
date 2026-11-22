@@ -49,3 +49,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 app-tmp/
+public/test-heavy/

@@ -40,8 +40,9 @@ export default function AuditPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? "Something went wrong");
+      // A platform timeout returns HTML, not JSON: show a friendly message, never a parse error.
+      const json = await res.json().catch(() => ({ error: "The form check took too long. Please try again." }));
+      if (!res.ok || json.error) throw new Error(json.error ?? "Something went wrong");
       setAudit(json);
       saveAudit(json);
       setPhase("done");
@@ -54,11 +55,13 @@ export default function AuditPage() {
   function onFile(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
     if (!f) return;
-    if (f.size > 15 * 1024 * 1024) {
-      setError("Please use a clip under 15 MB (3–5 seconds is enough).");
+    // The video never leaves the phone; only 8 small frames are sent. The cap just guards memory.
+    if (f.size > 200 * 1024 * 1024) {
+      setError("That video is very large. Please trim it to 3–5 seconds.");
       setPhase("error");
       return;
     }
+    e.target.value = ""; // allow picking the same file again
     analyse(URL.createObjectURL(f));
   }
 
@@ -95,10 +98,16 @@ export default function AuditPage() {
 
       {(phase === "pick" || phase === "error" || phase === "done") && (
         <div className="mt-4 space-y-2">
-          <label className="block cursor-pointer rounded-2xl bg-teal-700 px-4 py-4 text-center font-semibold text-white active:bg-teal-800">
-            📹 {phase === "done" ? "Record again" : "Record or upload squat video"}
-            <input type="file" accept="video/*" capture="environment" className="hidden" onChange={onFile} />
-          </label>
+          <div className="grid grid-cols-2 gap-2">
+            <label className="block cursor-pointer rounded-2xl bg-teal-700 px-3 py-4 text-center font-semibold text-white active:bg-teal-800">
+              📹 {phase === "done" ? "Record again" : "Record squat"}
+              <input type="file" accept="video/*" capture="environment" className="hidden" onChange={onFile} />
+            </label>
+            <label className="block cursor-pointer rounded-2xl border-2 border-teal-700 bg-white px-3 py-4 text-center font-semibold text-teal-800 active:bg-teal-50">
+              ⬆️ Upload video
+              <input type="file" accept="video/*" className="hidden" onChange={onFile} />
+            </label>
+          </div>
           <div className="grid grid-cols-2 gap-2">
             {SAMPLES.map((s) => (
               <button
