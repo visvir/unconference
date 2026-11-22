@@ -42,7 +42,7 @@
     "name": "deload: load up + form severity 2, swelling same",
     "yesterdayLoadIncreased": true,
     "checkIn": {
-      "text": "Knee feels okay, a bit wobbly on the single leg ones",
+      "text": "Knee feels okay, a bit wobbly on the squats",
       "swelling": "same"
     },
     "maxSeverity": 2,
@@ -106,7 +106,7 @@
     "name": "proceed: boundary, load up + severity 1 + swelling same",
     "yesterdayLoadIncreased": true,
     "checkIn": {
-      "text": "Single leg squats theek gaye, thoda tired",
+      "text": "Squats theek gaye, thoda tired",
       "swelling": "same"
     },
     "maxSeverity": 1,

@@ -20,9 +20,9 @@ Backup: the same link without `?demo=1` (live Claude), then the screen recording
 | Time | Screen / action | Say | If it breaks |
 |---|---|---|---|
 | 0:00 | (link open on Home) | "15 months ago I tore my ACL. After surgery you see a physio maybe once a week; the other 6 days you're alone, guessing. In India that's most patients, for 9–12 months." | — |
-| 0:25 | **Home**: Arjun, week 10, hamstring graft, flexion 104°→123°, "Yesterday: added single-leg squats" | "Meet Arjun. His knee is improving, and yesterday he progressed to single-leg squats, which is exactly when people overdo it." | Refresh; Home is static, it can't fail. |
+| 0:25 | **Home**: Arjun, week 10, hamstring graft, flexion 104°→123°, "Yesterday: progressed to bodyweight squats" | "Meet Arjun. His knee is improving, and yesterday he progressed to bodyweight squats, which is exactly when people overdo it." | Refresh; Home is static, it can't fail. |
 | 0:45 | Tap **Check my squat form** → **Sample: wrong angle** → result "Let's re-record" | "Before training he films one squat. The browser pulls 8 frames and Claude looks at them like a physio would. First, a bad video: filmed from the side. It refuses to guess. It tells him exactly how to film it again. In rehab a confident wrong answer is worse than no answer." | Skip to the clean sample. |
-| 1:10 | Tap **Sample: clean two-leg squat** → three 0/3 cards, each with Claude's observation | "Now a clean one. Knee tracking, trunk, pelvis: all fine, and it says why. It doesn't invent problems, and it even notices this is a two-leg squat, not the single-leg one he was asked for." | The live (non-demo) link, ~8 s. |
+| 1:10 | Tap **Sample: clean squat** → three 0/3 cards, each with Claude's observation | "Now a clean one. Knee tracking, trunk, pelvis: all fine, and it says why. It doesn't invent problems, and it says what it saw for each check." | The live (non-demo) link, ~8 s. |
 | 1:35 | **Next** → check-in → **Use example** (Hinglish) → swelling **More** → **Get today's plan** | "Then he tells it how the knee feels, the way he'd text his physio, in Hinglish." | Type the text by hand. |
 | 1:55 | **Lighter day today**: Hinglish note, "Why (fixed safety rule)", squats + bike crossed out | "This is the key design choice. **The AI doesn't decide the plan.** A fixed, tested rule does: load went up yesterday plus more swelling means deload. Claude only explains it, in his language." | If the note is slow, the fallback sentence appears; the plan itself never depends on the model. |
 | 2:25 | edit the text box: clear it and type **"calf mein dard aur sujan hai"** → **Get today's plan** | "And safety always comes first. Calf pain and swelling after knee surgery can mean a clot…" | — |
@@ -53,7 +53,7 @@ Backup: the same link without `?demo=1` (live Claude), then the screen recording
 | 6 | /api/audit unknown sample / 0 frames / 13 frames | 404 / 400 / 400 with `error` | status |
 | 7 | POST /api/explain `demo:true, decision:"deload"` | non-empty cached explanation, no markdown | node JSON |
 | 8 | rules: 14 scenarios in `data/test-cases.json` | proceed / deload / red flag as labelled (incl. unusable video ignored, no-load-up → proceed) | `npm test` |
-| 9 | rules: exact demo check-in, seeded patient | no red flag; deload with or without audit; keeps only heel slides, quad sets, SLR, ice; single-leg squats removed | `npm test` |
+| 9 | rules: exact demo check-in, seeded patient | no red flag; deload with or without audit; keeps only heel slides, quad sets, SLR, ice; bodyweight squats removed | `npm test` |
 | 10 | rules: red flags, every category, English + Hinglish (29 phrases) | hit with the right label; every category in `lib/rules.ts` has a test; negation still escalates | `npm test` |
 | 11 | rules: 14 normal rehab phrases (calf raises, khichav, block/clock…) | no false alarm; known false alarms/misses print ⚠ | `npm test` |
 | 12 | LIVE: frames of reference.mp4 → /api/audit | usable, one finding per type, all ≤ 1 | `EVAL_LIVE=1` |

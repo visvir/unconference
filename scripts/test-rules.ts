@@ -61,7 +61,7 @@ for (const [label, a] of [["no form check", null], ["clean audit", audit(0)], ["
   ok(plan.decision === "deload", `demo check-in + ${label} → deload`, plan.decision);
   if (plan.decision === "deload") deloadInvariants(`demo + ${label}`, plan);
   ok(plan.reasons.some((r) => /swelling/i.test(r)), `demo + ${label}: reason mentions swelling`);
-  ok(plan.removed.some((e) => e.id === "single_leg_squats"), `demo + ${label}: single-leg squats removed`);
+  ok(plan.removed.some((e) => e.id === "squats"), `demo + ${label}: squats removed`);
 }
 // Deload invariants on the severity path too.
 const sevPlan = decidePlan(lastSession, { text: "ok", swelling: "same" }, audit(2), planned);
@@ -166,7 +166,7 @@ const SAFE = [
   "Heel slides aur quad sets ho gaye",
   "Hamstring curls with the red theraband",
   "Stitches removed last week, scar thoda itchy",
-  "Single leg squat mein knee andar ja raha tha",
+  "Squat mein knee andar ja raha tha",
   "Thoda stiff tha subah, ab theek hai",
 ];
 for (const t of SAFE) {

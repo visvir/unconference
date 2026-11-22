@@ -33,5 +33,5 @@ export function isDemo(): boolean {
 
 export const SAMPLES = [
   { id: "sideon", label: "Sample: wrong angle", src: "/samples/sideon.mp4" },
-  { id: "reference", label: "Sample: clean two-leg squat", src: "/samples/reference.mp4" },
+  { id: "reference", label: "Sample: clean squat", src: "/samples/reference.mp4" },
 ];

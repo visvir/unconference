@@ -9,7 +9,7 @@ turns into a safe plan for today.
 ## The flow
 
 1. **Home:** seeded patient (hamstring graft, 10 weeks post-op), knee-flexion trend, today's plan.
-2. **Form check:** upload a 3–5 s single-leg squat. The browser takes 8 frames, each tagged with its timestamp.
+2. **Form check:** upload a 3–5 s two-leg bodyweight squat, filmed from the front. The browser takes 8 frames, each tagged with its timestamp.
    Claude (vision) rates knee valgus, trunk lean and pelvic drop 0–3 with a timestamp and 2 coaching cues.
    Tap a chip to jump the video to that moment. If the leg isn't visible, it asks for a re-record.
 3. **Check-in:** type how the knee feels (English/Hinglish) and pick swelling: less / same / more.

@@ -25,7 +25,7 @@ deterministic red-flag stop OR deterministic deload rule + Claude Sonnet 5.5 two
 
 1. **DECIDED 2:25 PM: no valgus clip; demo reshaped around wrong-angle rejection + clean squat (see DEMO.md).**
    ~~Old plan, superseded: Valgus clip (only the founder can do this, ~5 min).~~ Film front-on, phone at hip height, 2–3 m away, whole
-   body in frame. Do a slow single-leg squat on the RIGHT leg, let the knee drift inward, and **hold 2 s at the bottom**.
+   body in frame. Do a slow two-leg squat, let the RIGHT knee drift inward, let the knee drift inward, and **hold 2 s at the bottom**.
    Save it as `public/samples/valgus.mp4` (any size; the browser only sends 8 frames). Then:
    - `npx next dev -p 3005` (in the background) → `scripts/cache-audit.sh valgus` → check that `data/cache/audit-valgus.json` has knee_valgus ≥ 2.
    - Add `{ id: "valgus", label: "Sample: knee caving in", src: "/samples/valgus.mp4" }` as the FIRST entry of `SAMPLES` in `lib/flow.ts`.
@@ -34,7 +34,7 @@ deterministic red-flag stop OR deterministic deload rule + Claude Sonnet 5.5 two
 2. **Uncommitted at checkpoint → committed in the checkpoint commit, NOT yet reviewed or deployed:**
    `app/audit/page.tsx` caps the video at 45vh and auto-scrolls to the result. Verify is green locally.
    Next step: run it past the code reviewer, then `vercel deploy --prod --yes`.
-3. Optional, if ahead: a proper single-leg "good form" clip (the stock `reference.mp4` is a two-leg banded squat, and Claude says so).
+3. Optional, if ahead: a front-on, no-band "good form" two-leg squat clip (the stock `reference.mp4` is a banded two-leg squat).
 4. **Do NOT do** (architect review): voice/Sarvam, MediaPipe, Surgeon Brief, more red-flag regex, rate limiting, UI redesign, more rule tests.
 
 ## Restart steps (after logging in with the Console account)

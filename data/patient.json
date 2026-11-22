@@ -177,17 +177,17 @@
         "slr",
         "bridges",
         "bike",
-        "single_leg_squats"
+        "squats"
       ],
       "loadIncreased": true,
-      "note": "Added single-leg squats, 3x10 (up from mini squats)"
+      "note": "Progressed from mini squats to bodyweight squats, 3x10"
     }
   ],
   "todayPlan": [
     {
-      "id": "single_leg_squats",
-      "name": "Single-leg squats (surgical leg)",
-      "dose": "3 × 10, to 45°",
+      "id": "squats",
+      "name": "Bodyweight squats (two-leg)",
+      "dose": "3 × 10, to 60°",
       "kind": "loading"
     },
     {

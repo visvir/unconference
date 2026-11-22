@@ -148,7 +148,7 @@ jcheck "audit 400 carries an error message" "$TMP/e13.json" 'return typeof j.err
 
 # ── 3. /api/explain demo mode ───────────────────────────────────────────
 echo "api/explain (demo mode)"
-EXPLAIN_DEMO='{"demo":true,"decision":"deload","checkInText":"Kal squats badhaye the, aaj knee thoda swollen aur stairs pe khichav","reasons":["Load went up yesterday","Swelling is more than yesterday"],"kept":["Heel slides","Quad sets","Straight-leg raises","Ice + elevation"],"removed":["Single-leg squats (surgical leg)","Stationary bike"]}'
+EXPLAIN_DEMO='{"demo":true,"decision":"deload","checkInText":"Kal squats badhaye the, aaj knee thoda swollen aur stairs pe khichav","reasons":["Load went up yesterday","Swelling is more than yesterday"],"kept":["Heel slides","Quad sets","Straight-leg raises","Ice + elevation"],"removed":["Bodyweight squats (two-leg)","Stationary bike"]}'
 code=$(req "$TMP/ex.json" /api/explain "$EXPLAIN_DEMO")
 status "explain demo deload → 200" 200 "$code"
 jcheck "explain demo deload: non-empty explanation, cached, no markdown" "$TMP/ex.json" '
@@ -157,7 +157,7 @@ jcheck "explain demo deload: non-empty explanation, cached, no markdown" "$TMP/e
   if (/[*#`]/.test(e)) return "contains markdown";
   return j.cached === true || "not served from cache (demo mode hit the model)";'
 # Demo cache must only answer the scripted example; anything typed by a judge goes live (one cheap Sonnet call).
-EXPLAIN_EN='{"demo":true,"decision":"deload","checkInText":"My knee is a bit swollen after the squats yesterday","reasons":["Load went up yesterday","Swelling is more than yesterday"],"kept":["Heel slides","Quad sets"],"removed":["Single-leg squats (surgical leg)"]}'
+EXPLAIN_EN='{"demo":true,"decision":"deload","checkInText":"My knee is a bit swollen after the squats yesterday","reasons":["Load went up yesterday","Swelling is more than yesterday"],"kept":["Heel slides","Quad sets"],"removed":["Bodyweight squats (two-leg)"]}'
 code=$(REQ_TIMEOUT=25 req "$TMP/ex-en.json" /api/explain "$EXPLAIN_EN")
 status "explain demo + typed English → 200" 200 "$code"
 jcheck "explain demo + typed English: NOT the cached Hinglish note" "$TMP/ex-en.json" 'return j.cached !== true || "served the canned cache for non-example text";'
@@ -182,9 +182,9 @@ if [[ "${EVAL_LIVE:-0}" == "1" ]]; then
     python3 -I scripts/frames.py public/samples/sideon.mp4 "$TMP/f-side.json" || bad "live: extract frames" "scripts/frames.py failed"
     LIVE_TEXT="Kal squats badhaye the, aaj knee thoda swollen aur stairs pe khichav"
     LIVE_EXPLAIN=$(node -e 'console.log(JSON.stringify({checkInText: process.argv[1], decision: "deload",
-      reasons: ["Load went up yesterday (Added single-leg squats, 3x10 (up from mini squats))", "Swelling is more than yesterday"],
+      reasons: ["Load went up yesterday (Progressed from mini squats to bodyweight squats, 3x10)", "Swelling is more than yesterday"],
       kept: ["Heel slides", "Quad sets", "Straight-leg raises", "Ice + elevation"],
-      removed: ["Single-leg squats (surgical leg)", "Stationary bike"]}))' "$LIVE_TEXT")
+      removed: ["Bodyweight squats (two-leg)", "Stationary bike"]}))' "$LIVE_TEXT")
     # Fire all three in parallel to keep wall time ≈ the slowest call.
     T0=$SECONDS
     REQ_TIMEOUT=70 req "$TMP/l-ref.json"  /api/audit "@$TMP/f-ref.json"  > "$TMP/c-ref"  &
@@ -216,7 +216,7 @@ if [[ "${EVAL_LIVE:-0}" == "1" ]]; then
     jcheck "live explain: removed exercises only mentioned as skipped" "$TMP/l-ex.json" '
       const e = (j.explanation || "");
       const sentences = e.split(/(?<=[.!?।])\s+/);
-      const removed = [/single[- ]leg squat/i, /\bbike\b|cycl/i];
+      const removed = [/\bsquats?\b/i, /\bbike\b|cycl/i];
       const skip = /skip|avoid|nahi|na kar|mat|drop|hata|chhod|rest|band|no |not |remove|rok|pause|lighter|aaram/i;
       for (const s of sentences) for (const r of removed) if (r.test(s) && !skip.test(s)) return "removed exercise recommended? " + s;
       return true;'

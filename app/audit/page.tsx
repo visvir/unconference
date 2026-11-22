@@ -85,7 +85,7 @@ export default function AuditPage() {
       <Link href={`/${q}`} className="inline-block py-2 text-sm text-teal-700">← Home</Link>
       <h1 className="mt-2 text-2xl font-semibold text-stone-900">Squat form check</h1>
       <p className="mt-1 text-sm text-stone-600">
-        Film one single-leg squat on your <b>{leg}</b> leg, <b>from the front</b>, whole body in frame, 3–5 seconds.
+        Film one two-leg bodyweight squat <b>from the front</b>, whole body in frame, 3–5 seconds. We watch your <b>{leg}</b> (operated) knee.
       </p>
 
       {src && (

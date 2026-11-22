@@ -51,7 +51,7 @@ export async function POST(req: Request) {
     content.push({ type: "text", text: `Frame at t=${f.t.toFixed(1)}s` });
     content.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: f.data } });
   }
-  content.push({ type: "text", text: `Review this single-leg squat on the ${leg} leg.` });
+  content.push({ type: "text", text: `Review this two-leg squat. The ${leg} knee is the operated one.` });
 
   try {
     // One attempt, well inside Vercel's 60 s limit, so the UI gets a JSON error instead of a 504.
