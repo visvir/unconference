@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { loadAudit } from "@/lib/flow";
-import { mailtoLink, progressSummary, waLink } from "@/lib/summary";
+import { gmailLink, mailtoLink, progressSummary, waLink } from "@/lib/summary";
 import type { PatientData } from "@/lib/types";
 
 const EMAIL_KEY = "acl-physio-email";
@@ -41,7 +41,9 @@ export default function ShareProgress({ patient }: { patient: PatientData }) {
   const wa = useSyncExternalStore(subscribe, readWa, () => "");
   const message = progressSummary(patient, audit);
   const q = encodeURIComponent(message);
-  const mailto = mailtoLink(email, `ACL rehab update: week ${patient.profile.weeksPostOp}`, message);
+  const subjectText = `ACL rehab update: week ${patient.profile.weeksPostOp}`;
+  const mailto = mailtoLink(email, subjectText, message);
+  const gmail = gmailLink(email, subjectText, message);
   // A number typed on this device wins; otherwise the server redirects to a dummy demo number.
   const waHref = wa.replace(/\D/g, "").length >= 10 ? waLink(wa, message) : `/api/share/whatsapp?text=${q}`;
   const field = "mt-1 block min-h-12 w-full rounded-xl border border-stone-300 bg-white px-3 text-base text-stone-900";
@@ -61,14 +63,18 @@ export default function ShareProgress({ patient }: { patient: PatientData }) {
       </label>
       <p className="mt-1 text-xs text-stone-500">Saved on this device only</p>
       <div className="mt-3 flex flex-col gap-2 min-[360px]:flex-row">
-        <a href={mailto} className={`${btn} bg-teal-700 text-white active:bg-teal-800`}>
+        <a href={gmail} target="_blank" rel="noopener noreferrer" className={`${btn} bg-teal-700 text-white active:bg-teal-800`}>
           ✉️ Email my physio
         </a>
         <a href={waHref} target="_blank" rel="noopener noreferrer" className={`${btn} bg-emerald-600 text-white active:bg-emerald-700`}>
           WhatsApp
         </a>
       </div>
-      <p className="mt-2 text-xs text-stone-500">Nothing is sent by this app. You press send in your own mail app or WhatsApp.</p>
+      <p className="mt-2 text-xs text-stone-500">
+        The email button opens a Gmail draft.{" "}
+        <a href={mailto} className="py-2 text-teal-700 underline">Use another mail app</a>
+      </p>
+      <p className="mt-1 text-xs text-stone-500">Nothing is sent by this app. You press send in Gmail or WhatsApp.</p>
     </section>
   );
 }

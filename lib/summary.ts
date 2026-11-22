@@ -61,3 +61,10 @@ export function mailtoLink(email: string, subject: string, body: string): string
   const addr = email.trim().split(/[?&#\s]/)[0];
   return `mailto:${encodeURIComponent(addr).replace(/%40/g, "@")}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
+
+// Gmail's compose window in the browser, with the draft filled in. Works wherever the user is signed in to Gmail,
+// unlike mailto:, which needs a default mail app configured on the computer.
+export function gmailLink(email: string, subject: string, body: string): string {
+  const addr = email.trim().split(/[?&#\s]/)[0];
+  return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(addr)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}

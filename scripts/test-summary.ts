@@ -1,6 +1,6 @@
 // Tests for the shareable progress summary and phase lookup. Run via `npm test`.
 import patientJson from "../data/patient.json" with { type: "json" };
-import { waLink, mailtoLink, currentPhase, progressSummary } from "../lib/summary.ts";
+import { gmailLink, waLink, mailtoLink, currentPhase, progressSummary } from "../lib/summary.ts";
 import { parseRom } from "../lib/rom.ts";
 import type { PatientData, SquatAudit } from "../lib/types.ts";
 
@@ -55,6 +55,11 @@ ok(mailtoLink("", "S", "B") === "mailto:?subject=S&body=B", "empty address", mai
 console.log("\n# parseRom");
 for (const [raw, want] of [["", null], ["  ", null], [null, null], ["abc", null], ["NaN", null], ["-5", null], ["200", null], ["125", 125], ["0", 0]] as const)
   ok(parseRom(raw) === want, `parseRom(${JSON.stringify(raw)}) -> ${want}`, String(parseRom(raw)));
+
+console.log("\n# gmailLink");
+ok(gmailLink("a@b.com", "Hi there", "x&y\nz") === "https://mail.google.com/mail/?view=cm&fs=1&to=a%40b.com&su=Hi%20there&body=x%26y%0Az", "gmail compose link", gmailLink("a@b.com", "Hi there", "x&y\nz"));
+ok(!gmailLink("a@b.com&bcc=x@y.com", "S", "B").includes("bcc"), "gmail link drops injected params");
+ok(gmailLink("", "S", "B") === "https://mail.google.com/mail/?view=cm&fs=1&to=&su=S&body=B", "gmail link with no address still opens a draft");
 
 if (failed) {
   console.log(`\n${failed} failed`);
