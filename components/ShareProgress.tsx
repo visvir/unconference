@@ -43,7 +43,7 @@ export default function ShareProgress({ patient }: { patient: PatientData }) {
   const q = encodeURIComponent(message);
   const subject = encodeURIComponent(`ACL rehab update: week ${patient.profile.weeksPostOp}`);
   const mailto = `mailto:${email.trim()}?subject=${subject}&body=${q}`;
-  // A number typed on this device wins; otherwise the server redirects to the demo physio (number kept in a server env var).
+  // A number typed on this device wins; otherwise the server redirects to a dummy demo number.
   const waHref = wa.trim() ? waLink(wa, message) : `/api/share/whatsapp?text=${q}`;
   const field = "mt-1 block min-h-12 w-full rounded-xl border border-stone-300 bg-white px-3 text-base text-stone-900";
   const btn = "flex min-h-12 flex-1 items-center justify-center rounded-xl px-4 py-3 text-center text-base font-semibold";
@@ -57,7 +57,7 @@ export default function ShareProgress({ patient }: { patient: PatientData }) {
         <input type="email" inputMode="email" autoComplete="off" value={email} onChange={(e) => write(EMAIL_KEY, e.target.value)} className={field} />
       </label>
       <label className="mt-3 block text-xs font-medium text-stone-600">
-        Physio&apos;s WhatsApp number (optional: leave empty to use the demo physio)
+        Physio&apos;s WhatsApp number (optional: leave empty for the dummy demo number)
         <input type="tel" inputMode="tel" autoComplete="off" placeholder="+91…" value={wa} onChange={(e) => write(WA_KEY, e.target.value)} className={field} />
       </label>
       <p className="mt-1 text-xs text-stone-500">Saved on this device only</p>

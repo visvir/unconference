@@ -257,6 +257,6 @@ check "rom page has its title" "Knee bend from a photo" cat "$TMP/rom-page.html"
 
 # WhatsApp share redirect: goes to wa.me with the text; the number never appears in the repo or page.
 loc=$(curl -sS --max-time 10 -o /dev/null -w '%{http_code} %{redirect_url}' "$BASE/api/share/whatsapp?text=hello%20physio" 2>/dev/null || true)
-[[ "$loc" == 302\ https://wa.me/*text=hello%20physio ]] && ok "whatsapp share → 302 to wa.me with the text" || bad "whatsapp share → 302 to wa.me with the text" "$loc"
+[[ "$loc" == 302\ https://wa.me/9*text=hello%20physio ]] && ok "whatsapp share → 302 to a wa.me chat with the text" || bad "whatsapp share → 302 to a wa.me chat with the text" "$loc"
 echo "evals: $pass passed, $fail failed, $warn warnings ($((SECONDS - START)) s)"
 [[ $fail -eq 0 ]]
