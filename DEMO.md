@@ -29,6 +29,15 @@ Backup: the same link without `?demo=1` (live Claude), then the screen recording
 | 2:30 | **Red screen**: Contact your surgeon today, 108 | "…so it stops everything and tells him to call his surgeon today. That check runs before any AI." | — |
 | 2:40 | — | "Mocked: the patient and history are seeded and there's no login; demo mode replays saved real Claude responses. Next: knee angles from pose landmarks, and a weekly brief to the physio." | — |
 
+## Optional extras (only if ahead of time or asked)
+
+| Extra | Tap path | Say |
+|---|---|---|
+| Voice check-in | Check-in page, tap **🎙 Speak instead**, speak, review the text, submit. Allow the microphone on the stage laptop beforehand. Fallback: type. | "He can just say it, in Hinglish." |
+| 10-minute plan | On the plan card, tap **⏱ Only 10 minutes today?** | "The real reason rehab fails is skipped sessions. I skipped mine when work got busy. A short session beats a skipped one." |
+| My recovery + share | Home, then **My recovery**; scroll to **Share with my physio**; tap **WhatsApp** or **Email my physio**. | "His whole journey, and one tap to send the physio an update from his own WhatsApp or email." |
+| Knee bend from a photo | Open `/rom`, use the sample photo, read "About N°, estimate ±10°". Do not tap "Add to my chart" with the sample photo: it reads 90° because it is a squat frame. | "The same camera can estimate knee bend, so the chart stops being self-reported. It's an estimate, labelled as one." |
+
 ## Judging checklist
 
 | Criterion | How this build earns it |
@@ -36,7 +45,7 @@ Backup: the same link without `?demo=1` (live Claude), then the screen recording
 | It works | Full loop on the public link, no login; `?demo=1` has no model latency (cached model responses; the site still needs a network) |
 | Problem and user | Founder is 15 months post-ACL; unsupervised rehab is the norm in India |
 | Product sense and feasibility | AI observes and explains; deterministic rules decide; red flags always escalate |
-| Use of AI | Vision form audit over frames, explanation in the patient's own language (Hinglish or English) |
+| Use of AI | Vision form audit over frames, explanation in the patient's own language (Hinglish or English), voice transcription (Sarvam), knee-bend estimate from one photo |
 | Demo | Script above, cached demo mode, backup recording |
 
 ## Eval cases
@@ -74,4 +83,4 @@ Claude vision returning sensible, honest findings from ~8 frames of a phone squa
 
 ## Cut list
 
-Auth, a database, multi-patient support, Surgeon Brief PNG/WhatsApp share (cut for scope), MediaPipe knee angles (stretch), voice check-in (Sarvam)..
+Auth, a database, multi-patient support, MediaPipe knee angles (stretch).

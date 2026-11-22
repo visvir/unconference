@@ -1,6 +1,6 @@
 # Handover / restart file
 
-Checkpoint updated 2:50 PM (originally written **2:07 PM IST, Sun 22 Nov**) (66 min into the 240-min build). Read this first after
+Checkpoint updated 3:10 PM (originally written **2:07 PM IST, Sun 22 Nov**) (66 min into the 240-min build). Read this first after
 logging in again. Then read `CLAUDE.md` (rules), `DEMO.md` (spec + stage script) and `README.md`.
 
 ## Where we are (one paragraph)
@@ -9,7 +9,8 @@ logging in again. Then read `CLAUDE.md` (rules), `DEMO.md` (spec + stage script)
 https://unconference-ruby.vercel.app (demo mode: `?demo=1`): home (seeded patient Arjun, ROM chart) → two-leg squat
 video form check (three samples: Wrong angle, Knee caves in, Clean squat) (the browser extracts 8 frames → Claude Opus 5.5 structured output) → Hinglish check-in →
 deterministic red-flag stop OR deterministic deload rule + Claude Sonnet 5.5 two-sentence explanation.
-`scripts/verify.sh` is green against production (lint, build, 38 evals, 115 rule checks, secret scan).
+New and deployed: voice check-in (Sarvam), 10-minute plan, week strip on Home, My recovery page with share to physio (email/WhatsApp), and knee bend from a photo (`/rom`).
+`scripts/verify.sh` is green against production (47 evals; rule and summary tests pass).
 
 ## Timeline (founder's targets)
 
@@ -27,7 +28,9 @@ deterministic red-flag stop OR deterministic deload rule + Claude Sonnet 5.5 two
 2. Founder to tap through the live link on phone + stage laptop (the timestamp chip has not been seen working in a real browser by the agent: Chrome extension disconnected after the Console login).
 3. Optional, if ahead: a front-on, no-band "good form" two-leg squat clip (the stock `reference.mp4` is a banded two-leg squat).
 4. Record backup screen video; rehearse twice with a timer.
-5. **Do NOT do** (architect review): voice/Sarvam, MediaPipe, Surgeon Brief, more red-flag regex, rate limiting, UI redesign, more rule tests.
+5. Founder to check the new features in a real browser (voice with a real voice, share buttons, /rom, 10-minute plan): none were seen in a browser by the agents.
+6. Safety tag: `git tag demo-safe-1` = last build before the new features (commit 126b9b3). To roll back: `git checkout demo-safe-1 -- . && vercel deploy --prod --yes`, then return to main with `git checkout main -- .`.
+7. **Do NOT do** (architect review): MediaPipe, Surgeon Brief, more red-flag regex, rate limiting, UI redesign, more rule tests.
 
 ## Restart steps (after logging in with the Console account)
 

@@ -8,11 +8,19 @@ I tore my ACL 15 months ago. After surgery in India, most patients rehab alone f
 2. It refuses to guess on a bad video. Wrong angle: it says how to film again.
 3. The AI never decides the plan. Fixed, tested rules and red flags do.
 
-## How it works, in four lines
+## How it works, in five lines
 1. The browser takes 8 frames. Claude Opus 5.5 returns typed scores, 0 to 3, with a timestamp.
 2. A red-flag check in plain code runs first, before any AI.
 3. A fixed rule decides deload: load went up yesterday, and swelling is more or a score is 2 or higher.
 4. Claude Sonnet 5.5 writes a 2-sentence note in the patient's language.
+5. Voice: Sarvam speech-to-text, Roman script, so the red-flag check still works.
+
+## New since the first build
+- Voice check-in: speak in Hinglish, Sarvam turns it into text to review.
+- 10-minute plan: a fixed rule for a short session.
+- This week: sessions done and missed, on Home.
+- My recovery: rehab phases, past sessions, and sharing an update with the physio.
+- Knee bend from a photo: Claude estimates flexion from one side-on photo.
 
 ## What's mocked
 - Patient, history and today's plan are seeded. No login, no database.
@@ -36,6 +44,10 @@ I tore my ACL 15 months ago. After surgery in India, most patients rehab alone f
 **Who pays?** A hypothesis, not tested. Surgeons and hospitals as a post-op follow-up tool, or a low-cost patient subscription.
 
 **What's next?** Pose landmarks for real knee angles, a physio in the loop, a weekly brief to the physio, and more exercises.
+
+**Does the app send email or WhatsApp itself?** No. It opens the patient's own mail app or WhatsApp with the message ready. The physio's contact stays on the device.
+
+**How accurate is knee bend from a photo?** It is an estimate from one photo, about ±10°, and not validated. Pose landmarks are the next step.
 
 ## If something breaks on stage
 - Form check fails: tap Clean squat, or use the live link without ?demo=1.
