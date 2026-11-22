@@ -31,6 +31,19 @@ in the browser.
 | Observability | Logs, tracing, alerts | Error tracking plus logs that carry IDs only, no symptom text; alert if a red-flag notice isn't delivered within 15 minutes | Now |
 | Admin and support | Fixes and audits | Internal pages behind SSO; emergency access is logged with a reason | Phase 2 |
 
+### Wearable integration (Google Health)
+
+Today the activity widget on Home is seeded sample data. A real connection needs these steps:
+
+1. A Google Cloud project with the health API enabled.
+2. An OAuth consent screen. Stay in testing mode with named test users until Google reviews the restricted health scopes.
+3. A web OAuth client with the app's callback URLs.
+4. Client id and secret stored as server environment variables, never in the repo.
+5. The patient's data must be in Google's cloud. Health Connect data that lives only on the phone needs an Android app.
+6. Token storage per user in the database, with revocation.
+
+Uncertain: the older Google Fit web API was being retired. Confirm the current API and endpoints in Google's documentation before building.
+
 ## 3. Security and privacy must-haves
 
 - **DPDP Act 2023:** explicit consent per purpose, purpose limitation, rights to access, correct and erase, breach notification, verifiable parental consent for under-18s (teenage athletes are a real ACL group). The rules are being phased in: confirm dates and duties with a lawyer.

@@ -16,15 +16,16 @@ I tore my ACL 15 months ago. After surgery in India, most patients rehab alone f
 5. Voice: Sarvam speech-to-text, Roman script, so the red-flag check still works.
 
 ## New since the first build
-- Voice check-in: speak in Hinglish, Sarvam turns it into text to review.
-- 10-minute plan: a fixed rule for a short session.
-- This week: sessions done and missed, on Home.
-- My recovery: rehab phases, past sessions, and sharing an update with the physio.
+- Voice check-in, 10-minute plan, This week strip, and My recovery with sharing to the physio.
 - Knee bend from a photo: Claude estimates flexion from one side-on photo.
+- Physio's advice: paste a note or upload a PDF; Claude extracts the instructions, code applies them.
+- Live squat coach: in-browser pose tracking gives cues and counts reps. Beta.
+- Activity widget: steps, sleep and heart rate on Home. Sample data.
 
 ## What's mocked
 - Patient, history and today's plan are seeded. No login, no database.
-- Samples: two stock clips and my own squat. Their Claude responses are saved from real calls.
+- Samples: two stock clips, my own squat, and a fictional physio note. Their Claude responses are saved from real calls.
+- Activity data is seeded. Live-coach thresholds are untuned.
 - Surgeon and physio names are placeholders.
 - With ?demo=1, saved responses are replayed. Anything typed or uploaded goes to Claude live.
 
@@ -42,6 +43,12 @@ I tore my ACL 15 months ago. After surgery in India, most patients rehab alone f
 **What about privacy?** Only 8 small frames leave the phone, sent to the Anthropic API. The app stores nothing.
 
 **Who pays?** A hypothesis, not tested. Surgeons and hospitals as a post-op follow-up tool, or a low-cost patient subscription.
+
+**Is the live coach accurate?** It uses pose landmarks in the browser and fixed thresholds that are not yet tuned or validated. It gives prompts, not measurements.
+
+**Is the Google Health data real?** No. It is sample data today, labelled as such. A real connection needs Google sign-in with restricted health permissions, which is on the roadmap.
+
+**What if the physio's note and the app disagree?** The physio's instructions are applied first and shown in their own words. The red-flag check and the deload rule can still lighten the day. The app never adds advice of its own.
 
 **What's next?** Pose landmarks for real knee angles, a physio in the loop, a weekly brief to the physio, and more exercises.
 

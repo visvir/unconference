@@ -33,10 +33,19 @@ Backup: the same link without `?demo=1` (live Claude), then the screen recording
 
 | Extra | Tap path | Say |
 |---|---|---|
+| Live squat coach | Home → **Check my progress** → **Live squat coach** → **Start camera**. Allow the camera on the stage laptop beforehand. Fallback: the recorded check. | "And this is the same idea, live: it tells me to step back, counts my reps and cues my knee as I move. It runs in the browser; nothing is uploaded." |
+| Physio's advice | Home → **Add my physio's advice** → **Sample physio note (PDF)** → **Apply to today's plan** → check-in. | "His physio's notes come in as a PDF or a pasted WhatsApp message. Claude reads them, shows the physio's own words, and code applies them to the plan. The safety rule still wins." |
+| Activity | Scroll down Home. | "General activity comes from the wearable. Today that is sample data; the app's job is the knee." |
 | Voice check-in | Check-in page, tap **🎙 Speak instead**, speak, review the text, submit. Allow the microphone on the stage laptop beforehand. Fallback: type. | "He can just say it, in Hinglish." |
 | 10-minute plan | On the plan card, tap **⏱ Only 10 minutes today?** | "The real reason rehab fails is skipped sessions. I skipped mine when work got busy. A short session beats a skipped one." |
 | My recovery + share | Home, then **My recovery**; scroll to **Share with my physio**; tap **WhatsApp** or **Email my physio**. | "His whole journey, and one tap to send the physio an update from his own WhatsApp or email." |
 | Knee bend from a photo | Home → **Check my progress** → **Knee bend**, use the sample photo, read "About N°, estimate ±10°". Do not tap "Add to my chart" with the sample photo: it reads 90° because it is a squat frame. | "The same camera can estimate knee bend, so the chart stops being self-reported. It's an estimate, labelled as one." |
+
+## What the mentors asked for (3:45 PM) and what we built
+
+- Bring in the physio's advice, not just the app's rules → **Physio's advice**: a PDF or pasted message becomes plan changes, in the physio's own words.
+- Make the form check feel live → **Live squat coach**: in-browser pose tracking with framing cues, form cues and rep counts (beta).
+- Show the wearable's general activity → **Activity widget** on Home (sample data, labelled).
 
 ## Judging checklist
 
@@ -44,13 +53,13 @@ Backup: the same link without `?demo=1` (live Claude), then the screen recording
 |---|---|
 | It works | Full loop on the public link, no login; `?demo=1` has no model latency (cached model responses; the site still needs a network) |
 | Problem and user | Founder is 15 months post-ACL; unsupervised rehab is the norm in India |
-| Product sense and feasibility | AI observes and explains; deterministic rules decide; red flags always escalate |
-| Use of AI | Vision form audit over frames, explanation in the patient's own language (Hinglish or English), voice transcription (Sarvam), knee-bend estimate from one photo |
+| Product sense and feasibility | AI observes and explains; deterministic rules decide; red flags always escalate; the physio is in the loop |
+| Use of AI | Vision form audit over frames, explanation in the patient's own language (Hinglish or English), voice transcription (Sarvam), knee-bend estimate from one photo, reading a physio's PDF or pasted note, live pose tracking in the browser |
 | Demo | Script above, cached demo mode, backup recording |
 
 ## Eval cases
 
-`evals/run.sh` (run by `scripts/verify.sh`; `BASE=` to target localhost; ~6 s). `EVAL_LIVE=1` adds real model calls (~15 s).
+`evals/run.sh` (run by `scripts/verify.sh`; `BASE=` to target localhost; ~6 s, 59 evals). `EVAL_LIVE=1` adds real model calls (~15 s).
 
 | # | Input | Expected | Check |
 |---|---|---|---|
@@ -68,6 +77,10 @@ Backup: the same link without `?demo=1` (live Claude), then the screen recording
 | 12 | LIVE: frames of reference.mp4 → /api/audit | usable, one finding per type, all ≤ 1 | `EVAL_LIVE=1` |
 | 13 | LIVE: frames of sideon.mp4 → /api/audit | `video_usable:false` | `EVAL_LIVE=1` |
 | 14 | LIVE: demo check-in → /api/explain | non-empty, ≤ 3 sentences, Hinglish, removed exercises only named as skipped | `EVAL_LIVE=1` |
+| 15 | POST /api/notes `{"sample":"sample"}`; `{"text":"hi"}` | cached, usable, instructions with quotes; too-short text gives 400 | node JSON / status |
+| 16 | GET /live | 200; "Live squat coach"; `/check` links to `/live` | contains |
+| 17 | GET / | shows the activity widget labelled "Sample data" | contains |
+| 18 | unit tests: `lib/pose.ts` (30), `applyNotes` incl. deload wins | pass | `scripts/run-tests.sh` |
 
 ## Riskiest piece
 
@@ -83,4 +96,4 @@ Claude vision returning sensible, honest findings from ~8 frames of a phone squa
 
 ## Cut list
 
-Auth, a database, multi-patient support, MediaPipe knee angles (stretch).
+Auth, a database, multi-patient support, real Google Health sign-in (needs a Google Cloud OAuth app and review of restricted health scopes).

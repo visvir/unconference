@@ -1,6 +1,6 @@
 # Handover / restart file
 
-Checkpoint updated 3:10 PM (originally written **2:07 PM IST, Sun 22 Nov**) (66 min into the 240-min build). Read this first after
+Updated 4:05 PM (earlier checkpoint 3:10 PM (originally written **2:07 PM IST, Sun 22 Nov**, 66 min into the 240-min build)). Read this first after
 logging in again. Then read `CLAUDE.md` (rules), `DEMO.md` (spec + stage script) and `README.md`.
 
 ## Where we are (one paragraph)
@@ -10,7 +10,15 @@ https://unconference-ruby.vercel.app (demo mode: `?demo=1`): home (seeded patien
 video form check (three samples: Wrong angle, Knee caves in, Clean squat) (the browser extracts 8 frames → Claude Opus 5.5 structured output) → Hinglish check-in →
 deterministic red-flag stop OR deterministic deload rule + Claude Sonnet 5.5 two-sentence explanation.
 New and deployed: voice check-in (Sarvam), 10-minute plan, week strip on Home, My recovery page with share to physio (email/WhatsApp), and knee bend from a photo (`/rom`).
-`scripts/verify.sh` is green against production (47 evals; rule and summary tests pass).
+`scripts/verify.sh` was green against production at the earlier checkpoint (47 evals).
+
+**Since the mentor review (about 3:45 PM), on branch `design-refresh` (commit 32ede3e or later), NOT yet on main or the live site unless a later line says so:**
+- Physio's advice (`/notes`): pasted text or PDF, Claude Sonnet 5.5 extracts instructions, `applyNotes` applies them; deload still wins.
+- Live squat coach (`/live`, beta): in-browser MediaPipe pose, tested cue logic in `lib/pose.ts`.
+- Activity widget on Home: sample data only.
+- Redesign "ink + volt on paper" (`DESIGN.md`) and the Check my progress hub (`/check`).
+- Local result: 59 evals and all unit tests pass.
+- Tags: `demo-safe-4` = live site before the redesign; `checkpoint-redesign` = redesign before the mentor features.
 
 ## Timeline (founder's targets)
 
@@ -23,6 +31,9 @@ New and deployed: voice check-in (Sarvam), 10-minute plan, week strip on Home, M
 | **4:45** | **Submit** at unconference.theproductfolks.com/speedrun/submit (name, GitHub link, demo link). Lock is 5:00. |
 
 ## Open items, in priority order
+
+0. **Founder decision:** ship the `design-refresh` branch to production or not. Code hard stop **4:35 PM**; submit by **4:45 PM**.
+   OneDrive note: a local `next build` can fail with ENOTEMPTY or ETIMEDOUT on a `.next/server 2` conflict folder that OneDrive creates. This is not a code error. Vercel builds are unaffected.
 
 1. **DONE: founder's own clip is the 'Knee caves in' sample (knee valgus 2/3 at 2.3 s).**
 2. Founder to tap through the live link on phone + stage laptop (the timestamp chip has not been seen working in a real browser by the agent: Chrome extension disconnected after the Console login).
