@@ -8,7 +8,7 @@
 set -uo pipefail
 cd "$(dirname "$0")/.."
 [[ -f .hackathon/env ]] && source .hackathon/env
-BASE=${SMOKE_URL:-http://localhost:3000}
+BASE=${SMOKE_URL:-https://unconference-ruby.vercel.app}
 
 pass=0; fail=0
 check() {  # check <name> <expected-substring> <command...>
@@ -20,6 +20,7 @@ check() {  # check <name> <expected-substring> <command...>
 
 # ── Cases (one per row in DEMO.md) ──────────────────────────────────────
 check "home loads"        "Knee bend"    curl -fsS "$BASE/"
+check "rules engine (6 cases)" "all rules tests passed" npm test --silent
 # check "summarise works" "\"summary\""  curl -fsS -X POST "$BASE/api/summarise" -d '{"text":"..."}'
 
 echo "evals: $pass passed, $fail failed"

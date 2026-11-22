@@ -1,48 +1,40 @@
-# unconference
+# ACL Co-pilot
 
-> _Project name: one line saying who it's for and what it does._ Built solo in 4 hours at
-> Product (Un)Conference '26 Builder's Day, Bengaluru, 22 Nov 2026.
+AI post-ACL recovery co-pilot for India. After ACL reconstruction most patients rehab unsupervised for
+9–12 months. Your phone camera watches your squat like a physio would, and a daily Hinglish check-in
+turns into a safe plan for today.
 
-**Demo:** _https://… (public, no login)_
+**Demo:** https://unconference-ruby.vercel.app (offline-safe demo mode: `?demo=1`)
 
-_Screenshot_
+## The flow
+
+1. **Home:** seeded patient (hamstring graft, 10 weeks post-op), knee-flexion trend, today's plan.
+2. **Form check:** upload a 3–5 s single-leg squat. The browser takes 8 frames, each tagged with its timestamp.
+   Claude (vision) rates knee valgus, trunk lean and pelvic drop 0–3 with a timestamp and 2 coaching cues.
+   Tap a chip to jump the video to that moment. If the leg isn't visible, it asks for a re-record.
+3. **Check-in:** type how the knee feels (English/Hinglish) and pick swelling: less / same / more.
+4. **Safety first:** a deterministic red-flag check (calf pain, fever, wound discharge, locking, giving way,
+   chest pain/breathlessness, in English and Hinglish) shows a full-screen "Contact your surgeon today" and stops.
+5. **Plan:** a fixed rule decides: *load increased yesterday AND (swelling more OR any severity ≥ 2) → deload*.
+   Claude only writes a 2-sentence explanation in the patient's own language.
 
 ## How it works
 
-_3–5 lines: what the user does, what the AI does, what checks the AI's output._
-
-## Run it
-
-```bash
-# filled in at kickoff
-```
+- `app/api/audit`: Claude Opus 5.5, image input, structured output (`messages.parse` + Zod schema).
+- `lib/rules.ts`: red flags and the deload rule. Plain TypeScript, tested by `npm test` against `data/test-cases.json`.
+- `app/api/explain`: Claude Sonnet 5.5 writes the explanation. It cannot change the decision.
+- Demo mode (`?demo=1`): sample clips → real responses cached in `data/cache/` (refresh with `scripts/cache-audit.sh <id>`).
 
 ## Tools used
 
-- **AI tools:** Claude Code (Claude Opus 5.5)
-- **Build harness (tooling, no product code):** `CLAUDE.md`, `scripts/verify.sh`,
-  `scripts/clock.sh`, `scripts/lane.sh`, `.claude/` skills, hooks and agents, prepared before the event
-- **Libraries / templates:** _…_
-- **APIs / models:** _…_
+Next.js 16, TypeScript, Tailwind CSS 4, Recharts, Zod, Anthropic SDK (Claude Opus 5.5 + Sonnet 5.5), Vercel,
+ffmpeg (for caching sample frames), Claude Code (pair programming). Sample clips: Pexels (see `public/samples/CREDITS.md`).
 
 ## What's mocked
 
-- _Anything faked, hard-coded or seeded. Add it here as soon as it's faked._
+- The patient profile, ROM history and today's plan are **seeded** (`data/patient.json`); there's no login and no database.
+- Sample videos are **stock footage**, not patients.
+- Surgeon and physio names are placeholders.
+- `?demo=1` serves **cached** model responses (recorded from real calls) so the demo works without a network.
 
----
-
-<details>
-<summary>The harness (how this was built)</summary>
-
-| Path | Purpose |
-|---|---|
-| `CLAUDE.md` | Rules and time box for Claude Code |
-| `DEMO.md` | The demo script, eval cases and judging checklist: the spec |
-| `scripts/verify.sh` | One command: lint, typecheck, test, build, evals, smoke check, secret scan |
-| `scripts/clock.sh` | 4-hour time box; the current phase goes into every prompt |
-| `scripts/lane.sh` | Parallel Claude sessions in git worktrees |
-| `.claude/hooks/stop-verify.sh` | Runs verify when Claude finishes; failures go back to Claude |
-| `.claude/skills/` | `/kickoff`, `/lanes`, `/freeze` |
-| `.claude/agents/demo-critic.md` | Independent reviewer scoring the build on the judging criteria |
-
-</details>
+All output is framed as observations to discuss with a physio or surgeon, not a diagnosis.

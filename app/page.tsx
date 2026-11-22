@@ -1,4 +1,4 @@
-import Link from "next/link";
+import DemoLink from "@/components/DemoLink";
 import RomChart from "@/components/RomChart";
 import { patient } from "@/lib/patient";
 
@@ -50,12 +50,12 @@ export default function Home() {
         </ul>
       </section>
 
-      <Link
+      <DemoLink
         href="/audit"
         className="mt-6 block rounded-2xl bg-teal-700 px-4 py-4 text-center text-base font-semibold text-white shadow active:bg-teal-800"
       >
         📹 Check my squat form before I train
-      </Link>
+      </DemoLink>
       <p className="mt-3 text-center text-xs text-stone-500">
         Observations to discuss with your physio or surgeon, not a diagnosis.
       </p>

@@ -1,0 +1,69 @@
+import Anthropic from "@anthropic-ai/sdk";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
+import { auditSchema, auditSystemPrompt } from "@/lib/audit";
+
+export const maxDuration = 60;
+
+type Frame = { t: number; data: string }; // data = base64 JPEG, no prefix
+
+export async function POST(req: Request) {
+  const body = (await req.json()) as { frames?: Frame[]; leg?: string; sample?: string };
+
+  // Demo mode: a bundled sample video → its cached real response. Zero network.
+  if (body.sample) {
+    const name = body.sample.replace(/[^a-z0-9_-]/gi, "");
+    try {
+      const cached = await readFile(path.join(process.cwd(), "data", "cache", `audit-${name}.json`), "utf8");
+      return Response.json({ ...JSON.parse(cached), cached: true });
+    } catch {
+      if (!body.frames?.length) return Response.json({ error: `No cached audit for ${name}` }, { status: 404 });
+    }
+  }
+
+  const frames = body.frames ?? [];
+  if (frames.length === 0 || frames.length > 12) {
+    return Response.json({ error: "Send 1–12 frames" }, { status: 400 });
+  }
+  const leg = body.leg === "left" ? "left" : "right";
+
+  const content: Anthropic.ContentBlockParam[] = [];
+  for (const f of frames) {
+    content.push({ type: "text", text: `Frame at t=${f.t.toFixed(1)}s` });
+    content.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: f.data } });
+  }
+  content.push({ type: "text", text: `Review this single-leg squat on the ${leg} leg.` });
+
+  try {
+    const client = new Anthropic();
+    const msg = await client.messages.parse({
+      model: "claude-opus-5-5",
+      max_tokens: 4000,
+      system: auditSystemPrompt(leg),
+      output_config: { effort: "low", format: zodOutputFormat(auditSchema) },
+      messages: [{ role: "user", content }],
+    });
+    const out = msg.parsed_output;
+    if (!out) {
+      return Response.json({ error: "The model returned an unexpected format, please try again." }, { status: 502 });
+    }
+    // Deterministic clean-up: clamp severity, keep exactly 2 cues, drop findings on unusable video.
+    const parsed = {
+      data: {
+        ...out,
+        findings: out.video_usable
+          ? out.findings.map((f) => ({
+              ...f,
+              severity: Math.max(0, Math.min(3, Math.round(f.severity))),
+              cues: [f.cues[0] ?? "", f.cues[1] ?? ""],
+            }))
+          : [],
+      },
+    };
+    return Response.json(parsed.data);
+  } catch (e) {
+    console.error("audit failed", e);
+    return Response.json({ error: "Form check is unavailable right now, please try again." }, { status: 502 });
+  }
+}
