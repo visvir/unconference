@@ -1,0 +1,224 @@
+{
+  "profile": {
+    "id": "demo-patient",
+    "name": "Arjun Mehta",
+    "age": 29,
+    "city": "Bengaluru",
+    "language": "Hinglish",
+    "surgicalLeg": "right",
+    "graft": "hamstring",
+    "meniscusRepair": false,
+    "surgeryDate": "2026-09-13",
+    "weeksPostOp": 10,
+    "surgeon": {
+      "name": "Dr. Kavya Rao (demo)",
+      "hospital": "Demo Ortho Hospital",
+      "whatsapp": ""
+    },
+    "physio": {
+      "name": "Rohan (demo physio)"
+    }
+  },
+  "sessions": [
+    {
+      "date": "2026-11-01",
+      "flexionDeg": 104,
+      "extensionDeg": 3,
+      "pain": 3,
+      "swelling": "same",
+      "exercises": [
+        "heel_slides",
+        "quad_sets",
+        "slr"
+      ],
+      "loadIncreased": false
+    },
+    {
+      "date": "2026-11-03",
+      "flexionDeg": 106,
+      "extensionDeg": 3,
+      "pain": 3,
+      "swelling": "less",
+      "exercises": [
+        "heel_slides",
+        "quad_sets",
+        "slr",
+        "bridges"
+      ],
+      "loadIncreased": true
+    },
+    {
+      "date": "2026-11-05",
+      "flexionDeg": 108,
+      "extensionDeg": 2,
+      "pain": 2,
+      "swelling": "same",
+      "exercises": [
+        "heel_slides",
+        "quad_sets",
+        "slr",
+        "bridges"
+      ],
+      "loadIncreased": false
+    },
+    {
+      "date": "2026-11-07",
+      "flexionDeg": 111,
+      "extensionDeg": 2,
+      "pain": 2,
+      "swelling": "less",
+      "exercises": [
+        "heel_slides",
+        "quad_sets",
+        "slr",
+        "bridges",
+        "bike"
+      ],
+      "loadIncreased": true
+    },
+    {
+      "date": "2026-11-09",
+      "flexionDeg": 112,
+      "extensionDeg": 2,
+      "pain": 2,
+      "swelling": "same",
+      "exercises": [
+        "heel_slides",
+        "quad_sets",
+        "slr",
+        "bridges",
+        "bike"
+      ],
+      "loadIncreased": false
+    },
+    {
+      "date": "2026-11-11",
+      "flexionDeg": 115,
+      "extensionDeg": 1,
+      "pain": 2,
+      "swelling": "less",
+      "exercises": [
+        "heel_slides",
+        "quad_sets",
+        "slr",
+        "bridges",
+        "bike"
+      ],
+      "loadIncreased": false
+    },
+    {
+      "date": "2026-11-13",
+      "flexionDeg": 117,
+      "extensionDeg": 1,
+      "pain": 1,
+      "swelling": "same",
+      "exercises": [
+        "quad_sets",
+        "slr",
+        "bridges",
+        "bike",
+        "mini_squats"
+      ],
+      "loadIncreased": true
+    },
+    {
+      "date": "2026-11-15",
+      "flexionDeg": 118,
+      "extensionDeg": 1,
+      "pain": 2,
+      "swelling": "same",
+      "exercises": [
+        "quad_sets",
+        "slr",
+        "bridges",
+        "bike",
+        "mini_squats"
+      ],
+      "loadIncreased": false
+    },
+    {
+      "date": "2026-11-17",
+      "flexionDeg": 121,
+      "extensionDeg": 0,
+      "pain": 1,
+      "swelling": "less",
+      "exercises": [
+        "quad_sets",
+        "slr",
+        "bridges",
+        "bike",
+        "mini_squats"
+      ],
+      "loadIncreased": false
+    },
+    {
+      "date": "2026-11-19",
+      "flexionDeg": 122,
+      "extensionDeg": 0,
+      "pain": 1,
+      "swelling": "same",
+      "exercises": [
+        "quad_sets",
+        "slr",
+        "bridges",
+        "bike",
+        "mini_squats"
+      ],
+      "loadIncreased": false
+    },
+    {
+      "date": "2026-11-21",
+      "flexionDeg": 123,
+      "extensionDeg": 0,
+      "pain": 2,
+      "swelling": "same",
+      "exercises": [
+        "quad_sets",
+        "slr",
+        "bridges",
+        "bike",
+        "single_leg_squats"
+      ],
+      "loadIncreased": true,
+      "note": "Added single-leg squats, 3x10 (up from mini squats)"
+    }
+  ],
+  "todayPlan": [
+    {
+      "id": "single_leg_squats",
+      "name": "Single-leg squats (surgical leg)",
+      "dose": "3 × 10, to 45°",
+      "kind": "loading"
+    },
+    {
+      "id": "heel_slides",
+      "name": "Heel slides",
+      "dose": "2 × 15",
+      "kind": "protective"
+    },
+    {
+      "id": "quad_sets",
+      "name": "Quad sets",
+      "dose": "3 × 10, 5 s hold",
+      "kind": "protective"
+    },
+    {
+      "id": "slr",
+      "name": "Straight-leg raises",
+      "dose": "3 × 12",
+      "kind": "protective"
+    },
+    {
+      "id": "bike",
+      "name": "Stationary bike",
+      "dose": "10 min, easy",
+      "kind": "protective"
+    },
+    {
+      "id": "ice",
+      "name": "Ice + elevation",
+      "dose": "15 min after exercise",
+      "kind": "recovery"
+    }
+  ]
+}

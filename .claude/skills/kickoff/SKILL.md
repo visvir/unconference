@@ -30,9 +30,10 @@ Two parts, because the rules allow **ideas before 1:00 PM but not code**.
 1. `scripts/clock.sh start 240` if `⏱` says it isn't running.
 2. Scaffold. Fill in the `Stack` line in `CLAUDE.md` (run, deploy, demo link).
 3. **Riskiest piece first**, along the thinnest end-to-end path.
-4. **Deploy now**, even if it's ugly. Put the URL in `SMOKE_URL` in `.hackathon/env` (ask the
-   user to add API keys there themselves; never echo secrets). Use the host's env-var settings
-   for production keys and never commit them.
+4. **Deploy now**, even if it's ugly: `vercel deploy --prod --yes` (the repo is already linked).
+   Put the production URL in `SMOKE_URL` in `.hackathon/env`. API keys are already in `.env`
+   (never read or echo it). If they aren't on Vercel yet, give the user the `vercel env add`
+   one-liners from `CLAUDE.md` to run themselves, then redeploy.
 5. Copy `evals/run.sh.example` → `evals/run.sh`, `chmod +x`, write the first 1–2 cases.
 6. `scripts/verify.sh` green → commit → tell the user the skeleton is live, with the link.
 

@@ -5,6 +5,29 @@ Product (Un)Conference '26, Builder's Day · Sun 22 Nov · Bengaluru.
 Every rule below protects one thing: a **public demo link where one user completes one
 flow end to end**, submitted before 5.
 
+## You (the builder)
+
+Registered ✅ · mentor check-in 3:00–4:00 PM (zone, room and mentor names kept out of the public repo).
+
+## Ready before 1:00 PM (don't redo these)
+
+- **Vercel**: CLI logged in. This repo is linked to Vercel project `unconference` (`.vercel/`).
+  Deploy with `vercel deploy --prod --yes`. Always share the **production** URL (previews need a login).
+- **Keys**: `ANTHROPIC_API_KEY` and `SARVAM_API_KEY` in `.env` (gitignored, never read it; both
+  verified HTTP 200). Load them locally with `node --env-file=.env` or the framework's `.env` support.
+  The **user** pushes them to Vercel (don't pipe secrets yourself):
+  `grep '^NAME=' .env | cut -d= -f2- | tr -d '\n' | vercel env add NAME --environment production`.
+  Env vars only reach deployments made **after** they're added, so redeploy.
+- **npm cache warmed**: Next.js 16 (App Router, TS, Tailwind, `create-next-app --yes`),
+  `@anthropic-ai/sdk`, `ai`, `@ai-sdk/anthropic`, `zod`. Next.js is the default stack: it installs fast
+  from cache on venue Wi-Fi and deploys to Vercel with zero config.
+- **Model**: default to `claude-sonnet-5-5` for app features (fast and cheap); use `claude-opus-5-5`
+  only where quality clearly matters. Call it server-side only, never from the browser.
+- **Proven pattern**: `../deploy-test/api/hello.js` is a server function that reads the key from
+  `process.env` and calls Anthropic. Copy the pattern, not the file.
+- **Process plugins are off in this repo** (superpowers, learning style). Don't invoke brainstorming
+  or writing-plans skills; `/kickoff` replaces them.
+
 ## Event facts (from the Builder's Kit)
 
 - **Submit** at unconference.theproductfolks.com/speedrun/submit: project name, **GitHub
@@ -81,4 +104,5 @@ whether to cut something else for it.
 
 ## Stack
 
-_Filled in at kickoff._ Run: _TBD_ · Deploy: _TBD_ · Demo link: _TBD_
+_Filled in at kickoff._ Run: _TBD_ · Deploy: `vercel deploy --prod --yes` · Demo link: _TBD_
+(production URL, likely `https://unconference-*.vercel.app`)
