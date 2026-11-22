@@ -7,10 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --experimental-strip-types --no-warnings scripts/test-rules.ts && node --experimental-strip-types --no-warnings scripts/test-summary.ts"
+    "test": "bash scripts/run-tests.sh"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.12.0",
+    "@mediapipe/tasks-vision": "^1.2.3",
     "html-to-image": "^1.11.13",
     "next": "16.4.6",
     "react": "19.3.0",
