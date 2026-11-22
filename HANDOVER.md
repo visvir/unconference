@@ -1,13 +1,13 @@
 # Handover / restart file
 
-Checkpoint written **2:07 PM IST, Sun 22 Nov** (66 min into the 240-min build). Read this first after
+Checkpoint updated 2:40 PM (originally written **2:07 PM IST, Sun 22 Nov**) (66 min into the 240-min build). Read this first after
 logging in again. Then read `CLAUDE.md` (rules), `DEMO.md` (spec + stage script) and `README.md`.
 
 ## Where we are (one paragraph)
 
 **ACL Co-pilot**, an AI post-ACL rehab co-pilot for India. The core flow is **live and verified** at
-https://unconference-ruby.vercel.app (demo mode: `?demo=1`): home (seeded patient Arjun, ROM chart) → squat
-video form check (the browser extracts 8 frames → Claude Opus 5.5 structured output) → Hinglish check-in →
+https://unconference-ruby.vercel.app (demo mode: `?demo=1`): home (seeded patient Arjun, ROM chart) → two-leg squat
+video form check (three samples: Wrong angle, Knee drifts in, Clean squat) (the browser extracts 8 frames → Claude Opus 5.5 structured output) → Hinglish check-in →
 deterministic red-flag stop OR deterministic deload rule + Claude Sonnet 5.5 two-sentence explanation.
 `scripts/verify.sh` is green against production (lint, build, 33 evals, 113 rule checks, secret scan).
 
@@ -23,14 +23,7 @@ deterministic red-flag stop OR deterministic deload rule + Claude Sonnet 5.5 two
 
 ## Open items, in priority order
 
-1. **DECIDED 2:25 PM: no valgus clip; demo reshaped around wrong-angle rejection + clean squat (see DEMO.md).**
-   ~~Old plan, superseded: Valgus clip (only the founder can do this, ~5 min).~~ Film front-on, phone at hip height, 2–3 m away, whole
-   body in frame. Do a slow two-leg squat, let the RIGHT knee drift inward, let the knee drift inward, and **hold 2 s at the bottom**.
-   Save it as `public/samples/valgus.mp4` (any size; the browser only sends 8 frames). Then:
-   - `npx next dev -p 3005` (in the background) → `scripts/cache-audit.sh valgus` → check that `data/cache/audit-valgus.json` has knee_valgus ≥ 2.
-   - Add `{ id: "valgus", label: "Sample: knee caving in", src: "/samples/valgus.mp4" }` as the FIRST entry of `SAMPLES` in `lib/flow.ts`.
-   - Make the valgus eval a hard check (it currently WARNs in `evals/run.sh` and `scripts/test-rules.ts`).
-   - Credit it in `public/samples/CREDITS.md` (founder's own footage) and update README "What's mocked".
+1. **DONE 2:40 PM: founder's own clip is the 'Knee drifts in' sample (mild 1/3 findings, chip + cues), two-leg squats throughout.**
 2. **Uncommitted at checkpoint → committed in the checkpoint commit, NOT yet reviewed or deployed:**
    `app/audit/page.tsx` caps the video at 45vh and auto-scrolls to the result. Verify is green locally.
    Next step: run it past the code reviewer, then `vercel deploy --prod --yes`.

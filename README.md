@@ -33,7 +33,7 @@ ffmpeg (for caching sample frames), Claude Code (pair programming). Sample clips
 ## What's mocked
 
 - The patient profile, ROM history and today's plan are **seeded** (`data/patient.json`); there's no login and no database.
-- Sample videos are **stock footage**, not patients. The bundled samples show a rejected wrong-angle clip and a clean squat; there is no sample of a knee caving in.
+- Sample clips: two stock clips (wrong angle, clean squat) and the founder's own squat recorded at the venue; their Claude responses are saved from real calls.
 - Surgeon and physio names are placeholders.
 - `?demo=1` serves **cached** model responses (recorded from real calls) for the bundled samples and the scripted check-in, so there's no model latency on stage. Anything else typed or uploaded goes to Claude live.
 

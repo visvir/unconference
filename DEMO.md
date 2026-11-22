@@ -21,13 +21,13 @@ Backup: the same link without `?demo=1` (live Claude), then the screen recording
 |---|---|---|---|
 | 0:00 | (link open on Home) | "15 months ago I tore my ACL. After surgery you see a physio maybe once a week; the other 6 days you're alone, guessing. In India that's most patients, for 9–12 months." | — |
 | 0:25 | **Home**: Arjun, week 10, hamstring graft, flexion 104°→123°, "Yesterday: progressed to bodyweight squats" | "Meet Arjun. His knee is improving, and yesterday he progressed to bodyweight squats, which is exactly when people overdo it." | Refresh; Home is static, it can't fail. |
-| 0:45 | Tap **Check my squat form** → **Sample: wrong angle** → result "Let's re-record" | "Before training he films one squat. The browser pulls 8 frames and Claude looks at them like a physio would. First, a bad video: filmed from the side. It refuses to guess. It tells him exactly how to film it again. In rehab a confident wrong answer is worse than no answer." | Skip to the clean sample. |
-| 1:10 | Tap **Sample: clean squat** → three 0/3 cards, each with Claude's observation | "Now a clean one. Knee tracking, trunk, pelvis: all fine, and it says why. It doesn't invent problems, and it says what it saw for each check." | The live (non-demo) link, ~8 s. |
-| 1:35 | **Next** → check-in → **Use example** (Hinglish) → swelling **More** → **Get today's plan** | "Then he tells it how the knee feels, the way he'd text his physio, in Hinglish." | Type the text by hand. |
-| 1:55 | **Lighter day today**: Hinglish note, "Why (fixed safety rule)", squats + bike crossed out | "This is the key design choice. **The AI doesn't decide the plan.** A fixed, tested rule does: load went up yesterday plus more swelling means deload. Claude only explains it, in his language." | If the note is slow, the fallback sentence appears; the plan itself never depends on the model. |
-| 2:25 | edit the text box: clear it and type **"calf mein dard aur sujan hai"** → **Get today's plan** | "And safety always comes first. Calf pain and swelling after knee surgery can mean a clot…" | — |
-| 2:35 | **Red screen**: Contact your surgeon today, 108 | "…so it stops everything and tells him to call his surgeon today. That check runs before any AI." | — |
-| 2:45 | — | "Mocked: the patient and history are seeded and there's no login; demo mode uses saved responses from real Claude calls. When the knee does cave in, the same check rates it 0 to 3 and jumps the video to the exact moment (capability, not shown: no sample clip). Next: knee angles from pose landmarks, and a weekly brief to the physio." | — |
+| 0:45 | Tap **Check my squat form** → **Wrong angle** | "Before training he films one squat. The browser pulls 8 frames and Claude looks at them like a physio would. First, a badly filmed one." → "It refuses to guess and says exactly how to film it again. In rehab a confident wrong answer is worse than none." | Skip to the next sample. |
+| 1:05 | Tap **Knee drifts in** (my own squat, filmed here today) → cards: knee caving in Mild 1/3, weight shift Mild 1/3 → tap **▶ See it at 2.0s** → the video jumps there; two cues | "This is my own knee, 15 months after surgery. It spots a slight inward drift and that I shift weight off the operated leg, shows me the exact moment, and gives two cues for the next rep. It calls it mild, because it is: it doesn't exaggerate." | Tap **Clean squat** (0/3, "it doesn't invent problems") or use the live link (~8 s). |
+| 1:30 | **Next** → check-in → **Use example** (Hinglish) → swelling **More** → **Get today's plan** | "Then he tells it how the knee feels, the way he'd text his physio, in Hinglish." | Type the text by hand. |
+| 1:50 | **Lighter day today**: Hinglish note, "Why (fixed safety rule)", squats + bike crossed out | "This is the key design choice. **The AI doesn't decide the plan.** A fixed, tested rule does: load went up yesterday plus more swelling means deload. Claude only explains it, in his language." | If the note is slow, the fallback sentence appears; the plan itself never depends on the model. |
+| 2:20 | edit the text box: clear it and type **"calf mein dard aur sujan hai"** → **Get today's plan** | "And safety always comes first. Calf pain and swelling after knee surgery can mean a clot…" | — |
+| 2:30 | **Red screen**: Contact your surgeon today, 108 | "…so it stops everything and tells him to call his surgeon today. That check runs before any AI." | — |
+| 2:40 | — | "Mocked: the patient and history are seeded and there's no login; demo mode replays saved real Claude responses. Next: knee angles from pose landmarks, and a weekly brief to the physio." | — |
 
 ## Judging checklist
 
@@ -49,7 +49,7 @@ Backup: the same link without `?demo=1` (live Claude), then the screen recording
 | 2 | each sample in `lib/flow.ts` | `/samples/<id>.mp4` served, `data/cache/audit-<id>.json` exists | status / file |
 | 3 | POST /api/audit `{"sample":"reference"}` | contract (usable bool, findings type/severity 0–3/timestamp/exactly 2 cues), 3 findings all ≤ 1, cached | node JSON |
 | 4 | POST /api/audit `{"sample":"sideon"}` | `video_usable:false`, re-record reason, no findings | node JSON |
-| 5 | POST /api/audit `{"sample":"valgus"}` (only if cached) | not in the demo (no clip); code path covered by rule tests. Silent if the cache is absent | node JSON |
+| 5 | POST /api/audit {"sample":"valgus"} | usable, knee_valgus ≥ 1 with timestamp and 2 cues | node JSON |
 | 6 | /api/audit unknown sample / 0 frames / 13 frames | 404 / 400 / 400 with `error` | status |
 | 7 | POST /api/explain `demo:true, decision:"deload"` | non-empty cached explanation, no markdown | node JSON |
 | 8 | rules: 14 scenarios in `data/test-cases.json` | proceed / deload / red flag as labelled (incl. unusable video ignored, no-load-up → proceed) | `npm test` |
@@ -62,7 +62,7 @@ Backup: the same link without `?demo=1` (live Claude), then the screen recording
 
 ## Riskiest piece
 
-Claude vision returning sensible, honest findings from ~8 frames of a phone squat video within ~15 s: refusing a wrong-angle clip and finding nothing on a clean one (no knee-valgus clip in the demo).
+Claude vision returning sensible, honest findings from ~8 frames of a phone squat video within ~15 s: refusing a wrong-angle clip, finding nothing on a clean one, and rating a real mild inward knee drift without exaggerating.
 
 ## Likely judge questions
 
@@ -70,7 +70,8 @@ Claude vision returning sensible, honest findings from ~8 frames of a phone squa
 - How accurate is the form check? → It's an observation for the physio, not a diagnosis; next is pose landmarks for knee angle.
 - What's mocked? → Seeded patient and history, demo surgeon contact, no auth.
 - Who pays? → Hospitals/surgeons as a post-op adherence tool; patients via a low-cost rehab subscription.
+- Why only mild? → That's what Claude really returned for my squat; we kept it rather than re-running for a bigger number. Severity 2 or more would trigger the deload on its own.
 
 ## Cut list
 
-Auth, a database, multi-patient support, Surgeon Brief PNG/WhatsApp share (cut for scope), MediaPipe knee angles (stretch), voice check-in (Sarvam), knee-valgus sample clip (no license-clean footage found; founder couldn't film on the day).
+Auth, a database, multi-patient support, Surgeon Brief PNG/WhatsApp share (cut for scope), MediaPipe knee angles (stretch), voice check-in (Sarvam)..
