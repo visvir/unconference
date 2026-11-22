@@ -9,18 +9,22 @@ import type { RomResult } from "@/lib/rom";
 type Phase = "pick" | "analysing" | "done" | "error";
 
 const MAX_SIDE = 768;
+const READ_FAIL = "Couldn't read that photo. Please use a JPG or PNG, or take the photo with the button above.";
 
 // Downsize in the browser: phone photos are 3–12 MB, the model needs ~768 px.
 async function downsize(src: string): Promise<string> {
   const img = new Image();
   img.src = src;
   await img.decode();
+  if (!img.naturalWidth || !img.naturalHeight) throw new Error(READ_FAIL);
   const k = Math.min(1, MAX_SIDE / Math.max(img.naturalWidth, img.naturalHeight));
   const c = document.createElement("canvas");
   c.width = Math.round(img.naturalWidth * k);
   c.height = Math.round(img.naturalHeight * k);
   c.getContext("2d")!.drawImage(img, 0, 0, c.width, c.height);
-  return c.toDataURL("image/jpeg", 0.8).split(",")[1];
+  const b64 = c.toDataURL("image/jpeg", 0.8).split(",")[1];
+  if (!c.width || !c.height || !b64) throw new Error(READ_FAIL);
+  return b64;
 }
 
 export default function RomPage() {
@@ -43,7 +47,15 @@ export default function RomPage() {
     setAdded(false);
     setPhase("analysing");
     try {
-      const payload = demo && sampleId ? { sample: sampleId } : { image: await downsize(photoSrc), leg };
+      let image = "";
+      if (!(demo && sampleId)) {
+        try {
+          image = await downsize(photoSrc);
+        } catch {
+          throw new Error(READ_FAIL);
+        }
+      }
+      const payload = demo && sampleId ? { sample: sampleId } : { image, leg };
       const res = await fetch("/api/rom", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

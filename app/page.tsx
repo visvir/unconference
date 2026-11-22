@@ -31,7 +31,7 @@ export default function Home() {
           <span className="text-3xl font-semibold text-stone-900">{last.flexionDeg}°</span>
           <span className="text-sm font-medium text-teal-700">+{gain}° since {new Date(first.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", timeZone: "UTC" })}</span>
         </div>
-        <p className="text-xs text-stone-500">Lacking {last.extensionDeg}° of full straightening · pain yesterday {last.pain}/10</p>
+        <p className="text-xs text-stone-500">{last.extensionDeg === 0 ? "Fully straight" : `Lacking ${last.extensionDeg}° of full straightening`} · pain yesterday {last.pain}/10</p>
         <RomChart sessions={sessions} />
         <div className="mt-3 grid grid-cols-2 gap-2">
           <DemoLink

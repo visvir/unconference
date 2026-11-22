@@ -129,7 +129,7 @@ export default function CheckInPage() {
           }}
         />
         {!text && (
-          <button onClick={() => { setText(EXAMPLE); setPlan(null); }} className="py-2 text-xs text-teal-700 underline">
+          <button onClick={() => { setText(EXAMPLE); setPlan(null); reqId.current++; }} className="py-2 text-xs text-teal-700 underline">
             Use example
           </button>
         )}
@@ -146,6 +146,7 @@ export default function CheckInPage() {
               setSwelling(s);
               setNeedSwelling(false);
               setPlan(null);
+              reqId.current++;
             }}
             className={`rounded-xl border px-3 py-3 text-sm font-medium capitalize ${
               swelling === s ? "border-teal-700 bg-teal-700 text-white" : "border-stone-300 bg-white text-stone-700"

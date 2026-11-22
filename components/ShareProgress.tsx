@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { loadAudit } from "@/lib/flow";
-import { progressSummary, waLink } from "@/lib/summary";
+import { mailtoLink, progressSummary, waLink } from "@/lib/summary";
 import type { PatientData } from "@/lib/types";
 
 const EMAIL_KEY = "acl-physio-email";
@@ -41,10 +41,9 @@ export default function ShareProgress({ patient }: { patient: PatientData }) {
   const wa = useSyncExternalStore(subscribe, readWa, () => "");
   const message = progressSummary(patient, audit);
   const q = encodeURIComponent(message);
-  const subject = encodeURIComponent(`ACL rehab update: week ${patient.profile.weeksPostOp}`);
-  const mailto = `mailto:${email.trim()}?subject=${subject}&body=${q}`;
+  const mailto = mailtoLink(email, `ACL rehab update: week ${patient.profile.weeksPostOp}`, message);
   // A number typed on this device wins; otherwise the server redirects to a dummy demo number.
-  const waHref = wa.trim() ? waLink(wa, message) : `/api/share/whatsapp?text=${q}`;
+  const waHref = wa.replace(/\D/g, "").length >= 10 ? waLink(wa, message) : `/api/share/whatsapp?text=${q}`;
   const field = "mt-1 block min-h-12 w-full rounded-xl border border-stone-300 bg-white px-3 text-base text-stone-900";
   const btn = "flex min-h-12 flex-1 items-center justify-center rounded-xl px-4 py-3 text-center text-base font-semibold";
 

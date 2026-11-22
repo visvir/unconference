@@ -21,6 +21,7 @@ export default function VoiceInput({ onText, disabled }: Props) {
   const streamRef = useRef<MediaStream | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const aliveRef = useRef(true);
+  const startingRef = useRef(false); // set synchronously: ignores a double tap while the permission prompt is open
 
   function cleanup() {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -59,9 +60,15 @@ export default function VoiceInput({ onText, disabled }: Props) {
   }
 
   async function start() {
+    if (startingRef.current) return;
+    startingRef.current = true;
     setError("");
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      if (!aliveRef.current) {
+        stream.getTracks().forEach((t) => t.stop()); // unmounted while the prompt was open
+        return;
+      }
       streamRef.current = stream;
       const mimeType = MIME_TYPES.find((m) => MediaRecorder.isTypeSupported(m));
       const rec = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
@@ -87,6 +94,8 @@ export default function VoiceInput({ onText, disabled }: Props) {
       cleanup();
       setPhase("idle");
       setError(FAIL);
+    } finally {
+      startingRef.current = false;
     }
   }
 

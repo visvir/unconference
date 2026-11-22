@@ -30,3 +30,10 @@ export function cleanRom(o: RomResult): RomResult {
   const deg = Math.max(0, Math.min(160, Math.round((Number(o.flexionDeg) || 0) / 5) * 5));
   return { ...o, flexionDeg: deg };
 }
+
+// Parse a stored flexion value; null for anything that isn't a sane angle.
+export function parseRom(raw: string | null): number | null {
+  if (raw === null || raw.trim() === "") return null;
+  const n = Number(raw);
+  return Number.isFinite(n) && n >= 0 && n <= 160 ? n : null;
+}

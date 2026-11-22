@@ -1,6 +1,7 @@
 // Tests for the shareable progress summary and phase lookup. Run via `npm test`.
 import patientJson from "../data/patient.json" with { type: "json" };
-import { waLink, currentPhase, progressSummary } from "../lib/summary.ts";
+import { waLink, mailtoLink, currentPhase, progressSummary } from "../lib/summary.ts";
+import { parseRom } from "../lib/rom.ts";
 import type { PatientData, SquatAudit } from "../lib/types.ts";
 
 let failed = 0;
@@ -41,6 +42,19 @@ ok(waLink("+91 98765 43210", "hi") === "https://wa.me/919876543210?text=hi", "+9
 ok(waLink("09876543210", "hi") === "https://wa.me/919876543210?text=hi", "leading 0 is dropped");
 ok(waLink("", "a b") === "https://wa.me/?text=a%20b", "no number -> contact picker, text encoded");
 ok(waLink("14155550123", "hi") === "https://wa.me/14155550123?text=hi", "other country codes are kept");
+
+ok(waLink("+14155550123", "hi") === "https://wa.me/14155550123?text=hi", "+ with 10 digits: no 91", waLink("+14155550123", "hi"));
+ok(waLink("+4155550123", "hi") === "https://wa.me/4155550123?text=hi", "+ and exactly 10 digits keeps them, no 91", waLink("+4155550123", "hi"));
+
+console.log("\n# mailtoLink");
+const m1 = mailtoLink("a@b.com?cc=x@y.com", "S", "B");
+ok(m1.startsWith("mailto:a@b.com?subject=S&body=B") && !m1.includes("cc="), "strips injected header", m1);
+ok(mailtoLink("  a@b.com ", "Hi there", "x&y") === "mailto:a@b.com?subject=Hi%20there&body=x%26y", "trim + encode", mailtoLink("  a@b.com ", "Hi there", "x&y"));
+ok(mailtoLink("", "S", "B") === "mailto:?subject=S&body=B", "empty address", mailtoLink("", "S", "B"));
+
+console.log("\n# parseRom");
+for (const [raw, want] of [["", null], ["  ", null], [null, null], ["abc", null], ["NaN", null], ["-5", null], ["200", null], ["125", 125], ["0", 0]] as const)
+  ok(parseRom(raw) === want, `parseRom(${JSON.stringify(raw)}) -> ${want}`, String(parseRom(raw)));
 
 if (failed) {
   console.log(`\n${failed} failed`);

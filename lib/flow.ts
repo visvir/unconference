@@ -1,5 +1,6 @@
 "use client";
 
+import { parseRom } from "./rom";
 import type { SquatAudit } from "./types";
 
 // Hand-off between screens in one tab. No database, by design.
@@ -12,6 +13,13 @@ export function saveAudit(a: SquatAudit) {
   current = a;
   try {
     sessionStorage.setItem(KEY, JSON.stringify(a));
+  } catch {}
+}
+
+export function clearAudit() {
+  current = null;
+  try {
+    sessionStorage.removeItem(KEY);
   } catch {}
 }
 
@@ -52,8 +60,7 @@ export function loadRom(): number | null {
   if (currentRom !== undefined) return currentRom;
   try {
     const s = sessionStorage.getItem(ROM_KEY);
-    const n = s === null ? NaN : Number(s);
-    currentRom = Number.isFinite(n) ? n : null;
+    currentRom = parseRom(s);
   } catch {
     currentRom = null;
   }

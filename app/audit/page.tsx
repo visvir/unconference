@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRef, useState, useSyncExternalStore } from "react";
 import { FINDING_LABELS } from "@/lib/audit";
 import { extractFrames } from "@/lib/frames";
-import { isDemo, SAMPLES, saveAudit } from "@/lib/flow";
+import { isDemo, SAMPLES, clearAudit, saveAudit } from "@/lib/flow";
 import { patient } from "@/lib/patient";
 import type { SquatAudit } from "@/lib/types";
 
@@ -28,6 +28,7 @@ export default function AuditPage() {
   const resultRef = useRef<HTMLDivElement>(null);
 
   async function analyse(videoSrc: string, sampleId?: string) {
+    clearAudit(); // a failed re-analysis must not leave the previous check saved
     setSrc(videoSrc);
     setAudit(null);
     setError("");
@@ -139,7 +140,7 @@ export default function AuditPage() {
       {phase === "done" && audit && !audit.video_usable && (
         <div className="mt-4 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
           <p className="font-semibold">Let&apos;s re-record</p>
-          <p className="mt-1">{audit.unusable_reason ?? "We couldn't see your whole leg clearly."}</p>
+          <p className="mt-1">{audit.unusable_reason || "We couldn't see your whole leg clearly."}</p>
           <Link href={`/checkin${q}`} className="mt-3 block py-3 text-center text-sm text-teal-700 underline">
             Skip the form check for now →
           </Link>

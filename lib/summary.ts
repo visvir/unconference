@@ -46,7 +46,18 @@ export function progressSummary(p: PatientData, audit: SquatAudit | null): strin
 // WhatsApp deep link. On a phone it opens the WhatsApp app, on a laptop WhatsApp Web, with the chat and text ready.
 // A 10-digit number is treated as Indian (+91); with no number WhatsApp shows its contact picker.
 export function waLink(number: string, message: string): string {
-  let d = number.replace(/\D/g, "").replace(/^0+/, "");
-  if (d.length === 10) d = `91${d}`;
+  // A "+" means the country code is already there.
+  const plus = number.trim().startsWith("+");
+  let d = number.replace(/\D/g, "");
+  if (!plus) {
+    d = d.replace(/^0+/, "");
+    if (d.length === 10) d = `91${d}`;
+  }
   return `https://wa.me/${d}?text=${encodeURIComponent(message)}`;
+}
+
+// mailto link. Anything after the first ? & # or whitespace in the address is dropped (header injection).
+export function mailtoLink(email: string, subject: string, body: string): string {
+  const addr = email.trim().split(/[?&#\s]/)[0];
+  return `mailto:${encodeURIComponent(addr).replace(/%40/g, "@")}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
