@@ -1,6 +1,7 @@
 import DemoLink from "@/components/DemoLink";
 import WeekStrip from "@/components/WeekStrip";
 import RomChart from "@/components/RomChart";
+import ShareProgress from "@/components/ShareProgress";
 import { patient } from "@/lib/patient";
 
 export default function Home() {
@@ -79,6 +80,7 @@ export default function Home() {
       >
         📝 Daily check-in → today&apos;s plan
       </DemoLink>
+      <ShareProgress patient={patient} compact />
       <p className="mt-3 text-center text-xs text-stone-500">
         Observations to discuss with your physio or surgeon, not a diagnosis.
       </p>

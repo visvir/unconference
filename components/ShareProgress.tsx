@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import DemoLink from "@/components/DemoLink";
 import { loadAudit } from "@/lib/flow";
 import { gmailLink, mailtoLink, progressSummary, waLink } from "@/lib/summary";
 import type { PatientData } from "@/lib/types";
@@ -35,7 +36,7 @@ const noop = () => () => {};
 const readEmail = read(EMAIL_KEY);
 const readWa = read(WA_KEY);
 
-export default function ShareProgress({ patient }: { patient: PatientData }) {
+export default function ShareProgress({ patient, compact = false }: { patient: PatientData; compact?: boolean }) {
   const audit = useSyncExternalStore(noop, loadAudit, () => null);
   const email = useSyncExternalStore(subscribe, readEmail, () => "");
   const wa = useSyncExternalStore(subscribe, readWa, () => "");
@@ -49,8 +50,29 @@ export default function ShareProgress({ patient }: { patient: PatientData }) {
   const field = "mt-1 block min-h-12 w-full rounded-xl border border-stone-300 bg-white px-3 text-base text-stone-900";
   const btn = "flex min-h-12 flex-1 items-center justify-center rounded-xl px-4 py-3 text-center text-base font-semibold";
 
+  // Landing-page version: just the two buttons. Contacts and the message preview live on My recovery.
+  if (compact) {
+    return (
+      <section className="mt-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+        <div className="flex items-baseline justify-between">
+          <h2 className="text-sm font-semibold text-stone-800">Share my progress with my physio</h2>
+          <DemoLink href="/progress" className="py-1 text-xs text-teal-700 underline">Preview</DemoLink>
+        </div>
+        <div className="mt-3 flex flex-col gap-2 min-[360px]:flex-row">
+          <a href={gmail} target="_blank" rel="noopener noreferrer" className={`${btn} bg-teal-700 text-white active:bg-teal-800`}>
+            ✉️ Email
+          </a>
+          <a href={waHref} target="_blank" rel="noopener noreferrer" className={`${btn} bg-emerald-600 text-white active:bg-emerald-700`}>
+            WhatsApp
+          </a>
+        </div>
+        <p className="mt-2 text-xs text-stone-500">Opens a ready draft. You press send.</p>
+      </section>
+    );
+  }
+
   return (
-    <section className="mt-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+    <section id="share" className="mt-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
       <h2 className="text-sm font-semibold text-stone-800">Share with my physio</h2>
       <p className="mt-2 whitespace-pre-line rounded-xl bg-stone-50 p-3 text-sm text-stone-700">{message}</p>
       <label className="mt-3 block text-xs font-medium text-stone-600">
