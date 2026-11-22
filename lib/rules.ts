@@ -47,3 +47,21 @@ export function decidePlan(
     removed: planned.filter((e) => !DELOAD_KEEP.has(e.id)),
   };
 }
+
+// "Only 10 minutes today?": fixed rule, no AI. Pass the plan's CURRENT exercises (after any deload).
+export function shortPlan(exercises: Exercise[], budgetMin = 10): { keep: Exercise[]; later: Exercise[]; totalMin: number } {
+  const mins = (e: Exercise) => e.minutes ?? 5;
+  const active = exercises
+    .filter((e) => e.kind !== "recovery")
+    .sort((a, b) => (a.priority ?? 99) - (b.priority ?? 99) || a.id.localeCompare(b.id));
+  const keep: Exercise[] = [];
+  let totalMin = 0;
+  for (const e of active) {
+    if (totalMin + mins(e) <= budgetMin || keep.length === 0) {
+      keep.push(e);
+      totalMin += mins(e);
+    }
+  }
+  const later = exercises.filter((e) => !keep.includes(e));
+  return { keep, later, totalMin };
+}

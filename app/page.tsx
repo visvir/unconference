@@ -1,9 +1,10 @@
 import DemoLink from "@/components/DemoLink";
+import WeekStrip from "@/components/WeekStrip";
 import RomChart from "@/components/RomChart";
 import { patient } from "@/lib/patient";
 
 export default function Home() {
-  const { profile, sessions, todayPlan } = patient;
+  const { profile, sessions, todayPlan, week } = patient;
   const first = sessions[0];
   const last = sessions[sessions.length - 1];
   const gain = last.flexionDeg - first.flexionDeg;
@@ -18,6 +19,8 @@ export default function Home() {
           meniscus repair: {profile.meniscusRepair ? "yes" : "no"}
         </p>
       </header>
+
+      {week && <WeekStrip week={week} />}
 
       <section className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
         <div className="flex items-baseline justify-between">

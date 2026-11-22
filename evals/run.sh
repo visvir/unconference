@@ -175,6 +175,10 @@ else
 fi
 while IFS= read -r l; do l=${l#⚠ }; note "rules: ${l#WARN }"; done < <(grep '^⚠' <<<"$out")
 
+# transcribe without audio → 400 (no paid call)
+code=$(curl -sS --max-time 10 -o "$TMP/tr-noaudio.json" -w '%{http_code}' -X POST -H 'content-type: application/json' --data-binary '{}' "$BASE/api/transcribe" 2>/dev/null || true)
+status "transcribe without audio → 400" 400 "$code" "$TMP/tr-noaudio.json"
+
 # ── 5. LIVE model evals (EVAL_LIVE=1; real Claude calls, cost money) ────
 if [[ "${EVAL_LIVE:-0}" == "1" ]]; then
   echo "LIVE model evals"

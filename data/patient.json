@@ -188,37 +188,57 @@
       "id": "squats",
       "name": "Bodyweight squats (two-leg)",
       "dose": "3 × 10, to 60°",
-      "kind": "loading"
+      "kind": "loading",
+      "minutes": 6,
+      "priority": 5
     },
     {
       "id": "heel_slides",
       "name": "Heel slides",
       "dose": "2 × 15",
-      "kind": "protective"
+      "kind": "protective",
+      "minutes": 3,
+      "priority": 3
     },
     {
       "id": "quad_sets",
       "name": "Quad sets",
       "dose": "3 × 10, 5 s hold",
-      "kind": "protective"
+      "kind": "protective",
+      "minutes": 3,
+      "priority": 1
     },
     {
       "id": "slr",
       "name": "Straight-leg raises",
       "dose": "3 × 12",
-      "kind": "protective"
+      "kind": "protective",
+      "minutes": 4,
+      "priority": 2
     },
     {
       "id": "bike",
       "name": "Stationary bike",
       "dose": "10 min, easy",
-      "kind": "protective"
+      "kind": "protective",
+      "minutes": 10,
+      "priority": 6
     },
     {
       "id": "ice",
       "name": "Ice + elevation",
       "dose": "15 min after exercise",
-      "kind": "recovery"
+      "kind": "recovery",
+      "minutes": 15,
+      "priority": 9
     }
-  ]
+  ],
+  "week": {
+    "planned": 6,
+    "done": 4,
+    "missed": [
+      "Tue",
+      "Thu"
+    ]
+  }
 }

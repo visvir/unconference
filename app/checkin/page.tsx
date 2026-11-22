@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { isDemo, loadAudit } from "@/lib/flow";
+import QuickPlan from "@/components/QuickPlan";
+import VoiceInput from "@/components/VoiceInput";
 import { patient } from "@/lib/patient";
 import { checkRedFlags, decidePlan } from "@/lib/rules";
 import type { DailyPlan, RedFlagResult, Swelling } from "@/lib/types";
@@ -95,7 +97,7 @@ export default function CheckInPage() {
     <main className="mx-auto w-full max-w-md flex-1 px-4 py-6">
       <Link href={`/audit${q}`} className="inline-block py-2 text-sm text-teal-700">← Form check</Link>
       <h1 className="mt-2 text-2xl font-semibold text-stone-900">How&apos;s the knee today?</h1>
-      <p className="mt-1 text-sm text-stone-600">Type it the way you&apos;d tell your physio, in English or Hinglish.</p>
+      <p className="mt-1 text-sm text-stone-600">Type or say it the way you&apos;d tell your physio, in English or Hinglish.</p>
 
       {maxSev !== null && (
         <p className="mt-3 rounded-xl bg-stone-100 px-3 py-2 text-xs text-stone-700">
@@ -114,11 +116,21 @@ export default function CheckInPage() {
         placeholder={EXAMPLE}
         className="mt-4 w-full rounded-2xl border border-stone-300 bg-white p-3 text-base text-stone-900 outline-none focus:border-teal-700"
       />
-      {!text && (
-        <button onClick={() => { setText(EXAMPLE); setPlan(null); }} className="mt-1 py-2 text-xs text-teal-700 underline">
-          Use example
-        </button>
-      )}
+      <div className="mt-2 flex flex-wrap items-center gap-3">
+        <VoiceInput
+          onText={(t) => {
+            // The transcript lands in the box so the patient can read and fix it before submitting.
+            setText((prev) => (prev.trim() ? `${prev.trim()} ${t}` : t));
+            setPlan(null);
+            reqId.current++;
+          }}
+        />
+        {!text && (
+          <button onClick={() => { setText(EXAMPLE); setPlan(null); }} className="py-2 text-xs text-teal-700 underline">
+            Use example
+          </button>
+        )}
+      </div>
 
       <p className={`mt-4 text-sm font-medium ${needSwelling ? "text-red-700" : "text-stone-800"}`}>
         Swelling compared to yesterday{needSwelling ? " (please pick one)" : ""}
@@ -187,6 +199,9 @@ export default function CheckInPage() {
               </li>
             ))}
           </ul>
+          <div className="mt-4">
+            <QuickPlan key={plan.decision} exercises={plan.exercises} />
+          </div>
           <p className="mt-4 text-xs text-stone-500">
             Observations to discuss with your physio or surgeon. Not a diagnosis or a prescription.
           </p>

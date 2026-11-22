@@ -33,12 +33,15 @@ export interface Exercise {
   name: string;
   dose: string;
   kind: "loading" | "protective" | "recovery";
+  minutes?: number;
+  priority?: number; // lower = more important when time is short
 }
 
 export interface PatientData {
   profile: PatientProfile;
   sessions: Session[];
   todayPlan: Exercise[];
+  week?: { planned: number; done: number; missed: string[] };
 }
 
 export interface CheckIn {

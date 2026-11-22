@@ -3,7 +3,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import cases from "../data/test-cases.json" with { type: "json" };
 import patient from "../data/patient.json" with { type: "json" };
-import { checkRedFlags, decidePlan } from "../lib/rules.ts";
+import { checkRedFlags, decidePlan, shortPlan } from "../lib/rules.ts";
 import type { CheckIn, Exercise, Session, Swelling, SquatAudit } from "../lib/types.ts";
 
 let failed = 0;
@@ -199,6 +199,29 @@ for (const t of ["The wound is red", "Wound se paani nikal raha hai", "Knee lock
   // reviewer-found misses (round 2), written before the fix
   "Knee is stuck, can't straighten it", "Incision is leaking", "High temp since morning", "Shivering at night"]) {
   ok(checkRedFlags(t).hit, `still caught after narrowing: "${t}"`);
+}
+
+// ── 7. Short plan ("Only 10 minutes today?"): fixed rule, no AI ──────────
+section("short plan (10 minutes)");
+{
+  const deload = decidePlan(lastSession, demoCheckIn, null, planned);
+  const sp = shortPlan(deload.exercises);
+  ok(ids(sp.keep) === "heel_slides,quad_sets,slr", "deload plan: keep is exactly quad sets, SLR, heel slides", ids(sp.keep));
+  ok(sp.totalMin === 10, "deload plan: 10 min total", String(sp.totalMin));
+  ok(sp.later.some((e) => e.id === "ice"), "deload plan: ice goes to later");
+  ok(sp.totalMin <= 10, "deload plan: totalMin <= 10");
+  ok(![...sp.keep, ...sp.later].some((e) => e.id === "squats" || e.id === "bike"), "deload plan: removed exercises never come back");
+  const full = shortPlan(planned);
+  ok(full.keep[0]?.id === "quad_sets" && full.totalMin <= 10, "full plan: starts with quad sets, <= 10 min", ids(full.keep));
+  ok(full.later.some((e) => e.id === "ice"), "full plan: ice is later");
+  const three = shortPlan(planned, 3);
+  ok(three.keep.length === 1 && three.keep[0].id === "quad_sets", "budget 3 → exactly quad sets", ids(three.keep));
+  const none = shortPlan([]);
+  ok(none.keep.length === 0 && none.later.length === 0 && none.totalMin === 0, "empty input → empty keep");
+  const rev = shortPlan([...planned].reverse());
+  ok(ids(rev.keep) === ids(full.keep) && rev.totalMin === full.totalMin, "input order does not change the result");
+  const tiny = shortPlan(planned, 1);
+  ok(tiny.keep.length === 1, "budget too small still keeps one exercise");
 }
 
 console.log(`\n${failed ? `${failed} failed` : "all rules tests passed"}${warned ? ` (${warned} warnings)` : ""}`);
