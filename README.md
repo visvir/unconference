@@ -46,6 +46,17 @@ turns into a safe plan for today.
 - `lib/activity.ts` + `components/ActivityWidget.tsx` + `data/activity.json`: seeded sample data, no network call. A fixed rule flags a day at 1.4x the steps goal or more as extra load.
 - Demo mode (`?demo=1`): sample clips → real responses cached in `data/cache/` (refresh with `scripts/cache-audit.sh <id>`).
 
+## Access and cost protection
+
+- Every route that spends money needs an owner passcode in production: `/api/audit` with frames, `/api/rom` with an image, `/api/notes` with text or a PDF, `/api/explain` for anything but the scripted example, and `/api/transcribe`.
+- The passcode is the server environment variable `DEMO_ACCESS_CODE` (at least 12 characters). With none set, production refuses all paid calls.
+- The owner enters it once at `/unlock`. That sets an httpOnly cookie for 12 hours. `/unlock` also has a "Lock again" button.
+- Visitors can use the bundled samples. They replay saved responses and cost nothing. Sample buttons always use the saved response.
+- Without the passcode the check-in plan still works: the rule decides and a fixed sentence replaces the model's note.
+- Local development is not locked.
+- Security headers on every page: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, a referrer policy, and a permissions policy that allows camera and microphone for this site only.
+- Evals: 60 on production, including checks that the public gets 403 from paid routes and that the headers are present. 11 unit tests cover the lock.
+
 ## Tools used
 
 Next.js 16, TypeScript, Tailwind CSS 4, Recharts, Zod, Anthropic SDK (Claude Opus 5.5 + Sonnet 5.5), Sarvam speech-to-text (saaras:v4), Vercel,
@@ -55,12 +66,12 @@ MediaPipe Tasks Vision (pose landmarks, in the browser), the Outfit font, ffmpeg
 
 - **Activity widget:** sample data. A real Google Health sign-in exists on the `google-health` branch and was tried once locally (it connected, but the test account had no cloud data), so it is not on the live site.
 - The patient profile, ROM history and today's plan are **seeded** (`data/patient.json`); there's no login and no database.
-- Sample clips: three samples, two stock clips from Pexels (wrong angle, clean squat) and the founder's own knee-caves-in squat recorded at the venue; their Claude responses are saved from real calls.
+- Sample clips: two samples, both stock clips from Pexels ("Wrong angle" and "Clean squat"); their Claude responses are saved from real calls. The earlier "Knee caves in" sample was removed for privacy.
 - Surgeon and physio names are placeholders.
-- `?demo=1` serves **cached** model responses (recorded from real calls) for the bundled samples and the scripted check-in, so there's no model latency on stage. Anything else typed or uploaded goes to Claude live.
+- `?demo=1` serves **cached** model responses (recorded from real calls) for the bundled samples and the scripted check-in, so there's no model latency on stage. Anything else typed or uploaded goes to Claude live, but only with the owner passcode (see Access and cost protection).
 - The week strip ("4 of 6 sessions") and the five rehab phases are seeded or typical, not computed from real use.
 - The knee-bend sample photo is a frame from a stock squat clip. It reads about 90°.
-- Sharing opens your own mail app or WhatsApp with the message ready. The app sends nothing.
+- Sharing opens your own mail app or WhatsApp with the message ready. The app sends nothing. No WhatsApp number is built in: with none configured, WhatsApp opens its own contact picker.
 - The activity widget is **sample data**. There is no real Google Health connection.
 - The physio note is a **fictional sample**. Its Claude response is saved in `data/cache/notes-sample.json`.
 - Live-coach thresholds are **untuned first guesses**. Nothing from the live camera leaves the browser.

@@ -24,17 +24,19 @@ I tore my ACL 15 months ago. After surgery in India, most patients rehab alone f
 
 ## What's mocked
 - Patient, history and today's plan are seeded. No login, no database.
-- Samples: two stock clips, my own squat, and a fictional physio note. Their Claude responses are saved from real calls.
+- Samples: two stock clips and a fictional physio note. Their Claude responses are saved from real calls.
 - Activity data is seeded. Live-coach thresholds are untuned.
 - Surgeon and physio names are placeholders.
-- With ?demo=1, saved responses are replayed. Anything typed or uploaded goes to Claude live.
+- With ?demo=1, saved responses are replayed. Live calls need the owner passcode.
 
 ## Hard questions and honest answers
 **How accurate is it from 8 frames?** Not validated yet. It is an observation to discuss with a physio, not a diagnosis.
 
 **Why not let the AI decide the plan?** It is safety-critical. A fixed rule can be tested and audited. The AI only observes and explains.
 
-**Isn't the demo cached?** Yes, ?demo=1 replays real saved Claude responses so there is no wait. Without it, the same link calls Claude live, about 10 seconds.
+**Isn't the demo cached?** Yes, ?demo=1 replays real saved Claude responses so there is no wait. Live calls need the owner passcode (unlock at /unlock); with it, the same link calls Claude live, about 10 seconds.
+
+**Can anyone run up your AI bill?** No. Paid calls need an owner passcode; the public demo replays saved responses.
 
 **How do you know 2/3 is right?** It isn't clinically validated. We checked it against a control: the same settings score a clean squat 0/0/0, and at a lower effort setting the model under-read this clip as 1/3, so we raised it.
 

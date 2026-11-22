@@ -50,6 +50,7 @@ Uncertain: the older Google Fit web API was being retired. Confirm the current A
 - Host in India; encrypt in transit and at rest.
 - Per-patient access control in the database, and an append-only log of who viewed what.
 - Secrets in a managed store, rotated; sign-in and rate limits on every AI route.
+- Today a single owner passcode (`DEMO_ACCESS_CODE`, 12-hour cookie) locks every paid route. It is a stopgap. Real sign-in with roles replaces it in phase 1.
 - Keep personal data out of prompts and logs: frames, side and symptoms only, never names or numbers.
 - Vendor terms: data-processing agreements with Anthropic and Sarvam; ask about zero retention and where processing happens.
 - Sharing with a physio is a revocable consent record, replacing deep links. Account deletion removes media and records.

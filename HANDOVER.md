@@ -1,13 +1,13 @@
 # Handover / restart file
 
-Updated 4:05 PM (earlier checkpoint 3:10 PM (originally written **2:07 PM IST, Sun 22 Nov**, 66 min into the 240-min build)). Read this first after
+Updated after the event (security and privacy pass). Earlier: 4:05 PM (earlier checkpoint 3:10 PM (originally written **2:07 PM IST, Sun 22 Nov**, 66 min into the 240-min build)). Read this first after
 logging in again. Then read `CLAUDE.md` (rules), `DEMO.md` (spec + stage script) and `README.md`.
 
 ## Where we are (one paragraph)
 
 **ACL Co-pilot**, an AI post-ACL rehab co-pilot for India. The core flow is **live and verified** at
 https://unconference-ruby.vercel.app (demo mode: `?demo=1`): home (seeded patient Arjun, ROM chart) → two-leg squat
-video form check (three samples: Wrong angle, Knee caves in, Clean squat) (the browser extracts 8 frames → Claude Opus 5.5 structured output) → Hinglish check-in →
+video form check (two samples: Wrong angle, Clean squat; the founder's "Knee caves in" clip was removed for privacy) (the browser extracts 8 frames → Claude Opus 5.5 structured output) → Hinglish check-in →
 deterministic red-flag stop OR deterministic deload rule + Claude Sonnet 5.5 two-sentence explanation.
 New and deployed: voice check-in (Sarvam), 10-minute plan, week strip on Home, My recovery page with share to physio (email/WhatsApp), and knee bend from a photo (`/rom`).
 `scripts/verify.sh` was green against production at the earlier checkpoint (47 evals).
@@ -30,18 +30,15 @@ New and deployed: voice check-in (Sarvam), 10-minute plan, week strip on Home, M
 | 3:45 → 4:30 | Fix only what the mentor flags. README pass. Phone test. |
 | **4:45** | **Submit** at unconference.theproductfolks.com/speedrun/submit (name, GitHub link, demo link). Lock is 5:00. |
 
-## Open items, in priority order
+## Open items
 
-0. **Founder decision:** ship the `design-refresh` branch to production or not. Code hard stop **4:35 PM**; submit by **4:45 PM**.
-   OneDrive note: a local `next build` can fail with ENOTEMPTY or ETIMEDOUT on a `.next/server 2` conflict folder that OneDrive creates. This is not a code error. Vercel builds are unaffected.
+1. Owner: set `DEMO_ACCESS_CODE` (at least 12 characters) on Vercel and redeploy. Until then the public site refuses all live analysis; samples still work. Unlock at `/unlock`.
+2. Owner: remove the leftover `PHYSIO_WHATSAPP` setting on Vercel: `vercel env rm PHYSIO_WHATSAPP production --confirm-name PHYSIO_WHATSAPP`. It holds only a placeholder. The CLI needs a human to confirm.
+3. Decision pending: rewrite git history to purge the removed clip, the mentors' names and the commit email from old commits. It needs a force-push and re-creating tags.
+4. Decision pending: delete old Vercel deployments. They are behind a Vercel login, not public.
+5. Owner: set a monthly spend limit in the Anthropic Console.
 
-1. **DONE: founder's own clip is the 'Knee caves in' sample (knee valgus 2/3 at 2.3 s).**
-2. Founder to tap through the live link on phone + stage laptop (the timestamp chip has not been seen working in a real browser by the agent: Chrome extension disconnected after the Console login).
-3. Optional, if ahead: a front-on, no-band "good form" two-leg squat clip (the stock `reference.mp4` is a banded two-leg squat).
-4. Record backup screen video; rehearse twice with a timer.
-5. Founder to check the new features in a real browser (voice with a real voice, share buttons, /rom, 10-minute plan): none were seen in a browser by the agents.
-6. Safety tag: `git tag demo-safe-1` = last build before the new features (commit 126b9b3). To roll back: `git checkout demo-safe-1 -- . && vercel deploy --prod --yes`, then return to main with `git checkout main -- .`.
-7. **Do NOT do** (architect review): MediaPipe, Surgeon Brief, more red-flag regex, rate limiting, UI redesign, more rule tests.
+OneDrive note: a local `next build` can fail with ENOTEMPTY or ETIMEDOUT on a `.next/server 2` conflict folder that OneDrive creates. This is not a code error. Vercel builds are unaffected.
 
 ## Restart steps (after logging in with the Console account)
 
@@ -85,11 +82,11 @@ Rough cost: demo audit ≈ $0.06 (Opus) per call; a Fable Claude Code session �
   extraction) → `messages.parse` + Zod schema on `claude-opus-5-5` (forced tool_choice isn't supported on Opus 5.5).
 - **Demo mode** serves real recorded responses from `data/cache/`. The explanation cache only answers the scripted
   example text; anything typed goes live.
-- **What's mocked:** the seeded patient/history, two stock clips + the founder's own clip, placeholder surgeon/physio, no login/DB.
+- **What's mocked:** the seeded patient/history, two stock clips, placeholder surgeon/physio, no login/DB.
 
 ## Stack and commands
 
 Next.js 16 App Router + TS + Tailwind 4 + Recharts + Zod + `@anthropic-ai/sdk`. Vercel project `unconference`
-(`vercel.json` pins `framework: nextjs`; the project preset was "Other"). Env on Vercel: `ANTHROPIC_API_KEY` (production).
+(`vercel.json` pins `framework: nextjs`; the project preset was "Other"). Env on Vercel: `ANTHROPIC_API_KEY`, `SARVAM_API_KEY` and `DEMO_ACCESS_CODE` (production; the last must be set by the owner, see open items).
 - Dev: `npx next dev -p 3005` · Rules: `npm test` · Evals: `evals/run.sh` (prod) / `BASE=http://localhost:3005 evals/run.sh` / `EVAL_LIVE=1` (real model calls)
 - Deploy: `vercel deploy --prod --yes` · Cache a sample: `scripts/cache-audit.sh <id>`

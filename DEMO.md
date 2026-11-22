@@ -1,5 +1,7 @@
 # Demo
 
+> After the event the founder's own clip ('Knee caves in') was removed from the public repo and site for privacy, and live uploads are behind an owner passcode. To run this script as written, unlock at /unlock and upload your own knee-caving clip in place of the removed sample.
+
 ## Problem statement
 
 After ACL reconstruction, patients in India are mostly unsupervised for 9–12 months of rehab. They
@@ -59,7 +61,7 @@ Backup: the same link without `?demo=1` (live Claude), then the screen recording
 
 ## Eval cases
 
-`evals/run.sh` (run by `scripts/verify.sh`; `BASE=` to target localhost; ~6 s, 59 evals). `EVAL_LIVE=1` adds real model calls (~15 s).
+`evals/run.sh` (run by `scripts/verify.sh`; `BASE=` to target localhost; ~6 s, 60 evals). `EVAL_LIVE=1` adds real model calls (~15 s).
 
 | # | Input | Expected | Check |
 |---|---|---|---|
@@ -81,6 +83,7 @@ Backup: the same link without `?demo=1` (live Claude), then the screen recording
 | 16 | GET /live | 200; "Live squat coach"; `/check` links to `/live` | contains |
 | 17 | GET / | shows the activity widget labelled "Sample data" | contains |
 | 18 | unit tests: `lib/pose.ts` (30), `applyNotes` incl. deload wins | pass | `scripts/run-tests.sh` |
+| 19 | owner lock: public POST to paid routes (audit with frames, rom, notes, transcribe); response headers | 403 `locked`; saved samples still work; nosniff, frame deny, referrer and permissions policies present. 11 unit tests cover `lib/guard.ts` | status / headers / `scripts/run-tests.sh` |
 
 ## Riskiest piece
 
