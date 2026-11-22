@@ -2,43 +2,180 @@
   {
     "name": "normal: feeling good, no load change",
     "yesterdayLoadIncreased": false,
-    "checkIn": { "text": "Aaj knee theek lag raha hai, bas thoda stiff subah", "swelling": "same" },
+    "checkIn": {
+      "text": "Aaj knee theek lag raha hai, bas thoda stiff subah",
+      "swelling": "same"
+    },
     "maxSeverity": 1,
-    "expect": { "redFlag": false, "decision": "proceed" }
+    "expect": {
+      "redFlag": false,
+      "decision": "proceed"
+    }
   },
   {
     "name": "normal: load up yesterday but swelling less and clean form",
     "yesterdayLoadIncreased": true,
-    "checkIn": { "text": "Squats ke baad thoda tired tha, but swelling kam hai aaj", "swelling": "less" },
+    "checkIn": {
+      "text": "Squats ke baad thoda tired tha, but swelling kam hai aaj",
+      "swelling": "less"
+    },
     "maxSeverity": 1,
-    "expect": { "redFlag": false, "decision": "proceed" }
+    "expect": {
+      "redFlag": false,
+      "decision": "proceed"
+    }
   },
   {
     "name": "deload: load up + swelling more (the demo case)",
     "yesterdayLoadIncreased": true,
-    "checkIn": { "text": "Kal squats badhaye the, aaj knee thoda swollen aur stairs pe khichav", "swelling": "more" },
+    "checkIn": {
+      "text": "Kal squats badhaye the, aaj knee thoda swollen aur stairs pe khichav",
+      "swelling": "more"
+    },
     "maxSeverity": 0,
-    "expect": { "redFlag": false, "decision": "deload" }
+    "expect": {
+      "redFlag": false,
+      "decision": "deload"
+    }
   },
   {
     "name": "deload: load up + form severity 2, swelling same",
     "yesterdayLoadIncreased": true,
-    "checkIn": { "text": "Knee feels okay, a bit wobbly on the single leg ones", "swelling": "same" },
+    "checkIn": {
+      "text": "Knee feels okay, a bit wobbly on the single leg ones",
+      "swelling": "same"
+    },
     "maxSeverity": 2,
-    "expect": { "redFlag": false, "decision": "deload" }
+    "expect": {
+      "redFlag": false,
+      "decision": "deload"
+    }
   },
   {
     "name": "red flag: fever + wound redness",
     "yesterdayLoadIncreased": false,
-    "checkIn": { "text": "Since last night I have fever and the wound looks red and warm", "swelling": "same" },
+    "checkIn": {
+      "text": "Since last night I have fever and the wound looks red and warm",
+      "swelling": "same"
+    },
     "maxSeverity": 0,
-    "expect": { "redFlag": true }
+    "expect": {
+      "redFlag": true
+    }
   },
   {
     "name": "red flag: calf pain (Hinglish)",
     "yesterdayLoadIncreased": false,
-    "checkIn": { "text": "Pindli mein dard hai aur thodi sujan bhi, chalne mein dikkat", "swelling": "more" },
+    "checkIn": {
+      "text": "Pindli mein dard hai aur thodi sujan bhi, chalne mein dikkat",
+      "swelling": "more"
+    },
     "maxSeverity": 0,
-    "expect": { "redFlag": true }
+    "expect": {
+      "redFlag": true
+    }
+  },
+  {
+    "name": "proceed: unusable video with severity 3 must NOT count",
+    "yesterdayLoadIncreased": true,
+    "videoUsable": false,
+    "checkIn": {
+      "text": "Knee theek hai, bas video side se ban gaya",
+      "swelling": "same"
+    },
+    "maxSeverity": 3,
+    "expect": {
+      "redFlag": false,
+      "decision": "proceed"
+    }
+  },
+  {
+    "name": "proceed: no load up, even with swelling more + severity 3",
+    "yesterdayLoadIncreased": false,
+    "checkIn": {
+      "text": "Aaj thoda swollen hai, rest day tha kal",
+      "swelling": "more"
+    },
+    "maxSeverity": 3,
+    "expect": {
+      "redFlag": false,
+      "decision": "proceed"
+    }
+  },
+  {
+    "name": "proceed: boundary, load up + severity 1 + swelling same",
+    "yesterdayLoadIncreased": true,
+    "checkIn": {
+      "text": "Single leg squats theek gaye, thoda tired",
+      "swelling": "same"
+    },
+    "maxSeverity": 1,
+    "expect": {
+      "redFlag": false,
+      "decision": "proceed"
+    }
+  },
+  {
+    "name": "deload: load up + severity 2 even with swelling less",
+    "yesterdayLoadIncreased": true,
+    "checkIn": {
+      "text": "Swelling kam hai but knee andar ja raha tha squat mein",
+      "swelling": "less"
+    },
+    "maxSeverity": 2,
+    "expect": {
+      "redFlag": false,
+      "decision": "deload"
+    }
+  },
+  {
+    "name": "deload: load up + swelling more + severity 3",
+    "yesterdayLoadIncreased": true,
+    "checkIn": {
+      "text": "Knee is puffy today and I wobbled a lot",
+      "swelling": "more"
+    },
+    "maxSeverity": 3,
+    "expect": {
+      "redFlag": false,
+      "decision": "deload"
+    }
+  },
+  {
+    "name": "deload: English, load up + swelling more",
+    "yesterdayLoadIncreased": true,
+    "checkIn": {
+      "text": "Knee is a bit swollen after yesterday's squats and tight on the stairs",
+      "swelling": "more"
+    },
+    "maxSeverity": 0,
+    "expect": {
+      "redFlag": false,
+      "decision": "deload"
+    }
+  },
+  {
+    "name": "red flag: demo step 6 (calf mein dard aur sujan)",
+    "yesterdayLoadIncreased": true,
+    "checkIn": {
+      "text": "calf mein dard aur sujan hai",
+      "swelling": "more"
+    },
+    "maxSeverity": 0,
+    "expect": {
+      "redFlag": true
+    }
+  },
+  {
+    "name": "red flag wins over a deload-worthy day (fever aur wound red)",
+    "yesterdayLoadIncreased": true,
+    "checkIn": {
+      "text": "fever aur wound red hai",
+      "swelling": "more"
+    },
+    "maxSeverity": 2,
+    "expect": {
+      "redFlag": true
+    }
   }
 ]

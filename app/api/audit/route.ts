@@ -9,7 +9,12 @@ export const maxDuration = 60;
 type Frame = { t: number; data: string }; // data = base64 JPEG, no prefix
 
 export async function POST(req: Request) {
-  const body = (await req.json()) as { frames?: Frame[]; leg?: string; sample?: string };
+  let body: { frames?: Frame[]; leg?: string; sample?: string };
+  try {
+    body = await req.json();
+  } catch {
+    return Response.json({ error: "Invalid JSON" }, { status: 400 });
+  }
 
   // Demo mode: a bundled sample video → its cached real response. Zero network.
   if (body.sample) {
