@@ -35,6 +35,6 @@ ffmpeg (for caching sample frames), Claude Code (pair programming). Sample clips
 - The patient profile, ROM history and today's plan are **seeded** (`data/patient.json`); there's no login and no database.
 - Sample videos are **stock footage**, not patients.
 - Surgeon and physio names are placeholders.
-- `?demo=1` serves **cached** model responses (recorded from real calls) so the demo works without a network.
+- `?demo=1` serves **cached** model responses (recorded from real calls) for the bundled samples and the scripted check-in, so there's no model latency on stage. Anything else typed or uploaded goes to Claude live.
 
 All output is framed as observations to discuss with a physio or surgeon, not a diagnosis.

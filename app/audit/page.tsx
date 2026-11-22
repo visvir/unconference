@@ -25,6 +25,7 @@ export default function AuditPage() {
   const [audit, setAudit] = useState<SquatAudit | null>(null);
   const [error, setError] = useState("");
   const videoRef = useRef<HTMLVideoElement>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
 
   async function analyse(videoSrc: string, sampleId?: string) {
     setSrc(videoSrc);
@@ -46,6 +47,8 @@ export default function AuditPage() {
       setAudit(json);
       saveAudit(json);
       setPhase("done");
+      // Bring the result into view (on a laptop the video can push it below the fold).
+      setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong");
       setPhase("error");
@@ -70,7 +73,7 @@ export default function AuditPage() {
     if (!v) return;
     v.pause();
     v.currentTime = t;
-    v.scrollIntoView({ behavior: "smooth", block: "center" });
+    v.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   const findings = audit?.findings ?? [];
@@ -92,7 +95,7 @@ export default function AuditPage() {
           controls
           playsInline
           muted
-          className="mt-4 aspect-[3/4] w-full rounded-2xl bg-black object-contain"
+          className="mt-4 max-h-[45vh] w-full rounded-2xl bg-black object-contain"
         />
       )}
 
@@ -131,6 +134,7 @@ export default function AuditPage() {
 
       {phase === "error" && <p className="mt-4 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-800">{error}</p>}
 
+      <div ref={resultRef} />
       {phase === "done" && audit && !audit.video_usable && (
         <div className="mt-4 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
           <p className="font-semibold">Let&apos;s re-record</p>

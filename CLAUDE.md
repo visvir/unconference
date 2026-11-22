@@ -94,6 +94,7 @@ whether to cut something else for it.
 
 | Path | Purpose |
 |---|---|
+| `HANDOVER.md` | **Read first after a restart:** current state, open items, restart steps, agents to recreate. |
 | `DEMO.md` | The demo script, eval cases and judging criteria: the spec. Keep it current. |
 | `README.md` | What it is, the demo link, how it works, **tools used**, **what's mocked**. |
 | `scripts/verify.sh` | Detects the stack, runs lint/typecheck/test/build, evals, smoke check, secret scan. |
