@@ -4,6 +4,7 @@ import path from "node:path";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod";
 import { cleanRom, romSchema, romSystemPrompt } from "@/lib/rom";
+import { liveAllowed, lockedResponse } from "@/lib/guard";
 
 export const maxDuration = 60;
 
@@ -38,6 +39,8 @@ export async function POST(req: Request) {
 
   if (!body.image) return Response.json({ error: "Send a photo" }, { status: 400 });
   const leg = body.leg ?? "right";
+
+  if (!liveAllowed(req)) return lockedResponse(); // owner lock: no paid call for the public
 
   try {
     // One attempt, well inside Vercel's 60 s limit, so the UI gets a JSON error instead of a 504.

@@ -114,8 +114,8 @@ jcheck "audit sideon: response contract" "$TMP/side.json" "$AUDIT_SHAPE"
 jcheck "audit sideon: unusable + re-record reason, no findings" "$TMP/side.json" '
   return (j.video_usable === false && j.unusable_reason.trim().length > 20 && j.findings.length === 0) || "got usable=" + j.video_usable + " reason=" + JSON.stringify(j.unusable_reason);'
 
-# The founder's own clip is now a bundled sample: a hard check.
-if true; then
+# Only checked when a knee-caving sample is bundled (the founder's clip was removed from the public repo for privacy).
+if [[ -f data/cache/audit-valgus.json ]]; then
   code=$(req "$TMP/valgus.json" /api/audit '{"sample":"valgus"}')
   status "audit sample=valgus → 200" 200 "$code"
   jcheck "audit valgus: response contract" "$TMP/valgus.json" "$AUDIT_SHAPE"
@@ -275,8 +275,23 @@ check "live page has its title" "Live squat coach" cat "$TMP/live.html"
 check "hub links to the live coach" "/live" curl -fsS --max-time 10 "$BASE/check"
 check "home shows the activity widget as sample data" "Sample data" curl -fsS --max-time 10 "$BASE/"
 check "home links to physio advice" "Add my physio" curl -fsS --max-time 10 "$BASE/"
+# Owner lock: paid routes must refuse the public (production only; local dev is unlocked by design).
+if [[ "$BASE" == https://* ]]; then
+  F1=$(node -e 'console.log(JSON.stringify({frames:[{t:1,data:"A".repeat(2000)}],leg:"right"}))')
+  code=$(req "$TMP/lock-a.json" /api/audit "$F1")
+  status "audit with frames, no passcode → 403 locked" 403 "$code" "$TMP/lock-a.json"
+  code=$(req "$TMP/lock-r.json" /api/rom "$(node -e 'console.log(JSON.stringify({image:"A".repeat(2000)}))')")
+  status "rom with an image, no passcode → 403 locked" 403 "$code" "$TMP/lock-r.json"
+  code=$(req "$TMP/lock-n.json" /api/notes '{"text":"Do squats to 45 degrees for this week please."}')
+  status "notes with text, no passcode → 403 locked" 403 "$code" "$TMP/lock-n.json"
+  code=$(req "$TMP/lock-u.json" /api/unlock '{"code":"definitely-not-the-passcode"}')
+  status "unlock with a wrong passcode → 401" 401 "$code" "$TMP/lock-u.json"
+  jcheck "explain for the public: no paid call, empty text (page shows its fixed fallback)" "$TMP/ex-en.json" 'return (j.locked === true && j.explanation === "") || "expected locked";'
+  hdr=$(curl -sI --max-time 10 "$BASE/" | tr -d "\r" | grep -ciE "^x-frame-options: DENY|^x-content-type-options: nosniff")
+  [[ "$hdr" == "2" ]] && ok "security headers present" || bad "security headers present" "found $hdr of 2"
+fi
 # WhatsApp share redirect: goes to wa.me with the text; the number never appears in the repo or page.
 loc=$(curl -sS --max-time 10 -o /dev/null -w '%{http_code} %{redirect_url}' "$BASE/api/share/whatsapp?text=hello%20physio" 2>/dev/null || true)
-[[ "$loc" == 302\ https://wa.me/9*text=hello%20physio ]] && ok "whatsapp share → 302 to a wa.me chat with the text" || bad "whatsapp share → 302 to a wa.me chat with the text" "$loc"
+[[ "$loc" == 302\ https://wa.me/*text=hello%20physio ]] && ok "whatsapp share → 302 to a wa.me chat with the text" || bad "whatsapp share → 302 to a wa.me chat with the text" "$loc"
 echo "evals: $pass passed, $fail failed, $warn warnings ($((SECONDS - START)) s)"
 [[ $fail -eq 0 ]]

@@ -36,7 +36,7 @@ export default function AuditPage() {
     try {
       // Demo mode with a bundled sample: cached response, no frames, no network to the model.
       const payload =
-        demo && sampleId ? { sample: sampleId } : { frames: await extractFrames(videoSrc), leg };
+        sampleId ? { sample: sampleId } : { frames: await extractFrames(videoSrc), leg };
       const res = await fetch("/api/audit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -114,7 +114,7 @@ export default function AuditPage() {
             </label>
           </div>
           <p className="eyebrow pt-2 text-mute">Or try a sample</p>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {SAMPLES.map((s) => (
               <button
                 key={s.id}

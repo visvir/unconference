@@ -45,7 +45,7 @@ export default function ShareProgress({ patient, compact = false }: { patient: P
   const subjectText = `ACL rehab update: week ${patient.profile.weeksPostOp}`;
   const mailto = mailtoLink(email, subjectText, message);
   const gmail = gmailLink(email, subjectText, message);
-  // A number typed on this device wins; otherwise the server redirects to a dummy demo number.
+  // A number typed on this device wins; otherwise WhatsApp opens its own contact picker with the message ready.
   const waHref = wa.replace(/\D/g, "").length >= 10 ? waLink(wa, message) : `/api/share/whatsapp?text=${q}`;
   const field = "field mt-1";
   const btn = "btn flex-1";
@@ -80,7 +80,7 @@ export default function ShareProgress({ patient, compact = false }: { patient: P
         <input type="email" inputMode="email" autoComplete="off" value={email} onChange={(e) => write(EMAIL_KEY, e.target.value)} className={field} />
       </label>
       <label className="mt-3 block text-xs font-semibold text-ink">
-        Physio&apos;s WhatsApp number (optional: leave empty for the dummy demo number)
+        Physio&apos;s WhatsApp number (optional: leave empty to pick the contact in WhatsApp)
         <input type="tel" inputMode="tel" autoComplete="off" placeholder="+91…" value={wa} onChange={(e) => write(WA_KEY, e.target.value)} className={field} />
       </label>
       <p className="note mt-1">Saved on this device only</p>

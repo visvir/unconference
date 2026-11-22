@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { z } from "zod";
+import { liveAllowed } from "@/lib/guard";
 
 export const maxDuration = 30;
 
@@ -25,7 +26,8 @@ export async function POST(req: Request) {
   if (!parsed.success) return Response.json({ error: "Invalid request" }, { status: 400 });
   const b = parsed.data;
 
-  if (b.demo) {
+  {
+    // The scripted example is answered from the saved response in any mode (it costs nothing).
     try {
       const cached = JSON.parse(
         await readFile(path.join(process.cwd(), "data", "cache", `explain-${b.decision}.json`), "utf8"),
@@ -39,6 +41,9 @@ export async function POST(req: Request) {
       /* fall through to live */
     }
   }
+
+  // Owner lock: without it the plan still works, with the page's fixed fallback sentence.
+  if (!liveAllowed(req)) return Response.json({ explanation: "", locked: true });
 
   try {
     const client = new Anthropic({ timeout: 20_000, maxRetries: 0 });

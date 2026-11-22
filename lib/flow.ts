@@ -42,7 +42,6 @@ export function isDemo(): boolean {
 
 export const SAMPLES = [
   { id: "sideon", label: "Wrong angle", src: "/samples/sideon.mp4" },
-  { id: "valgus", label: "Knee caves in", src: "/samples/valgus.mp4" },
   { id: "reference", label: "Clean squat", src: "/samples/reference.mp4" },
 ];
 

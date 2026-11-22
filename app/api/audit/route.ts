@@ -4,6 +4,7 @@ import path from "node:path";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod";
 import { auditSchema, auditSystemPrompt } from "@/lib/audit";
+import { liveAllowed, lockedResponse } from "@/lib/guard";
 
 export const maxDuration = 60;
 
@@ -52,6 +53,8 @@ export async function POST(req: Request) {
     content.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: f.data } });
   }
   content.push({ type: "text", text: `Review this two-leg squat. The ${leg} knee is the operated one.` });
+
+  if (!liveAllowed(req)) return lockedResponse(); // owner lock: no paid call for the public
 
   try {
     // One attempt, well inside Vercel's 60 s limit, so the UI gets a JSON error instead of a 504.

@@ -5,6 +5,7 @@ import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod";
 import patientJson from "@/data/patient.json";
 import { notesSchema, notesSystemPrompt } from "@/lib/notes";
+import { liveAllowed, lockedResponse } from "@/lib/guard";
 import type { PatientData } from "@/lib/types";
 
 export const maxDuration = 60;
@@ -48,6 +49,8 @@ export async function POST(req: Request) {
         { type: "text", text: "Extract the physio's instructions." },
       ]
     : [{ type: "text", text: `Physio's note:\n${body.text}` }];
+
+  if (!liveAllowed(req)) return lockedResponse(); // owner lock: no paid call for the public
 
   try {
     const client = new Anthropic({ timeout: 40_000, maxRetries: 0 });

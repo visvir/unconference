@@ -78,14 +78,7 @@ export default function NotesPage() {
   }
 
   async function trySample() {
-    if (demo) return read({ sample: "sample" });
-    try {
-      const r = await fetch("/samples/physio-note.pdf");
-      await sendPdf(await r.blob());
-    } catch {
-      setError("Couldn't load the sample. Please try again.");
-      setPhase("error");
-    }
+    return read({ sample: "sample" }); // the sample always uses its saved response
   }
 
   const busy = phase === "reading";

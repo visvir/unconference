@@ -55,7 +55,7 @@ export default function RomPage() {
           throw new Error(READ_FAIL);
         }
       }
-      const payload = demo && sampleId ? { sample: sampleId } : { image, leg };
+      const payload = sampleId ? { sample: sampleId } : { image, leg };
       const res = await fetch("/api/rom", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

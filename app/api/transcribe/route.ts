@@ -1,3 +1,4 @@
+import { liveAllowed, lockedResponse } from "@/lib/guard";
 // Voice check-in: browser recording -> Sarvam speech-to-text -> text for the check-in box.
 // Verified against https://docs.sarvam.ai/api-reference/speech-to-text/transcribe (.md):
 //   POST https://api.sarvam.ai/speech-to-text, multipart field `file`, header api-subscription-key,
@@ -13,6 +14,7 @@ const MAX_BYTES = 4 * 1024 * 1024;
 const err = (error: string, status: number) => Response.json({ error }, { status });
 
 export async function POST(req: Request) {
+  if (!liveAllowed(req)) return lockedResponse(); // owner lock: no paid call for the public
   const key = process.env.SARVAM_API_KEY;
   if (!key) return err("Voice is not configured", 503);
 
