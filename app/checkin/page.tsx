@@ -79,22 +79,33 @@ export default function CheckInPage() {
   }
 
   if (redFlag) {
+    // Safety stop, in the app's own calm style: no plan is given, and it says clearly who to call.
     return (
-      <main className="fixed inset-0 z-50 flex flex-col justify-center bg-red-700 px-6 text-white">
-        <p className="text-5xl">⚠️</p>
-        <h1 className="h-display mt-4 text-4xl">Contact your surgeon today</h1>
-        <p className="mt-4 text-lg">
-          Stop exercising today. What you described ({redFlag.matched.join(", ")}) can be a sign of a problem that needs a doctor quickly.
+      <main className="mx-auto w-full max-w-md flex-1 px-4 py-6">
+        <span className="chip chip-warn">Before you train today</span>
+        <h1 className="h-display mt-3 text-3xl">Let&apos;s check with your physio or surgeon first</h1>
+        <div className="card mt-4">
+          <p className="text-base leading-relaxed text-ink">
+            You mentioned <b>{redFlag.matched.join(", ")}</b>. That&apos;s worth getting looked at before your next session, so
+            we&apos;ve paused today&apos;s exercises.
+          </p>
+          <p className="mt-3 text-base leading-relaxed text-ink">
+            Please <b>call your physio or surgeon today</b> and tell them what you told us. Most of the time it&apos;s a quick
+            conversation.
+          </p>
+          <p className="eyebrow mt-5 text-mute">Your care team</p>
+          <p className="mt-1 text-sm text-ink">{patient.profile.physio.name}</p>
+          <p className="text-sm text-ink">
+            {patient.profile.surgeon.name} · {patient.profile.surgeon.hospital}
+          </p>
+        </div>
+        <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm leading-relaxed text-amber-900">
+          If you have chest pain or trouble breathing, don&apos;t wait: go to the nearest emergency department or call <b>108</b>.
         </p>
-        <p className="mt-4 rounded-3xl bg-white/15 p-4 text-base">
-          If you have chest pain or trouble breathing, go to the nearest emergency department or call <b>108</b> now.
-        </p>
-        <p className="mt-6 text-sm text-red-100">
-          {patient.profile.surgeon.name} · {patient.profile.surgeon.hospital}
-        </p>
-        <button onClick={() => setRedFlag(null)} className="mt-8 inline-flex min-h-11 items-center self-start py-2 text-sm font-semibold text-white underline underline-offset-4">
+        <button onClick={() => setRedFlag(null)} className="btn btn-secondary mt-5 w-full">
           I typed this by mistake, go back
         </button>
+        <p className="note mt-3 text-center">This is a safety check, not a diagnosis.</p>
       </main>
     );
   }

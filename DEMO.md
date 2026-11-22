@@ -26,7 +26,7 @@ Backup: the same link without `?demo=1` (live Claude), then the screen recording
 | 1:30 | **Next** → check-in → **Use example** (Hinglish) → swelling **More** → **Get today's plan** | "Then he tells it how the knee feels, the way he'd text his physio, in Hinglish." | Type the text by hand. |
 | 1:50 | **Lighter day today**: Hinglish note, "Why (fixed safety rule)", squats + bike crossed out | "This is the key design choice. **The AI doesn't decide the plan.** A fixed, tested rule does: load went up yesterday plus more swelling means deload. Claude only explains it, in his language, and notice the form check feeds the rule: a 2 out of 3 is one of the listed reasons." | If the note is slow, the fallback sentence appears; the plan itself never depends on the model. |
 | 2:20 | edit the text box: clear it and type **"calf mein dard aur sujan hai"** → **Get today's plan** | "And safety always comes first. Calf pain and swelling after knee surgery can mean a clot…" | — |
-| 2:30 | **Red screen**: Contact your surgeon today, 108 | "…so it stops everything and tells him to call his surgeon today. That check runs before any AI." | — |
+| 2:30 | **Safety stop** (calm, in the app's style): "Let's check with your physio or surgeon first", exercises paused, 108 for chest pain or breathing trouble | "…so it stops everything and tells him to call his surgeon today. That check runs before any AI." | — |
 | 2:40 | — | "Mocked: the patient and history are seeded and there's no login; demo mode replays saved real Claude responses. Next: knee angles from pose landmarks, and a weekly brief to the physio." | — |
 
 ## Optional extras (only if ahead of time or asked)

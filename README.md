@@ -15,7 +15,7 @@ turns into a safe plan for today.
    Tap a chip to jump the video to that moment. If the leg isn't visible, it asks for a re-record.
 4. **Check-in:** type how the knee feels (English/Hinglish) and pick swelling: less / same / more.
 5. **Safety first:** a deterministic red-flag check (calf pain, fever, wound discharge, locking, giving way,
-   chest pain/breathlessness, in English and Hinglish) shows a full-screen "Contact your surgeon today" and stops.
+   chest pain/breathlessness, in English and Hinglish) pauses the day's exercises and asks the patient to call their physio or surgeon today (with 108 for chest pain or trouble breathing). No plan is given.
 6. **Plan:** a fixed rule decides: *load increased yesterday AND (swelling more OR any severity ≥ 2) → deload*.
    Claude only writes a 2-sentence explanation in the patient's own language.
 
