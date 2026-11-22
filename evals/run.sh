@@ -89,7 +89,7 @@ check "checkin page: How's the knee today" "the knee today" cat "$TMP/checkin.ht
 check "checkin page: mentions Hinglish"    "Hinglish"       cat "$TMP/checkin.html"
 
 # Every demo sample in lib/flow.ts is served and has a cached audit (catches drift between UI and cache).
-SAMPLES=$(grep -oE 'id: "[a-z0-9_-]+"' lib/flow.ts | cut -d'"' -f2)
+SAMPLES=$(grep -v ROM_SAMPLE lib/flow.ts | grep -oE 'id: "[a-z0-9_-]+"' | cut -d'"' -f2)
 for s in $SAMPLES; do
   code=$(curl -sS --max-time 10 -o /dev/null -w '%{http_code}' -r 0-1023 "$BASE/samples/$s.mp4" 2>/dev/null || true)
   [[ "$code" == "200" || "$code" == "206" ]] && ok "sample video /samples/$s.mp4 served" || bad "sample video /samples/$s.mp4 served" "HTTP $code"
@@ -231,6 +231,29 @@ if [[ "${EVAL_LIVE:-0}" == "1" ]]; then
 else
   echo "live model evals skipped (EVAL_LIVE=1 to run)"
 fi
+
+# ── rom (knee bend from a photo): no paid calls ─────────────────────────
+code=$(req "$TMP/rom.json" /api/rom '{"sample":"sample"}')
+status "rom sample → 200" 200 "$code" "$TMP/rom.json"
+jcheck "rom sample: response contract" "$TMP/rom.json" '
+  if (typeof j.photo_usable !== "boolean") return "photo_usable not boolean";
+  if (!j.photo_usable) return true;
+  if (!Number.isInteger(j.flexionDeg) || j.flexionDeg % 5 !== 0 || j.flexionDeg < 0 || j.flexionDeg > 160) return "flexionDeg " + j.flexionDeg;
+  if (!["low","medium","high"].includes(j.confidence)) return "confidence " + j.confidence;
+  return (typeof j.observation === "string" && j.observation.trim().length > 0) || "empty observation";'
+code=$(req "$TMP/rom-nope.json" /api/rom '{"sample":"does-not-exist"}')
+status "rom unknown sample → 404" 404 "$code" "$TMP/rom-nope.json"
+code=$(req "$TMP/rom-e0.json" /api/rom '{}')
+status "rom empty body → 400" 400 "$code" "$TMP/rom-e0.json"
+code=$(req "$TMP/rom-e1.json" /api/rom 'not json')
+status "rom non-JSON → 400" 400 "$code" "$TMP/rom-e1.json"
+rbig=$(head -c 1600000 /dev/zero | tr '\0' 'A')
+printf '{"image":"%s"}' "$rbig" > "$TMP/rom-big-body.json"
+code=$(REQ_TIMEOUT=30 req "$TMP/rom-big.json" /api/rom "@$TMP/rom-big-body.json")
+status "rom oversized image (>1.5 MB) → 400" 400 "$code" "$TMP/rom-big.json"
+code=$(req "$TMP/rom-page.html" /rom)
+status "GET /rom → 200" 200 "$code" "$TMP/rom-page.html"
+check "rom page has its title" "Knee bend from a photo" cat "$TMP/rom-page.html"
 
 echo "evals: $pass passed, $fail failed, $warn warnings ($((SECONDS - START)) s)"
 [[ $fail -eq 0 ]]

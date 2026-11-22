@@ -37,11 +37,21 @@ export interface Exercise {
   priority?: number; // lower = more important when time is short
 }
 
+export interface Phase {
+  id: string;
+  label: string;
+  weeks: string;
+  fromWeek: number;
+  toWeek: number;
+  goals: string[];
+}
+
 export interface PatientData {
   profile: PatientProfile;
   sessions: Session[];
   todayPlan: Exercise[];
   week?: { planned: number; done: number; missed: string[] };
+  phases?: Phase[];
 }
 
 export interface CheckIn {

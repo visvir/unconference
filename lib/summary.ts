@@ -1,0 +1,44 @@
+import type { FindingType, PatientData, Phase, SquatAudit } from "./types.ts";
+
+const NAMES: Record<FindingType, string> = {
+  knee_valgus: "knee caving inward",
+  trunk_lean: "weight shift",
+  pelvic_drop: "hip tilt",
+};
+
+export function currentPhase(p: PatientData): Phase | undefined {
+  const w = p.profile.weeksPostOp;
+  return p.phases?.find((ph) => ph.fromWeek <= w && w < ph.toWeek);
+}
+
+// Plain-text update a patient can send their physio. Pure and deterministic: every number comes from the data.
+export function progressSummary(p: PatientData, audit: SquatAudit | null): string {
+  const { profile, sessions, week } = p;
+  const first = sessions[0];
+  const last = sessions[sessions.length - 1];
+  const lines: string[] = [
+    `ACL rehab update: ${profile.name}, week ${profile.weeksPostOp} after ACL reconstruction (${profile.graft} graft, ${profile.surgicalLeg} knee).`,
+  ];
+  if (last) {
+    let bend = `Knee bend: ${last.flexionDeg}°`;
+    if (first && first !== last) {
+      const gain = last.flexionDeg - first.flexionDeg;
+      const days = (Date.parse(last.date) - Date.parse(first.date)) / 86400000;
+      const weeks = Math.max(1, Math.round(days / 7));
+      bend += ` (${gain >= 0 ? "up" : "down"} ${Math.abs(gain)}° in ${weeks} week${weeks === 1 ? "" : "s"})`;
+    }
+    const ext = last.extensionDeg === 0 ? "full" : `lacking ${last.extensionDeg}°`;
+    lines.push(`${bend}. Straightening: ${ext}. Pain yesterday: ${last.pain}/10.`);
+  }
+  if (week) {
+    const missed = week.missed.length ? ` (missed ${week.missed.join(", ")})` : "";
+    lines.push(`This week: ${week.done} of ${week.planned} sessions done${missed}.`);
+  }
+  if (last?.note) lines.push(`Yesterday: ${last.note}`);
+  if (audit?.video_usable) {
+    const hits = audit.findings.filter((f) => f.severity > 0).map((f) => `${NAMES[f.type]} ${f.severity}/3`);
+    lines.push(`Form check today: ${hits.length ? hits.join(", ") : "no issues seen"}.`);
+  }
+  lines.push("Sent from ACL Co-pilot. Observations to discuss, not a diagnosis.");
+  return lines.join("\n");
+}

@@ -240,5 +240,63 @@
       "Tue",
       "Thu"
     ]
-  }
+  },
+  "phases": [
+    {
+      "id": "protect",
+      "label": "Protect and settle",
+      "weeks": "Weeks 0–2",
+      "fromWeek": 0,
+      "toWeek": 2,
+      "goals": [
+        "Swelling down",
+        "Knee fully straight",
+        "Quads switching on"
+      ]
+    },
+    {
+      "id": "move",
+      "label": "Get moving",
+      "weeks": "Weeks 2–6",
+      "fromWeek": 2,
+      "toWeek": 6,
+      "goals": [
+        "Bend to about 120°",
+        "Walk normally without crutches"
+      ]
+    },
+    {
+      "id": "strength",
+      "label": "Build strength",
+      "weeks": "Weeks 6–12",
+      "fromWeek": 6,
+      "toWeek": 12,
+      "goals": [
+        "Squats and step-ups with good form",
+        "Balance on the operated leg"
+      ]
+    },
+    {
+      "id": "run",
+      "label": "Run and land",
+      "weeks": "Months 3–6",
+      "fromWeek": 12,
+      "toWeek": 26,
+      "goals": [
+        "Straight-line running",
+        "Jumping and landing drills"
+      ]
+    },
+    {
+      "id": "sport",
+      "label": "Return to sport",
+      "weeks": "Months 6–9+",
+      "fromWeek": 26,
+      "toWeek": 52,
+      "goals": [
+        "Cutting and sport drills",
+        "Strength and hop tests before clearance"
+      ]
+    }
+  ]
 }

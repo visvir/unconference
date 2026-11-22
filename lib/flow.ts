@@ -36,3 +36,28 @@ export const SAMPLES = [
   { id: "valgus", label: "Knee caves in", src: "/samples/valgus.mp4" },
   { id: "reference", label: "Clean squat", src: "/samples/reference.mp4" },
 ];
+
+// Knee-bend estimate from a photo ("Today" point on the chart).
+const ROM_KEY = "acl-flow-rom";
+let currentRom: number | null | undefined;
+
+export function saveRom(deg: number) {
+  currentRom = deg;
+  try {
+    sessionStorage.setItem(ROM_KEY, String(deg));
+  } catch {}
+}
+
+export function loadRom(): number | null {
+  if (currentRom !== undefined) return currentRom;
+  try {
+    const s = sessionStorage.getItem(ROM_KEY);
+    const n = s === null ? NaN : Number(s);
+    currentRom = Number.isFinite(n) ? n : null;
+  } catch {
+    currentRom = null;
+  }
+  return currentRom;
+}
+
+export const ROM_SAMPLE = { id: "sample", label: "Sample photo", src: "/samples/rom-sample.jpg" };

@@ -33,6 +33,20 @@ export default function Home() {
         </div>
         <p className="text-xs text-stone-500">Lacking {last.extensionDeg}° of full straightening · pain yesterday {last.pain}/10</p>
         <RomChart sessions={sessions} />
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <DemoLink
+            href="/rom"
+            className="rounded-xl border border-stone-300 bg-white px-3 py-3 text-center text-sm font-medium text-stone-800 active:bg-stone-100"
+          >
+            📐 Measure from a photo
+          </DemoLink>
+          <DemoLink
+            href="/progress"
+            className="rounded-xl border border-stone-300 bg-white px-3 py-3 text-center text-sm font-medium text-stone-800 active:bg-stone-100"
+          >
+            🗺 My recovery journey
+          </DemoLink>
+        </div>
       </section>
 
       {last.note && (

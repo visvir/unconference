@@ -14,3 +14,5 @@ required; https://www.pexels.com/license/). The third sample (`valgus.mp4`, furt
 - Source: recorded by the founder at the venue on 22 Nov 2026 (own footage, used with permission).
 - What's visible: front-on two-leg bodyweight squat; both knees move inward at the bottom, the right (operated) knee clearly inside the foot (about 2.3 s), with a slight weight shift to the left leg. Trimmed to 5.2 s, no audio.
 - Claude's recorded response (`data/cache/audit-valgus.json`): knee valgus 2/3, weight shift 1/3, hip tilt 0/3.
+
+- rom-sample.jpg: a still frame from sideon.mp4 (same Pexels source and license).
