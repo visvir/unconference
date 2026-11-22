@@ -19,6 +19,7 @@ export default function CheckInPage() {
   const [plan, setPlan] = useState<DailyPlan | null>(null);
   const [explaining, setExplaining] = useState(false);
   const [needSwelling, setNeedSwelling] = useState(false);
+  const planRef = useRef<HTMLElement>(null);
   const reqId = useRef(0); // ignore late explanations after the user edits the check-in
 
   const yesterday = patient.sessions[patient.sessions.length - 1];
@@ -43,6 +44,7 @@ export default function CheckInPage() {
     // 2. Fixed rule decides the plan.
     const p = decidePlan(yesterday, { text, swelling }, audit, patient.todayPlan);
     setPlan(p);
+    setTimeout(() => planRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
     // 3. The model only explains it, in the patient's language.
     const id = ++reqId.current;
     setExplaining(true);
@@ -97,7 +99,7 @@ export default function CheckInPage() {
 
       {maxSev !== null && (
         <p className="mt-3 rounded-xl bg-stone-100 px-3 py-2 text-xs text-stone-700">
-          From your form check: highest severity {maxSev}/3
+          {["Form check: looked good","Form check: mild issue seen (1/3)","Form check: moderate issue seen (2/3)","Form check: marked issue seen (3/3)"][Math.min(3, Math.max(0, maxSev))]}
         </p>
       )}
 
@@ -150,7 +152,7 @@ export default function CheckInPage() {
       )}
 
       {plan && (
-        <section className="mt-6 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+        <section ref={planRef} className="mt-6 rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
           <p
             className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${
               plan.decision === "deload" ? "bg-amber-100 text-amber-900" : "bg-emerald-100 text-emerald-800"

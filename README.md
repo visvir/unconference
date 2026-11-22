@@ -4,7 +4,7 @@ AI post-ACL recovery co-pilot for India. After ACL reconstruction most patients 
 9–12 months. Your phone camera watches your squat like a physio would, and a daily Hinglish check-in
 turns into a safe plan for today.
 
-**Demo:** https://unconference-ruby.vercel.app (offline-safe demo mode: `?demo=1`)
+**Demo:** https://unconference-ruby.vercel.app (`?demo=1`: no model latency, cached model responses; the site still needs a network)
 
 ## The flow
 

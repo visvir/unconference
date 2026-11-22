@@ -21,11 +21,11 @@ Backup: the same link without `?demo=1` (live Claude), then the screen recording
 |---|---|---|---|
 | 0:00 | (link open on Home) | "15 months ago I tore my ACL. After surgery you see a physio maybe once a week; the other 6 days you're alone, guessing. In India that's most patients, for 9–12 months." | — |
 | 0:25 | **Home**: Arjun, week 10, hamstring graft, flexion 104°→123°, "Yesterday: added single-leg squats" | "Meet Arjun. His knee is improving, and yesterday he progressed to single-leg squats, which is exactly when people overdo it." | Refresh; Home is static, it can't fail. |
-| 0:45 | Tap **Check my squat form** → **Sample: knee caving in** *(needs `valgus.mp4`)* | "Before training, he films one squat. The browser takes 8 frames from the video, and Claude looks at them the way a physio would." | Tap **Sample: good form**: "here it's clean, 0 out of 3, it doesn't invent problems." |
-| 1:05 | Findings: **knee caving in 2/3** → tap **▶ See it at 2.1s** → the video jumps to that moment; 2 coaching cues | "Moderate knee valgus, right here. And two cues he can use on the next rep." | Tap **Sample: wrong angle**: "and if the leg isn't visible, it asks for a re-record instead of guessing." |
+| 0:45 | Tap **Check my squat form** → **Sample: knee caving in** *(needs `valgus.mp4`)* | "Before training, he films one squat. The browser takes 8 frames from the video, and Claude looks at them the way a physio would." | Tap **Sample: clean two-leg squat**: "here it's clean, 0 out of 3, it doesn't invent problems." |
+| 1:05 | Findings: **knee caving in 2/3** → tap **▶ See it at 2.1s** → the video jumps to that moment; 2 coaching cues | "Moderate knee valgus, right here. And two cues he can use on the next rep." | Tap **Sample: wrong angle**: "and if the leg isn't visible, it asks for a re-record instead of guessing (then tap the clean sample again to continue)." |
 | 1:35 | **Next** → check-in → **Use example** (Hinglish) → swelling **More** → **Get today's plan** | "Then he tells it how the knee feels, the way he'd text his physio, in Hinglish." | Type the text by hand. |
 | 1:55 | **Lighter day today**: Hinglish note, "Why (fixed safety rule)", squats + bike crossed out | "This is the key design choice. **The AI doesn't decide the plan.** A fixed, tested rule does: load went up yesterday plus more swelling means deload. Claude only explains it, in his language." | If the note is slow, the fallback sentence appears; the plan itself never depends on the model. |
-| 2:25 | **← back**, type **"calf mein dard aur sujan hai"** → **Get today's plan** | "And safety always comes first. Calf pain and swelling after knee surgery can mean a clot…" | — |
+| 2:25 | edit the text box: clear it and type **"calf mein dard aur sujan hai"** → **Get today's plan** | "And safety always comes first. Calf pain and swelling after knee surgery can mean a clot…" | — |
 | 2:35 | **Red screen**: Contact your surgeon today, 108 | "…so it stops everything and tells him to call his surgeon today. That check runs before any AI." | — |
 | 2:45 | — | "Mocked: the patient and history are seeded and there's no login; demo mode uses saved responses from real Claude calls. Next: knee angles from pose landmarks, and a weekly brief to the physio." | — |
 
@@ -33,7 +33,7 @@ Backup: the same link without `?demo=1` (live Claude), then the screen recording
 
 | Criterion | How this build earns it |
 |---|---|
-| It works | Full loop on the public link, no login; `?demo=1` runs offline from cached responses |
+| It works | Full loop on the public link, no login; `?demo=1` has no model latency (cached model responses; the site still needs a network) |
 | Problem and user | Founder is 15 months post-ACL; unsupervised rehab is the norm in India |
 | Product sense and feasibility | AI observes and explains; deterministic rules decide; red flags always escalate |
 | Use of AI | Vision form audit over frames, explanation in the patient's own language (Hinglish or English) |

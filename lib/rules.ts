@@ -31,7 +31,7 @@ export function decidePlan(
   const worst = audit?.findings.find((f) => f.severity === maxSev);
 
   const reasons: string[] = [];
-  if (yesterday.loadIncreased) reasons.push(`Load went up yesterday (${yesterday.note ?? "progressed exercises"})`);
+  if (yesterday.loadIncreased) reasons.push(yesterday.note ? `Load went up yesterday: ${yesterday.note.charAt(0).toLowerCase()}${yesterday.note.slice(1)}` : "Load went up yesterday");
   if (checkIn.swelling === "more") reasons.push("Swelling is more than yesterday");
   if (maxSev >= 2 && worst) reasons.push(`Form check: ${worst.type.replace("_", " ")} severity ${maxSev}/3`);
 

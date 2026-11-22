@@ -154,9 +154,9 @@ export default function AuditPage() {
                     {SEV[f.severity].label} · {f.severity}/3
                   </span>
                 </div>
+                <p className="mt-1 text-sm text-stone-600">{f.observation}</p>
                 {f.severity > 0 && (
                   <>
-                    <p className="mt-1 text-sm text-stone-600">{f.observation}</p>
                     <button
                       onClick={() => seek(f.timestampSec)}
                       className="mt-2 rounded-full bg-stone-900 px-3 py-1 text-xs font-medium text-white active:bg-stone-700"

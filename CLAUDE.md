@@ -106,4 +106,4 @@ whether to cut something else for it.
 ## Stack
 
 Next.js 16 App Router + TS + Tailwind 4 + Recharts; Claude Opus 5.5 (vision audit) + Sonnet 5.5 (explanation).
-Run: `npx next dev -p 3005` · Test: `npm test` (rules) · Deploy: `vercel deploy --prod --yes` · Demo link: https://unconference-ruby.vercel.app (`?demo=1` = cached, offline-safe)
+Run: `npx next dev -p 3005` · Test: `npm test` (rules) · Deploy: `vercel deploy --prod --yes` · Demo link: https://unconference-ruby.vercel.app (`?demo=1` = no model latency (cached model responses; the site still needs a network))

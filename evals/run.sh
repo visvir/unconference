@@ -137,7 +137,7 @@ code=$(req "$TMP/h2.json" /api/audit '{"frames":[{"t":"1","data":123}]}')
 status "audit frame wrong types → 400" 400 "$code" "$TMP/h2.json"
 big=$(head -c 1200000 /dev/zero | tr '\0' 'A')
 printf '{"frames":[{"t":1,"data":"%s"}]}' "$big" > "$TMP/h3-body.json"
-code=$(req "$TMP/h3.json" /api/audit "@$TMP/h3-body.json")
+code=$(REQ_TIMEOUT=30 req "$TMP/h3.json" /api/audit "@$TMP/h3-body.json")
 status "audit oversized frame (>1 MB) → 400" 400 "$code" "$TMP/h3.json"
 code=$(req "$TMP/h4.json" /api/explain '{"decision":"maybe"}')
 status "explain invalid body → 400" 400 "$code" "$TMP/h4.json"
