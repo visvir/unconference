@@ -25,9 +25,9 @@ I tore my ACL 15 months ago. After surgery in India, most patients rehab alone f
 
 **Why not let the AI decide the plan?** It is safety-critical. A fixed rule can be tested and audited. The AI only observes and explains.
 
-**Isn't the demo cached?** Yes, ?demo=1 replays real saved Claude responses so there is no wait. Without it, the same link calls Claude live, about 8 seconds.
+**Isn't the demo cached?** Yes, ?demo=1 replays real saved Claude responses so there is no wait. Without it, the same link calls Claude live, about 10 seconds.
 
-**Why only "mild" on your own squat?** That is what Claude really returned. I kept it instead of re-running for a bigger number.
+**How do you know 2/3 is right?** It isn't clinically validated. We checked it against a control: the same settings score a clean squat 0/0/0, and at a lower effort setting the model under-read this clip as 1/3, so we raised it.
 
 **Red flags are just keywords?** Yes. It is keyword matching in English and Hinglish, and it errs on the side of caution. It even triggers on "no calf pain". Not clinically validated.
 

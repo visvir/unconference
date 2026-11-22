@@ -1,21 +1,21 @@
 # Handover / restart file
 
-Checkpoint updated 2:40 PM (originally written **2:07 PM IST, Sun 22 Nov**) (66 min into the 240-min build). Read this first after
+Checkpoint updated 2:50 PM (originally written **2:07 PM IST, Sun 22 Nov**) (66 min into the 240-min build). Read this first after
 logging in again. Then read `CLAUDE.md` (rules), `DEMO.md` (spec + stage script) and `README.md`.
 
 ## Where we are (one paragraph)
 
 **ACL Co-pilot**, an AI post-ACL rehab co-pilot for India. The core flow is **live and verified** at
 https://unconference-ruby.vercel.app (demo mode: `?demo=1`): home (seeded patient Arjun, ROM chart) → two-leg squat
-video form check (three samples: Wrong angle, Knee drifts in, Clean squat) (the browser extracts 8 frames → Claude Opus 5.5 structured output) → Hinglish check-in →
+video form check (three samples: Wrong angle, Knee caves in, Clean squat) (the browser extracts 8 frames → Claude Opus 5.5 structured output) → Hinglish check-in →
 deterministic red-flag stop OR deterministic deload rule + Claude Sonnet 5.5 two-sentence explanation.
-`scripts/verify.sh` is green against production (lint, build, 33 evals, 113 rule checks, secret scan).
+`scripts/verify.sh` is green against production (lint, build, 38 evals, 115 rule checks, secret scan).
 
 ## Timeline (founder's targets)
 
 | When | What |
 |---|---|
-| now → 2:45 | Founder films the **valgus clip** (below). Cache it, add the sample, harden its eval, deploy. |
+| now → 2:45 | Founder taps through the live link; `demo-critic` pass. |
 | 2:45 → 3:15 | `demo-critic` agent walks the prod link; fix only what breaks. Rehearse with a timer, record a backup video. |
 | **3:30** | **Mentor review** (first evaluation). |
 | 3:45 → 4:30 | Fix only what the mentor flags. README pass. Phone test. |
@@ -23,12 +23,11 @@ deterministic red-flag stop OR deterministic deload rule + Claude Sonnet 5.5 two
 
 ## Open items, in priority order
 
-1. **DONE 2:40 PM: founder's own clip is the 'Knee drifts in' sample (mild 1/3 findings, chip + cues), two-leg squats throughout.**
-2. **Uncommitted at checkpoint → committed in the checkpoint commit, NOT yet reviewed or deployed:**
-   `app/audit/page.tsx` caps the video at 45vh and auto-scrolls to the result. Verify is green locally.
-   Next step: run it past the code reviewer, then `vercel deploy --prod --yes`.
+1. **DONE: founder's own clip is the 'Knee caves in' sample (knee valgus 2/3 at 2.3 s).**
+2. Founder to tap through the live link on phone + stage laptop (the timestamp chip has not been seen working in a real browser by the agent: Chrome extension disconnected after the Console login).
 3. Optional, if ahead: a front-on, no-band "good form" two-leg squat clip (the stock `reference.mp4` is a banded two-leg squat).
-4. **Do NOT do** (architect review): voice/Sarvam, MediaPipe, Surgeon Brief, more red-flag regex, rate limiting, UI redesign, more rule tests.
+4. Record backup screen video; rehearse twice with a timer.
+5. **Do NOT do** (architect review): voice/Sarvam, MediaPipe, Surgeon Brief, more red-flag regex, rate limiting, UI redesign, more rule tests.
 
 ## Restart steps (after logging in with the Console account)
 
@@ -72,7 +71,7 @@ Rough cost: demo audit ≈ $0.06 (Opus) per call; a Fable Claude Code session �
   extraction) → `messages.parse` + Zod schema on `claude-opus-5-5` (forced tool_choice isn't supported on Opus 5.5).
 - **Demo mode** serves real recorded responses from `data/cache/`. The explanation cache only answers the scripted
   example text; anything typed goes live.
-- **What's mocked:** the seeded patient/history, stock sample clips, placeholder surgeon/physio, no login/DB.
+- **What's mocked:** the seeded patient/history, two stock clips + the founder's own clip, placeholder surgeon/physio, no login/DB.
 
 ## Stack and commands
 

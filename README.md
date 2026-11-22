@@ -10,7 +10,7 @@ turns into a safe plan for today.
 
 1. **Home:** seeded patient (hamstring graft, 10 weeks post-op), knee-flexion trend, today's plan.
 2. **Form check:** upload a 3–5 s two-leg bodyweight squat, filmed from the front. The browser takes 8 frames, each tagged with its timestamp.
-   Claude (vision) rates knee valgus, trunk lean and pelvic drop 0–3 with a timestamp and 2 coaching cues.
+   Claude Opus 5.5 (medium effort, vision) rates knee valgus, trunk lean and pelvic drop 0–3 with a timestamp and 2 coaching cues.
    Tap a chip to jump the video to that moment. If the leg isn't visible, it asks for a re-record.
 3. **Check-in:** type how the knee feels (English/Hinglish) and pick swelling: less / same / more.
 4. **Safety first:** a deterministic red-flag check (calf pain, fever, wound discharge, locking, giving way,
@@ -33,7 +33,7 @@ ffmpeg (for caching sample frames), Claude Code (pair programming). Sample clips
 ## What's mocked
 
 - The patient profile, ROM history and today's plan are **seeded** (`data/patient.json`); there's no login and no database.
-- Sample clips: two stock clips (wrong angle, clean squat) and the founder's own squat recorded at the venue; their Claude responses are saved from real calls.
+- Sample clips: three samples, two stock clips from Pexels (wrong angle, clean squat) and the founder's own knee-caves-in squat recorded at the venue; their Claude responses are saved from real calls.
 - Surgeon and physio names are placeholders.
 - `?demo=1` serves **cached** model responses (recorded from real calls) for the bundled samples and the scripted check-in, so there's no model latency on stage. Anything else typed or uploaded goes to Claude live.
 
