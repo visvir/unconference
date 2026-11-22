@@ -1,12 +1,12 @@
 # Production roadmap (analysis, not built)
 
-What the backend needs if ACL Co-pilot goes from a hackathon prototype to real patients in India.
-Legal and regulatory points below are flags to check with a lawyer, not settled conclusions.
+This is analysis, not built: what the backend needs if ACL Co-pilot goes from a prototype to real patients in India.
+Legal and regulatory points are flags to check with a lawyer, not settled conclusions.
 
 ## Where the prototype stands
 
 Stateless Next.js app on Vercel: seeded patient JSON, no login, no database. Three gaps matter most:
-the AI routes (`/api/audit`, `/api/rom`, `/api/explain`, `/api/transcribe`) have no sign-in and no rate
+the paid AI routes (`/api/audit`, `/api/rom`, `/api/notes`, `/api/transcribe`) are locked behind one owner passcode (`DEMO_ACCESS_CODE`) but have no user sign-in and no per-user rate
 limit; red flags and the deload rule are hard-coded in `lib/rules.ts`; the physio's contact lives only
 in the browser.
 
@@ -33,7 +33,7 @@ in the browser.
 
 ### Wearable integration (Google Health)
 
-Today the activity widget on Home is seeded sample data. A real connection needs these steps:
+Today the activity widget on Home is seeded sample data. A real, optional Google Health sign-in is built on the `google-health` branch (off unless server credentials are set; nothing is stored; read-only activity permission). It was tried once on 22 Nov 2026 with the founder's own account, locally: sign-in and permission worked, but Google returned no activity data, because the steps live in Health Connect on the phone and not in Google's cloud. The live site therefore keeps the labelled sample data. A production connection needs these steps:
 
 1. A Google Cloud project with the health API enabled.
 2. An OAuth consent screen. Stay in testing mode with named test users until Google reviews the restricted health scopes.
@@ -42,18 +42,18 @@ Today the activity widget on Home is seeded sample data. A real connection needs
 5. The patient's data must be in Google's cloud. Health Connect data that lives only on the phone needs an Android app.
 6. Token storage per user in the database, with revocation.
 
-Uncertain: the older Google Fit web API was being retired. Confirm the current API and endpoints in Google's documentation before building.
+Next step: a synced Fitbit or Pixel Watch account, or a small Android companion that reads Health Connect. Uncertain: the older Google Fit web API was being retired, so confirm the current API and endpoints in Google's documentation before building.
 
 ## 3. Security and privacy must-haves
 
 - **DPDP Act 2023:** explicit consent per purpose, purpose limitation, rights to access, correct and erase, breach notification, verifiable parental consent for under-18s (teenage athletes are a real ACL group). The rules are being phased in: confirm dates and duties with a lawyer.
 - Host in India; encrypt in transit and at rest.
 - Per-patient access control in the database, and an append-only log of who viewed what.
-- Secrets in a managed store, rotated; sign-in and rate limits on every AI route.
+- Secrets in a managed store, rotated; user sign-in and per-user rate limits on every AI route.
 - Today a single owner passcode (`DEMO_ACCESS_CODE`, 12-hour cookie) locks every paid route. It is a stopgap. Real sign-in with roles replaces it in phase 1.
 - Keep personal data out of prompts and logs: frames, side and symptoms only, never names or numbers.
 - Vendor terms: data-processing agreements with Anthropic and Sarvam; ask about zero retention and where processing happens.
-- Sharing with a physio is a revocable consent record, replacing deep links. Account deletion removes media and records.
+- Sharing with a physio is a revocable consent record, replacing today's WhatsApp and mail links (no WhatsApp number is built in). Account deletion removes media and records.
 - **Medical-device question (CDSCO):** software that diagnoses or drives treatment may count as a medical device. "Observations to discuss with your physio" with a clinician in the loop may lower the class, but an automatic deload arguably drives treatment. Unsettled: get regulatory advice early.
 
 ## 4. Clinical safety and quality
@@ -101,12 +101,3 @@ Uncertain: the older Google Fit web API was being retired. Confirm the current A
 1. **Who is the buyer, the clinic or the patient?** It decides who owns the data and how onboarding works.
 2. **Must the raw video be kept for the physio?** It decides storage cost and how serious a breach would be.
 3. **Does the plan stay automatic, or become a physio-approved suggestion?** It decides the regulatory class and the staffing for escalations.
-
-## Google Health connection: built and tried, not shipped
-
-A real, optional sign-in to the Google Health API is built on the branch `google-health` (off unless server
-credentials are set; nothing is stored; read-only activity permission). It was tried once on 22 Nov 2026 with
-the founder's own account, locally: the sign-in and permission worked, but Google returned no activity data,
-because the founder's steps live in Health Connect on the phone and not in Google's cloud. The live site
-therefore keeps the labelled sample data. Next step: a synced Fitbit or Pixel Watch account, or a small
-Android companion that reads Health Connect.

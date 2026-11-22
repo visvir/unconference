@@ -1,6 +1,8 @@
-# Builder's Day speedrun: 4-hour solo build
+# Speedrun: 4-hour solo build
 
-Product (Un)Conference '26, Builder's Day · Sun 22 Nov · Bengaluru.
+> This file is the build-day harness: the instructions given to Claude Code during the four-hour Speedrun on 22 November 2026. It is kept as a record of how the project was built. For the project itself, start with README.md.
+
+Product (Un)Conference ’26 by The Product Folks, Day 2 "Builders’ Day" · Speedrun: Buildathon powered by Anthropic · Sun 22 Nov 2026 · Bengaluru.
 **Build 1:00–5:00 PM IST. Submissions lock at 5:00 PM, and nothing gets in after that.**
 Every rule below protects one thing: a **public demo link where one user completes one
 flow end to end**, submitted before 5.
@@ -28,7 +30,7 @@ Registered ✅ · mentor check-in 3:00–4:00 PM (zone, room and mentor names ke
 - **Process plugins are off in this repo** (superpowers, learning style). Don't invoke brainstorming
   or writing-plans skills; `/kickoff` replaces them.
 
-## Event facts (from the Builder's Kit)
+## Event facts (from the Builder’s Kit)
 
 - **Submit** at unconference.theproductfolks.com/speedrun/submit: project name, **GitHub
   link**, **demo link**. Submissions open at 4:00 PM.
@@ -94,7 +96,7 @@ whether to cut something else for it.
 
 | Path | Purpose |
 |---|---|
-| `HANDOVER.md` | **Read first after a restart:** current state, open items, restart steps, agents to recreate. |
+| `HANDOVER.md` | Current status and maintenance notes (rewritten after the event). |
 | `DEMO.md` | The demo script, eval cases and judging criteria: the spec. Keep it current. |
 | `README.md` | What it is, the demo link, how it works, **tools used**, **what's mocked**. |
 | `scripts/verify.sh` | Detects the stack, runs lint/typecheck/test/build, evals, smoke check, secret scan. |
@@ -105,5 +107,8 @@ whether to cut something else for it.
 
 ## Stack
 
-Next.js 16 App Router + TS + Tailwind 4 + Recharts; Claude Opus 5.5 (vision audit) + Sonnet 5.5 (explanation).
-Run: `npx next dev -p 3005` · Test: `npm test` (rules) · Deploy: `vercel deploy --prod --yes` · Demo link: https://unconference-ruby.vercel.app (`?demo=1` = no model latency (cached model responses; the site still needs a network))
+Next.js 16 App Router, TypeScript, Tailwind 4, Recharts. Claude Opus 5.5 (squat form check, knee bend) and
+Claude Sonnet 5.5 (plan explanation, physio's advice). Sarvam speech-to-text for voice. MediaPipe for the live coach.
+Run: `npx next dev -p 3005` · Test: `npm test` (unit), `BASE=... evals/run.sh` (end to end), `scripts/verify.sh` (all) ·
+Deploy: `vercel deploy --prod --yes` · Demo link: https://unconference-ruby.vercel.app (`?demo=1` replays saved
+model responses; live calls need the owner passcode at `/unlock`)

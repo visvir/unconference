@@ -1,80 +1,165 @@
 # ACL Co-pilot
 
-AI post-ACL recovery co-pilot for India. After ACL reconstruction most patients rehab unsupervised for
-9–12 months. Your phone camera watches your squat like a physio would, and a daily Hinglish check-in
-turns into a safe plan for today.
+**An AI rehab co-pilot for people recovering from ACL knee surgery.** Your phone camera checks your squat the
+way a physio would, a daily check-in in English or Hinglish becomes a safe plan for today, and fixed safety
+rules, not the AI, make every decision that matters.
 
-**Demo:** https://unconference-ruby.vercel.app (`?demo=1`: no model latency, cached model responses; the site still needs a network)
+> 🏆 **First prize, [Speedrun: Buildathon powered by Anthropic](https://unconference.theproductfolks.com/speedrun)**
+> at Builders’ Day, [Product (Un)Conference ’26](https://unconference.theproductfolks.com/) by
+> [The Product Folks](https://www.theproductfolks.com/), Bengaluru, 22 November 2026.
+> Built solo in four hours, in a field of 100+ builders.
 
-## The flow
+**Live demo:** https://unconference-ruby.vercel.app/?demo=1 (no login; the demo replays saved AI responses, so it
+costs nothing to try)
 
-1. **Home:** seeded patient (hamstring graft, 10 weeks post-op), knee-flexion trend, today's plan. The main button is **Check my progress**.
-2. **Check my progress** (`/check`) is a hub of tests. Pick **Squat form** (recorded video) for the core flow.
-3. **Form check:** upload a 3–5 s two-leg bodyweight squat, filmed from the front. The browser takes 8 frames, each tagged with its timestamp.
-   Claude Opus 5.5 (medium effort, vision) rates knee valgus, trunk lean and pelvic drop 0–3 with a timestamp and 2 coaching cues.
-   Tap a chip to jump the video to that moment. If the leg isn't visible, it asks for a re-record.
-4. **Check-in:** type how the knee feels (English/Hinglish) and pick swelling: less / same / more.
-5. **Safety first:** a deterministic red-flag check (calf pain, fever, wound discharge, locking, giving way,
-   chest pain/breathlessness, in English and Hinglish) pauses the day's exercises and asks the patient to call their physio or surgeon today (with 108 for chest pain or trouble breathing). No plan is given.
-6. **Plan:** a fixed rule decides: *load increased yesterday AND (swelling more OR any severity ≥ 2) → deload*.
-   Claude only writes a 2-sentence explanation in the patient's own language.
+## Why I built it
 
-### Also in the app
+I tore my ACL and had it reconstructed. After surgery you see a physiotherapist perhaps once a week. For the
+other six days, for nine to twelve months, you are on your own: guessing whether your form is right, whether
+today's swelling means "back off" or "call the surgeon", and skipping sessions when work gets busy. In India
+that is the normal experience of ACL rehab. ACL Co-pilot is the tool I wanted during those months.
 
-- **Check my progress hub** (`/check`): Live squat coach (beta), Squat form (recorded video), Knee bend (photo), and three tests marked "coming next".
-- **Physio's advice** (`/notes`): paste the physio's message or upload a PDF. Claude Sonnet 5.5 pulls out each instruction (add, remove, change or caution) with the physio's exact words. Plain code applies them to today's plan, and the check-in plan shows a "From your physio" section. The deload rule still wins: a physio-added exercise is dropped on a deload day. Sample: a fictional note from "Rohan (demo physio)" (`public/samples/physio-note.pdf`).
-- **Live squat coach** (`/live`, beta): the camera and a pose model run in the browser. It gives framing cues ("Step back so I can see your whole body"), form cues ("Push your right knee out over your toes") and counts reps and clean reps. Spoken cues are optional. Nothing is recorded or uploaded. Thresholds are first guesses, not tuned or validated.
-- **Activity widget** on Home ("Google Health · Sample data"): steps, active minutes, resting heart rate, sleep, a 7-day steps chart and a fixed-rule insight. It is sample data, not a real connection. A line about activity is added to the share message, marked as sample data.
-- **New look:** "ink + volt on paper" with the Outfit display font (see `DESIGN.md`). Styling only.
-- **Voice check-in:** "Speak instead" records in the browser and sends the audio to Sarvam speech-to-text. The text lands in the box for the patient to review before submitting.
-- **10-minute plan:** "Only 10 minutes today?" on the plan card shows a shorter session. A fixed rule, no AI.
-- **This week:** Home shows "4 of 6 sessions done, missed Tue, Thu" (seeded).
-- **My recovery** (`/progress`): five typical rehab phases ("You are here"), past sessions, and "Share with my physio" (email or WhatsApp, message built by plain code).
-- **Knee bend from a photo** (`/rom`): one side-on photo, Claude Opus 5.5 estimates knee flexion ("About N°, estimate ±10°"). It can be added to the chart as "Today".
+## What it does
+
+The core flow takes about a minute:
+
+1. **Home** shows where the patient is: week 10 after surgery, knee bend improving, and yesterday's step up in
+   exercise load.
+2. **Check my progress → Squat form.** The patient films one squat. The browser picks 8 frames and Claude
+   rates three things a physio looks for (knee caving in, weight shifting off the operated leg, hip tilt) from
+   0 to 3, points to the exact moment in the video, and gives two cues for the next rep. If the video is
+   filmed from the wrong angle, it says so and explains how to film it again. It does not guess.
+3. **Daily check-in.** The patient types or says how the knee feels, the way they would text their physio,
+   and picks whether swelling is less, the same or more than yesterday.
+4. **Safety first.** Before any AI runs, plain code looks for warning signs (calf pain, fever, wound
+   problems, the knee locking or giving way, chest pain or breathlessness) in English and Hinglish. If it
+   finds one, the day's exercises are paused and the patient is asked to call their physio or surgeon.
+5. **Today's plan.** A fixed rule decides: if load went up yesterday and either swelling is up or the form
+   check scored 2 or more, today is a lighter day. Claude only writes a two-sentence explanation in the
+   patient's own language.
+
+### The design choice that matters
+
+**The AI observes and explains. Tested code decides.** In post-surgery rehab a confident wrong answer can mean
+a re-injury, so nothing safety-critical depends on a model's judgement. The warning-sign check and the plan
+rule are ordinary TypeScript with unit tests, and every plan shows the reasons behind it.
+
+## Everything in the app
+
+| Feature | What it does | AI or rule |
+|---|---|---|
+| **Squat form check** | 8 frames from a short video; three scores with a timestamp and coaching cues; refuses bad angles | Claude Opus 5.5 (vision, structured output) |
+| **Live squat coach** (beta) | Camera on, pose tracking in the browser: "step back", "push your right knee out", rep and clean-rep counts. Nothing is recorded or uploaded | MediaPipe pose landmarks + tested rules |
+| **Knee bend from a photo** | One side-on photo gives an estimate of knee flexion to the nearest 5°, labelled as an estimate | Claude Opus 5.5 (vision) |
+| **Daily check-in** | Typed or spoken, English or Hinglish | Sarvam speech-to-text for voice |
+| **Warning-sign check** | Pauses the day and tells the patient who to call | Rule (no AI) |
+| **Today's plan** | Normal day or lighter day, with the reasons listed | Rule; Claude Sonnet 5.5 writes the explanation |
+| **Physio's advice** | Paste the physio's message or upload their PDF; each instruction is shown in the physio's own words and applied to the plan. The safety rule still wins | Claude Sonnet 5.5 extracts; code applies |
+| **Only 10 minutes today?** | A short version of the plan, most protective exercises first | Rule |
+| **My recovery** | The five phases of ACL rehab with "you are here", plus past sessions | Seeded data |
+| **Share with my physio** | A progress summary, ready to send from the patient's own WhatsApp or Gmail | Built by code; the app sends nothing itself |
+| **Activity** | Steps, active minutes, sleep and a note when a big day adds load to the knee | Sample data (see below) |
 
 ## How it works
 
-- `app/api/audit`: Claude Opus 5.5, image input, structured output (`messages.parse` + Zod schema).
-- `lib/rules.ts`: red flags and the deload rule. Plain TypeScript, tested by `npm test` against `data/test-cases.json`.
-- `app/api/explain`: Claude Sonnet 5.5 writes the explanation. It cannot change the decision.
-- `app/api/transcribe` + `components/VoiceInput.tsx`: browser audio to Sarvam `saaras:v4`, translit mode, so Hindi/Hinglish comes back in Roman script and the red-flag check still works.
-- `shortPlan` in `lib/rules.ts` + `components/QuickPlan.tsx`: keeps the most protective exercises first within 10 minutes; never restores exercises a deload removed.
-- `app/progress` + `lib/summary.ts` + `components/ShareProgress.tsx`: the physio message is built from the data by plain code; `mailto:` and `wa.me` links open the patient's own app. The physio's email and number are kept in the browser's localStorage only.
-- `app/rom` + `app/api/rom` + `lib/rom.ts`: photo downsized in the browser, Claude Opus 5.5 (medium effort, structured output); code clamps and rounds to 5°. "Today" value is kept in sessionStorage.
-- `app/api/notes` + `lib/notes.ts` + `app/notes`: Claude Sonnet 5.5 (structured output, accepts pasted text or a PDF) returns instructions with the physio's verbatim quote. `applyNotes` in plain code edits the plan and records each change. The deload rule runs after and still removes physio-added exercises.
-- `app/live` + `lib/pose.ts`: MediaPipe Pose Landmarker runs in the browser (model and wasm load from Google and jsDelivr CDNs). Pure, tested code (30 tests) turns landmarks into framing cues, form cues and rep counts.
-- `lib/activity.ts` + `components/ActivityWidget.tsx` + `data/activity.json`: seeded sample data, no network call. A fixed rule flags a day at 1.4x the steps goal or more as extra load.
-- Demo mode (`?demo=1`): sample clips → real responses cached in `data/cache/` (refresh with `scripts/cache-audit.sh <id>`).
+```
+Browser                               Server (Next.js on Vercel)                 Model
+───────                               ──────────────────────────                 ─────
+video → 8 timestamped frames   ──▶    /api/audit   validate → lock → parse  ──▶  Claude Opus 5.5
+photo → resized JPEG           ──▶    /api/rom     validate → lock → clamp  ──▶  Claude Opus 5.5
+physio text or PDF             ──▶    /api/notes   validate → lock → clean  ──▶  Claude Sonnet 5.5
+check-in text                  ──▶    lib/rules.ts (warning signs, plan)         none: plain code
+plan + reasons                 ──▶    /api/explain                           ──▶  Claude Sonnet 5.5
+voice recording                ──▶    /api/transcribe                        ──▶  Sarvam saaras:v4
+camera (live coach)                   never leaves the browser                   MediaPipe, on device
+```
 
-## Access and cost protection
+- **Video never leaves the phone.** Only eight small frames (about 300 KB in total) are sent, whatever the
+  size of the original clip.
+- **Typed, checked outputs.** Each model call returns structured data against a Zod schema, and code then
+  clamps and cleans it before anything is shown.
+- **Rules in one place.** `lib/rules.ts` holds the warning-sign check, the plan rule and the 10-minute plan.
+  `lib/pose.ts` holds the live-coach logic. Both are pure functions with tests.
+- **Hinglish stays checkable.** Voice is transcribed into Roman script, so a spoken "pindli mein dard hai"
+  still triggers the calf-pain warning.
 
-- Every route that spends money needs an owner passcode in production: `/api/audit` with frames, `/api/rom` with an image, `/api/notes` with text or a PDF, `/api/explain` for anything but the scripted example, and `/api/transcribe`.
-- The passcode is the server environment variable `DEMO_ACCESS_CODE` (at least 12 characters). With none set, production refuses all paid calls.
-- The owner enters it once at `/unlock`. That sets an httpOnly cookie for 12 hours. `/unlock` also has a "Lock again" button.
-- Visitors can use the bundled samples. They replay saved responses and cost nothing. Sample buttons always use the saved response.
-- Without the passcode the check-in plan still works: the rule decides and a fixed sentence replaces the model's note.
-- Local development is not locked.
-- Security headers on every page: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, a referrer policy, and a permissions policy that allows camera and microphone for this site only.
-- Evals: 60 on production, including checks that the public gets 403 from paid routes and that the headers are present. 11 unit tests cover the lock.
+## Quality and safety
 
-## Tools used
+- **223 unit checks** across six test files (`npm test`): plan decisions, warning-sign phrases in English and
+  Hinglish with false-alarm controls, pose logic, share links, the access lock.
+- **60 end-to-end checks** against the deployed site (`evals/run.sh`): pages, response contracts, bad input,
+  locked routes and security headers.
+- **Test first for every bug.** Each fix started as a failing test.
+- **Access and cost protection.** Anything that spends money needs an owner passcode in production
+  (`DEMO_ACCESS_CODE`, entered once at `/unlock`). Visitors use the bundled samples, which replay saved
+  responses. With no passcode set, the site refuses all paid calls.
+- **Baseline security headers** on every page, with camera and microphone allowed for this site only.
 
-Next.js 16, TypeScript, Tailwind CSS 4, Recharts, Zod, Anthropic SDK (Claude Opus 5.5 + Sonnet 5.5), Sarvam speech-to-text (saaras:v4), Vercel,
-MediaPipe Tasks Vision (pose landmarks, in the browser), the Outfit font, ffmpeg (for caching sample frames), Chrome headless (to produce the sample physio PDF), Claude Code (pair programming). Sample clips: Pexels (see `public/samples/CREDITS.md`).
+## What is real and what is mocked
 
-## What's mocked
+This is a hackathon prototype, not a medical product.
 
-- **Activity widget:** sample data. A real Google Health sign-in exists on the `google-health` branch and was tried once locally (it connected, but the test account had no cloud data), so it is not on the live site.
-- The patient profile, ROM history and today's plan are **seeded** (`data/patient.json`); there's no login and no database.
-- Sample clips: two samples, both stock clips from Pexels ("Wrong angle" and "Clean squat"); their Claude responses are saved from real calls. The earlier "Knee caves in" sample was removed for privacy.
-- Surgeon and physio names are placeholders.
-- `?demo=1` serves **cached** model responses (recorded from real calls) for the bundled samples and the scripted check-in, so there's no model latency on stage. Anything else typed or uploaded goes to Claude live, but only with the owner passcode (see Access and cost protection).
-- The week strip ("4 of 6 sessions") and the five rehab phases are seeded or typical, not computed from real use.
-- The knee-bend sample photo is a frame from a stock squat clip. It reads about 90°.
-- Sharing opens your own mail app or WhatsApp with the message ready. The app sends nothing. No WhatsApp number is built in: with none configured, WhatsApp opens its own contact picker.
-- The activity widget is **sample data**. There is no real Google Health connection.
-- The physio note is a **fictional sample**. Its Claude response is saved in `data/cache/notes-sample.json`.
-- Live-coach thresholds are **untuned first guesses**. Nothing from the live camera leaves the browser.
-- Voice and photo estimates are not validated. Voice was tested only with computer-generated speech; the photo estimate was not checked against a goniometer.
+- **Seeded:** the patient ("Arjun"), his history, the weekly sessions strip, the rehab phases, and the names
+  of the surgeon and physio. There is no login and no database.
+- **Sample data:** the Activity card. A real Google Health sign-in was built on the `google-health` branch and
+  tried once; it connected, but the test account had no activity stored in Google's cloud, so it is not live.
+- **Samples:** two stock squat clips from Pexels and a fictional physio note
+  (see [`public/samples/CREDITS.md`](public/samples/CREDITS.md)). Their AI responses were recorded from real
+  calls and are replayed in demo mode.
+- **Not validated:** the squat scores, the knee-bend estimate and the live-coach thresholds have not been
+  checked against physiotherapists or a goniometer. Everything is framed as an observation to discuss with a
+  physio or surgeon, never a diagnosis.
 
-All output is framed as observations to discuss with a physio or surgeon, not a diagnosis.
+## How it was built
+
+Four hours, one person, on 22 November 2026.
+
+- **Pair-built with [Claude Code](https://claude.com/claude-code).** One session planned, reviewed and
+  verified the work, and delegated the writing of code to parallel agents: a code reviewer before each
+  commit, an evals owner, a QA tester, a demo critic scoring against the judging criteria, and an agent
+  briefed as an ACL physiotherapist whose critique came to me to decide on, not straight into the code.
+- **A definition of done that ran after every change:** lint, type check, unit tests, a build, end-to-end
+  checks against the live link and a secret scan (`scripts/verify.sh`).
+- **Deployed in the first half hour, then redeployed after every change,** so the demo link was never more
+  than a few minutes behind the code.
+- **Three features were added in the last hour from mentor feedback:** the physio's advice, the live squat
+  coach and the activity card.
+
+The build harness is in the repo: [`CLAUDE.md`](CLAUDE.md), [`.claude/`](.claude) and [`scripts/`](scripts).
+
+## Run it locally
+
+```bash
+npm install
+# create .env with your own keys (never commit it):
+#   ANTHROPIC_API_KEY=...
+#   SARVAM_API_KEY=...        (only needed for voice check-in)
+npx next dev -p 3005          # open http://localhost:3005
+npm test                      # unit checks
+BASE=http://localhost:3005 evals/run.sh   # end-to-end checks
+```
+
+Add `?demo=1` to any page to replay the saved responses without calling a model.
+
+## Repository guide
+
+| File | What it is |
+|---|---|
+| [`DEMO.md`](DEMO.md) | The three-minute stage script, the judging checklist and the eval list |
+| [`PITCH.md`](PITCH.md) | The 20-second pitch and honest answers to hard questions |
+| [`ROADMAP.md`](ROADMAP.md) | What a production backend needs: sign-in, records, privacy law, clinical validation, phases |
+| [`DESIGN.md`](DESIGN.md) | The visual design brief ("ink + volt on paper") |
+| [`HANDOVER.md`](HANDOVER.md) | Current status and maintenance notes |
+| `app/`, `components/`, `lib/` | The application: pages, UI and the pure logic |
+| `evals/`, `scripts/` | End-to-end checks, unit tests and build scripts |
+
+## Built with
+
+Next.js 16 · TypeScript · Tailwind CSS 4 · Recharts · Zod · Anthropic SDK (Claude Opus 5.5 and Sonnet 5.5) ·
+Sarvam speech-to-text · MediaPipe Tasks Vision · Vercel · ffmpeg · Claude Code
+
+## Licence and disclaimer
+
+MIT licensed (see [`LICENSE`](LICENSE)). ACL Co-pilot is a prototype for demonstration. It is not a medical
+device and does not give medical advice. If you are recovering from surgery, follow your surgeon's and
+physiotherapist's instructions.

@@ -1,6 +1,8 @@
 # Design direction: "ink + volt on paper"
 
-Brief from the design lead. The app should feel like a premium fitness product (think cult.fit, Whoop, Nike
+Status: applied to every screen on 22 Nov 2026; styling only.
+
+The design brief. The app should feel like a premium fitness product (think cult.fit, Whoop, Nike
 Training): confident, athletic, warm. Not a medical form, and not a default "teal on white" template.
 
 ## Principles
@@ -15,7 +17,7 @@ Training): confident, athletic, warm. Not a medical form, and not a default "tea
 4. **Pill buttons.** `.btn .btn-primary` (ink), `.btn .btn-accent` (volt on dark blocks), `.btn .btn-secondary`
    (outlined), `.btn .btn-quiet` (small white pills such as sample buttons), `.btn .btn-whatsapp`.
 5. **Meaning keeps its colour.** Severity and safety colours stay semantic: `.chip-good` (0/3), `.chip-mild` (1/3),
-   `.chip-warn` (2/3), `.chip-bad` (3/3). The red-flag screen stays full-screen red. Amber stays for "re-record" and
+   `.chip-warn` (2/3), `.chip-bad` (3/3). The warning-sign screen stays calm; amber marks the emergency note. Amber stays for "re-record" and
    "yesterday" notes. Never use volt for a warning.
 6. **Rhythm.** Mobile column `max-w-md`, 16px side padding, 16–20px between cards, generous padding inside cards.
    Eyebrow labels (`.eyebrow text-mute`) above headlines instead of grey sub-headings.
